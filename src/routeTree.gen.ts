@@ -20,7 +20,9 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VideoCoursesSlugRouteImport } from './routes/video-courses.$slug'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
+import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminVideoCoursesRouteImport } from './routes/_authenticated/admin.video-courses'
@@ -98,10 +100,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VideoCoursesSlugRoute = VideoCoursesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => VideoCoursesRoute,
+} as any)
 const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => ProjectsRoute,
+} as any)
+const CoursesSlugRoute = CoursesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => CoursesRoute,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
@@ -236,13 +248,15 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/companies': typeof CompaniesRoute
   '/contact': typeof ContactRoute
-  '/courses': typeof CoursesRoute
+  '/courses': typeof CoursesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
-  '/video-courses': typeof VideoCoursesRoute
+  '/video-courses': typeof VideoCoursesRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/courses/$slug': typeof CoursesSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/video-courses/$slug': typeof VideoCoursesSlugRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/certifications': typeof AuthenticatedAdminCertificationsRoute
@@ -271,13 +285,15 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRouteWithChildren
   '/companies': typeof CompaniesRoute
   '/contact': typeof ContactRoute
-  '/courses': typeof CoursesRoute
+  '/courses': typeof CoursesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
-  '/video-courses': typeof VideoCoursesRoute
+  '/video-courses': typeof VideoCoursesRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/courses/$slug': typeof CoursesSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/video-courses/$slug': typeof VideoCoursesSlugRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/certifications': typeof AuthenticatedAdminCertificationsRoute
@@ -308,13 +324,15 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/companies': typeof CompaniesRoute
   '/contact': typeof ContactRoute
-  '/courses': typeof CoursesRoute
+  '/courses': typeof CoursesRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
-  '/video-courses': typeof VideoCoursesRoute
+  '/video-courses': typeof VideoCoursesRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/courses/$slug': typeof CoursesSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/video-courses/$slug': typeof VideoCoursesSlugRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/_authenticated/admin/certifications': typeof AuthenticatedAdminCertificationsRoute
@@ -351,7 +369,9 @@ export interface FileRouteTypes {
     | '/video-courses'
     | '/admin'
     | '/blog/$slug'
+    | '/courses/$slug'
     | '/projects/$slug'
+    | '/video-courses/$slug'
     | '/admin/about'
     | '/admin/blog'
     | '/admin/certifications'
@@ -386,7 +406,9 @@ export interface FileRouteTypes {
     | '/video-courses'
     | '/admin'
     | '/blog/$slug'
+    | '/courses/$slug'
     | '/projects/$slug'
+    | '/video-courses/$slug'
     | '/admin/about'
     | '/admin/blog'
     | '/admin/certifications'
@@ -422,7 +444,9 @@ export interface FileRouteTypes {
     | '/video-courses'
     | '/_authenticated/admin'
     | '/blog/$slug'
+    | '/courses/$slug'
     | '/projects/$slug'
+    | '/video-courses/$slug'
     | '/_authenticated/admin/about'
     | '/_authenticated/admin/blog'
     | '/_authenticated/admin/certifications'
@@ -453,10 +477,10 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRouteWithChildren
   CompaniesRoute: typeof CompaniesRoute
   ContactRoute: typeof ContactRoute
-  CoursesRoute: typeof CoursesRoute
+  CoursesRoute: typeof CoursesRouteWithChildren
   ProjectsRoute: typeof ProjectsRouteWithChildren
   TalksRoute: typeof TalksRoute
-  VideoCoursesRoute: typeof VideoCoursesRoute
+  VideoCoursesRoute: typeof VideoCoursesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -538,12 +562,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/video-courses/$slug': {
+      id: '/video-courses/$slug'
+      path: '/$slug'
+      fullPath: '/video-courses/$slug'
+      preLoaderRoute: typeof VideoCoursesSlugRouteImport
+      parentRoute: typeof VideoCoursesRoute
+    }
     '/projects/$slug': {
       id: '/projects/$slug'
       path: '/$slug'
       fullPath: '/projects/$slug'
       preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof ProjectsRoute
+    }
+    '/courses/$slug': {
+      id: '/courses/$slug'
+      path: '/$slug'
+      fullPath: '/courses/$slug'
+      preLoaderRoute: typeof CoursesSlugRouteImport
+      parentRoute: typeof CoursesRoute
     }
     '/blog/$slug': {
       id: '/blog/$slug'
@@ -772,6 +810,17 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface CoursesRouteChildren {
+  CoursesSlugRoute: typeof CoursesSlugRoute
+}
+
+const CoursesRouteChildren: CoursesRouteChildren = {
+  CoursesSlugRoute: CoursesSlugRoute,
+}
+
+const CoursesRouteWithChildren =
+  CoursesRoute._addFileChildren(CoursesRouteChildren)
+
 interface ProjectsRouteChildren {
   ProjectsSlugRoute: typeof ProjectsSlugRoute
 }
@@ -784,6 +833,18 @@ const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
   ProjectsRouteChildren,
 )
 
+interface VideoCoursesRouteChildren {
+  VideoCoursesSlugRoute: typeof VideoCoursesSlugRoute
+}
+
+const VideoCoursesRouteChildren: VideoCoursesRouteChildren = {
+  VideoCoursesSlugRoute: VideoCoursesSlugRoute,
+}
+
+const VideoCoursesRouteWithChildren = VideoCoursesRoute._addFileChildren(
+  VideoCoursesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -792,10 +853,10 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRouteWithChildren,
   CompaniesRoute: CompaniesRoute,
   ContactRoute: ContactRoute,
-  CoursesRoute: CoursesRoute,
+  CoursesRoute: CoursesRouteWithChildren,
   ProjectsRoute: ProjectsRouteWithChildren,
   TalksRoute: TalksRoute,
-  VideoCoursesRoute: VideoCoursesRoute,
+  VideoCoursesRoute: VideoCoursesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
