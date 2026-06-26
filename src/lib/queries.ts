@@ -8,12 +8,19 @@ async function run<T>(query: PromiseLike<{ data: T | null; error: unknown }>): P
   return (data ?? ([] as unknown as T));
 }
 
+const PUBLIC_PROFILE_COLUMNS =
+  "id,name,title,tagline,location,bio,photo_url,cv_url,github_url,linkedin_url,twitter_url,website_url,created_at,updated_at,i18n";
+
 export const profileQuery = queryOptions({
   queryKey: ["profile"],
   queryFn: async (): Promise<Tables<"profile"> | null> => {
-    const { data, error } = await supabase.from("profile").select("*").limit(1).maybeSingle();
+    const { data, error } = await supabase
+      .from("profile")
+      .select(PUBLIC_PROFILE_COLUMNS)
+      .limit(1)
+      .maybeSingle();
     if (error) throw error;
-    return data;
+    return data as Tables<"profile"> | null;
   },
 });
 
