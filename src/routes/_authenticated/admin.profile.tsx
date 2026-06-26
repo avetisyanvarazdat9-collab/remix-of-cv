@@ -19,7 +19,7 @@ type FieldDef = {
 };
 
 const fields: FieldDef[] = [
-  { name: "name", label: "Name" },
+  { name: "name", label: "Name", type: "i18n" },
   { name: "title", label: "Title", type: "i18n" },
   { name: "tagline", label: "Tagline", type: "i18n-textarea" },
   { name: "location", label: "Location", type: "i18n" },

@@ -149,7 +149,7 @@ function Home() {
               {loc(content, "hero_badge")}
             </span>
             <h1 className="mt-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              {profile?.name ?? "Your Name"}
+              {loc(profile, "name") || profile?.name || "Your Name"}
             </h1>
             <p className="mt-4 text-xl text-primary">{loc(profile, "title")}</p>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -214,7 +214,7 @@ function Home() {
                   {profile?.photo_url ? (
                     <img
                       src={profile.photo_url}
-                      alt={profile.name ?? "Profile photo"}
+                      alt={loc(profile, "name") || profile.name || "Profile photo"}
                       className="size-full object-cover"
                     />
                   ) : (
