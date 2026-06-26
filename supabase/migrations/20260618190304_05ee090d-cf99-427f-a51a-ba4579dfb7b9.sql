@@ -1,0 +1,1 @@
+ALTER TABLE public.error_logs ADD COLUMN IF NOT EXISTS kind TEXT; CREATE INDEX IF NOT EXISTS error_logs_kind_idx ON public.error_logs (kind);
