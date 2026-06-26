@@ -59,6 +59,57 @@ export type Database = {
         }
         Relationships: []
       }
+      certifications: {
+        Row: {
+          created_at: string
+          credential_id: string | null
+          credential_url: string | null
+          description: string | null
+          display_order: number
+          expiry_date: string | null
+          i18n: Json
+          id: string
+          image_url: string | null
+          is_visible: boolean
+          issue_date: string | null
+          issuer: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credential_id?: string | null
+          credential_url?: string | null
+          description?: string | null
+          display_order?: number
+          expiry_date?: string | null
+          i18n?: Json
+          id?: string
+          image_url?: string | null
+          is_visible?: boolean
+          issue_date?: string | null
+          issuer?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credential_id?: string | null
+          credential_url?: string | null
+          description?: string | null
+          display_order?: number
+          expiry_date?: string | null
+          i18n?: Json
+          id?: string
+          image_url?: string | null
+          is_visible?: boolean
+          issue_date?: string | null
+          issuer?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           created_at: string

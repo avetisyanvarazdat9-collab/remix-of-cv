@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
-import { profileQuery, skillsQuery, educationQuery } from "@/lib/queries";
+import { profileQuery, skillsQuery, educationQuery, certificationsQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
@@ -10,6 +10,7 @@ export const Route = createFileRoute("/about")({
     context.queryClient.ensureQueryData(profileQuery);
     context.queryClient.ensureQueryData(skillsQuery);
     context.queryClient.ensureQueryData(educationQuery);
+    context.queryClient.ensureQueryData(certificationsQuery);
   },
   component: AboutPage,
 });
@@ -18,6 +19,7 @@ function AboutPage() {
   const { data: profile } = useSuspenseQuery(profileQuery);
   const { data: skills } = useSuspenseQuery(skillsQuery);
   const { data: education } = useSuspenseQuery(educationQuery);
+  const { data: certifications } = useSuspenseQuery(certificationsQuery);
   const loc = useLocalized();
   const t = useT();
 
@@ -77,6 +79,47 @@ function AboutPage() {
             </ul>
           </div>
         </div>
+
+        {(certifications ?? []).filter((c) => c.is_visible).length > 0 && (
+          <div className="mt-8 glass rounded-2xl p-6">
+            <h2 className="font-display text-xl font-semibold">Certifications</h2>
+            <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+              {(certifications ?? [])
+                .filter((c) => c.is_visible)
+                .map((c) => {
+                  const name = loc(c, "name") || c.name;
+                  const issuer = loc(c, "issuer") || c.issuer;
+                  const description = loc(c, "description") || c.description;
+                  return (
+                    <li key={c.id} className="border-l-2 border-primary/40 pl-4">
+                      {c.credential_url ? (
+                        <a
+                          href={c.credential_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-medium hover:text-primary"
+                        >
+                          {name}
+                        </a>
+                      ) : (
+                        <p className="font-medium">{name}</p>
+                      )}
+                      {issuer && <p className="text-sm text-muted-foreground">{issuer}</p>}
+                      {(c.issue_date || c.expiry_date) && (
+                        <p className="text-xs text-muted-foreground">
+                          {c.issue_date ?? ""}
+                          {c.expiry_date ? ` — ${c.expiry_date}` : ""}
+                        </p>
+                      )}
+                      {description && (
+                        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+                      )}
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        )}
       </section>
     </PublicLayout>
   );
