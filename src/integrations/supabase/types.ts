@@ -168,9 +168,13 @@ export type Database = {
           id: string
           image_url: string | null
           is_visible: boolean
+          learning_outcomes: string[]
           level: string | null
           link_url: string | null
+          prerequisites: string[]
+          slug: string
           title: string
+          topics: string[]
           updated_at: string
         }
         Insert: {
@@ -182,9 +186,13 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_visible?: boolean
+          learning_outcomes?: string[]
           level?: string | null
           link_url?: string | null
+          prerequisites?: string[]
+          slug: string
           title: string
+          topics?: string[]
           updated_at?: string
         }
         Update: {
@@ -196,9 +204,13 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_visible?: boolean
+          learning_outcomes?: string[]
           level?: string | null
           link_url?: string | null
+          prerequisites?: string[]
+          slug?: string
           title?: string
+          topics?: string[]
           updated_at?: string
         }
         Relationships: []
@@ -690,10 +702,13 @@ export type Database = {
           id: string
           is_visible: boolean
           platform: string | null
+          slug: string
           thumbnail_url: string | null
           title: string
+          topics: string[]
           updated_at: string
           video_url: string | null
+          youtube_url: string | null
         }
         Insert: {
           created_at?: string
@@ -704,10 +719,13 @@ export type Database = {
           id?: string
           is_visible?: boolean
           platform?: string | null
+          slug: string
           thumbnail_url?: string | null
           title: string
+          topics?: string[]
           updated_at?: string
           video_url?: string | null
+          youtube_url?: string | null
         }
         Update: {
           created_at?: string
@@ -718,10 +736,13 @@ export type Database = {
           id?: string
           is_visible?: boolean
           platform?: string | null
+          slug?: string
           thumbnail_url?: string | null
           title?: string
+          topics?: string[]
           updated_at?: string
           video_url?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }
