@@ -1,8 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
-import { profileQuery, skillsQuery, educationQuery, certificationsQuery } from "@/lib/queries";
+import {
+  profileQuery,
+  skillsQuery,
+  educationQuery,
+  certificationsQuery,
+  companiesQuery,
+} from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
+
+const TRAININGS: { year: string; title: string; location: string }[] = [
+  { year: "2013", title: "EU Tempus HEN-GEAR training", location: "Bologna, Italy" },
+  { year: "2014", title: "EU Tempus Veritas workshop", location: "Heidelberg, Germany" },
+  { year: "2015", title: "EU Tempus Ararat workshop", location: "Graz, Austria" },
+  { year: "2015", title: "EU Tempus HEN-GEAR workshop", location: "Las Palmas, Spain" },
+  { year: "2015", title: "EU Tempus Veritas trainings & workshops", location: "KTH (Sweden), Girona (Spain), Bath Spa (UK), Heidelberg (Germany)" },
+  { year: "2017", title: "Lectures & experience exchange — Angel Kanchev University of Ruse", location: "Ruse, Bulgaria" },
+  { year: "2017", title: "Training — Technical University of Sofia", location: "Sofia, Bulgaria" },
+  { year: "2017", title: "Training — Polytechnic University of Turin", location: "Turin, Italy" },
+  { year: "—", title: "Various national & international conferences, seminars, and forums", location: "" },
+];
 
 export const Route = createFileRoute("/about")({
   head: () => ({ meta: [{ title: "About — Varazdat Avetisyan" }] }),
@@ -11,6 +29,7 @@ export const Route = createFileRoute("/about")({
     context.queryClient.ensureQueryData(skillsQuery);
     context.queryClient.ensureQueryData(educationQuery);
     context.queryClient.ensureQueryData(certificationsQuery);
+    context.queryClient.ensureQueryData(companiesQuery);
   },
   component: AboutPage,
 });
