@@ -39,6 +39,7 @@ function AboutPage() {
   const { data: skills } = useSuspenseQuery(skillsQuery);
   const { data: education } = useSuspenseQuery(educationQuery);
   const { data: certifications } = useSuspenseQuery(certificationsQuery);
+  const { data: companies } = useSuspenseQuery(companiesQuery);
   const loc = useLocalized();
   const t = useT();
 
