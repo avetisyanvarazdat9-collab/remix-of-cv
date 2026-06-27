@@ -100,6 +100,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
+    scripts: [
+      { src: "https://cdn.botpress.cloud/webchat/v3.6/inject.js" },
+      { src: "https://files.bpcontent.cloud/2026/06/27/04/20260627042438-7JVHPAOZ.js", defer: true },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
