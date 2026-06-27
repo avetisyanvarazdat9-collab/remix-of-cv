@@ -140,7 +140,53 @@ function AboutPage() {
             </ul>
           </div>
         )}
+
+        {(companies ?? []).filter((c) => c.is_visible !== false).length > 0 && (
+          <div className="mt-8 glass rounded-2xl p-6">
+            <h2 className="font-display text-xl font-semibold">Professional Experience</h2>
+            <ol className="mt-5 relative border-l border-primary/30 pl-6 space-y-5">
+              {(companies ?? [])
+                .filter((c) => c.is_visible !== false)
+                .sort((a, b) => (b.start_year ?? 0) - (a.start_year ?? 0))
+                .map((c) => {
+                  const role = loc(c, "role") || c.role;
+                  return (
+                    <li key={c.id} className="relative">
+                      <span className="absolute -left-[31px] top-1.5 size-3 rounded-full bg-primary ring-4 ring-background" />
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <p className="font-medium">{c.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {c.start_year}{c.is_current ? " — Present" : c.end_year ? `–${c.end_year}` : ""}
+                        </p>
+                      </div>
+                      {role && <p className="text-sm text-primary">{role}</p>}
+                    </li>
+                  );
+                })}
+            </ol>
+          </div>
+        )}
+
+        <div className="mt-8 glass rounded-2xl p-6">
+          <h2 className="font-display text-xl font-semibold">Professional Development</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            International trainings, workshops, and exchange programs.
+          </p>
+          <ol className="mt-5 relative border-l border-primary/30 pl-6 space-y-5">
+            {TRAININGS.map((tr, i) => (
+              <li key={i} className="relative">
+                <span className="absolute -left-[31px] top-1.5 size-3 rounded-full bg-primary ring-4 ring-background" />
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <p className="font-medium">{tr.title}</p>
+                  <p className="text-xs text-muted-foreground">{tr.year}</p>
+                </div>
+                {tr.location && <p className="text-sm text-muted-foreground">{tr.location}</p>}
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
+
     </PublicLayout>
   );
 }
