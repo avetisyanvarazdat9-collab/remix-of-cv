@@ -25,7 +25,7 @@ function CompaniesPage() {
             const description = loc(c, "description");
             return (
               <li key={c.id} className="glass flex gap-5 rounded-2xl p-6">
-                {c.logo_url && <img src={c.logo_url} alt={c.name} className="size-14 rounded-lg object-cover" />}
+                {c.logo_url && <img src={c.logo_url} alt={c.name ?? ""} className="size-14 rounded-lg object-cover" />}
                 <div className="flex-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <h3 className="font-display text-lg font-semibold">{c.name}</h3>
