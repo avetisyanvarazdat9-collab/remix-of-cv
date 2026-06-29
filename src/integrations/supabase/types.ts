@@ -162,7 +162,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
-          display_order: number
+          display_order: number | null
           duration: string | null
           i18n: Json
           id: string
@@ -180,7 +180,7 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
-          display_order?: number
+          display_order?: number | null
           duration?: string | null
           i18n?: Json
           id?: string
@@ -198,7 +198,7 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
-          display_order?: number
+          display_order?: number | null
           duration?: string | null
           i18n?: Json
           id?: string
