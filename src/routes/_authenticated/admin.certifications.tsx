@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/admin/certifications")({
       orderBy={{ column: "display_order" }}
       displayColumns={["name", "issuer", "issue_date", "expiry_date", "is_visible"]}
       fields={[
-        { name: "name", label: "Name", type: "i18n", required: true },
+        { name: "name", label: "Name", type: "i18n" },
         { name: "issuer", label: "Issuer", type: "i18n" },
         { name: "issue_date", label: "Issue date", type: "text", placeholder: "YYYY-MM-DD" },
         { name: "expiry_date", label: "Expiry date", type: "text", placeholder: "YYYY-MM-DD" },

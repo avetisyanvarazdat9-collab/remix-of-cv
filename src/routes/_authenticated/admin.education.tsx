@@ -10,8 +10,8 @@ export const Route = createFileRoute("/_authenticated/admin/education")({
       orderBy={{ column: "display_order" }}
       displayColumns={["institution", "degree", "field", "start_year", "end_year"]}
       fields={[
-        { name: "institution", label: "Institution", type: "i18n", required: true },
-        { name: "degree", label: "Degree", type: "i18n", required: true },
+        { name: "institution", label: "Institution", type: "i18n" },
+        { name: "degree", label: "Degree", type: "i18n" },
         { name: "field", label: "Field", type: "i18n" },
         { name: "start_year", label: "Start year", type: "number" },
         { name: "end_year", label: "End year", type: "number" },
