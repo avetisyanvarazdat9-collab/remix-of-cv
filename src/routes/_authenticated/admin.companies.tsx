@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/companies")({
       orderBy={{ column: "display_order" }}
       displayColumns={["name", "role", "start_year", "end_year", "is_current"]}
       fields={[
-        { name: "name", label: "Name (brand)", type: "text", required: true },
+        { name: "name", label: "Name (brand)", type: "text" },
         { name: "role", label: "Role", type: "i18n" },
         { name: "description", label: "Description", type: "i18n-textarea" },
         { name: "logo_url", label: "Logo URL", type: "url" },
