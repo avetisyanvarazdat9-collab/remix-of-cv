@@ -1,0 +1,1 @@
+ALTER TABLE public.courses ALTER COLUMN display_order DROP NOT NULL;
