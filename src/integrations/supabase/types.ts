@@ -73,7 +73,7 @@ export type Database = {
           is_visible: boolean
           issue_date: string | null
           issuer: string | null
-          name: string
+          name: string | null
           updated_at: string
         }
         Insert: {
@@ -89,7 +89,7 @@ export type Database = {
           is_visible?: boolean
           issue_date?: string | null
           issuer?: string | null
-          name: string
+          name?: string | null
           updated_at?: string
         }
         Update: {
@@ -105,7 +105,7 @@ export type Database = {
           is_visible?: boolean
           issue_date?: string | null
           issuer?: string | null
-          name?: string
+          name?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -120,7 +120,7 @@ export type Database = {
           is_current: boolean
           is_visible: boolean
           logo_url: string | null
-          name: string
+          name: string | null
           role: string | null
           start_year: number | null
           updated_at: string
@@ -135,7 +135,7 @@ export type Database = {
           is_current?: boolean
           is_visible?: boolean
           logo_url?: string | null
-          name: string
+          name?: string | null
           role?: string | null
           start_year?: number | null
           updated_at?: string
@@ -150,7 +150,7 @@ export type Database = {
           is_current?: boolean
           is_visible?: boolean
           logo_url?: string | null
-          name?: string
+          name?: string | null
           role?: string | null
           start_year?: number | null
           updated_at?: string
@@ -218,39 +218,39 @@ export type Database = {
       education: {
         Row: {
           created_at: string
-          degree: string
+          degree: string | null
           description: string | null
           display_order: number
           end_year: number | null
           field: string | null
           id: string
-          institution: string
+          institution: string | null
           is_visible: boolean
           start_year: number | null
           updated_at: string
         }
         Insert: {
           created_at?: string
-          degree: string
+          degree?: string | null
           description?: string | null
           display_order?: number
           end_year?: number | null
           field?: string | null
           id?: string
-          institution: string
+          institution?: string | null
           is_visible?: boolean
           start_year?: number | null
           updated_at?: string
         }
         Update: {
           created_at?: string
-          degree?: string
+          degree?: string | null
           description?: string | null
           display_order?: number
           end_year?: number | null
           field?: string | null
           id?: string
-          institution?: string
+          institution?: string | null
           is_visible?: boolean
           start_year?: number | null
           updated_at?: string
