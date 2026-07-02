@@ -259,11 +259,14 @@ function Home() {
       {/* 3. STATS */}
       <section className="bg-background pb-20">
         <div className="mx-auto grid max-w-7xl gap-5 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
-          {stats.map((s) => (
-            <StatCard key={s.label} stat={s} />
-          ))}
+          {stats.length > 0
+            ? stats.map((s) => <StatCard key={s.label} stat={s} />)
+            : Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-32 rounded-2xl" />
+              ))}
         </div>
       </section>
+
 
       {/* 4. FEATURED COURSES */}
       {featuredCourses.length > 0 && (
