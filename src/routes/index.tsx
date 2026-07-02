@@ -83,9 +83,15 @@ function Home() {
   const { data: courses } = useSuspenseQuery(coursesQuery);
   const { data: companies } = useSuspenseQuery(companiesQuery);
   const { data: content } = useSuspenseQuery(homeContentQuery);
+  const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
+  const { data: statsRows } = useSuspenseQuery(statisticsQuery);
   const loc = useLocalized();
   const t = useT();
-  const stats = useQuickStats(t);
+  const stats: Stat[] = (statsRows ?? []).map((s) => ({
+    label: (loc(s, "label") as string) || s.label,
+    value: (loc(s, "value") as string) || s.value,
+  }));
+
 
   const featuredCourses = (courses ?? []).filter((c) => c.is_visible).slice(0, 3);
 
