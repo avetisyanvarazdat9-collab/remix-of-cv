@@ -96,3 +96,16 @@ export const navigationMenuQuery = queryOptions({
     run(supabase.from("navigation_menu").select("*").order("order_index", { ascending: true })),
 });
 
+export const testimonialsQuery = queryOptions({
+  queryKey: ["testimonials"],
+  queryFn: () =>
+    run(supabase.from("testimonials").select("*").eq("is_visible", true).order("display_order")),
+});
+
+export const statisticsQuery = queryOptions({
+  queryKey: ["statistics"],
+  queryFn: () =>
+    run(supabase.from("statistics").select("*").eq("is_visible", true).order("display_order")),
+});
+
+
