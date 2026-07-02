@@ -151,7 +151,7 @@ function RootComponent() {
         <Outlet />
         <ThemeApplier />
         <HiddenAdminLogin />
-        <Toaster richColors theme="dark" />
+        <Toaster richColors />
       </LanguageProvider>
     </QueryClientProvider>
   );
