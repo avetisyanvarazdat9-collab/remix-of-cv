@@ -9,14 +9,18 @@ import {
   BookOpen,
   BrainCircuit,
   Briefcase,
+  Quote,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { ContactDialog } from "@/components/ContactDialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   profileQuery,
   coursesQuery,
   companiesQuery,
   homeContentQuery,
+  testimonialsQuery,
+  statisticsQuery,
 } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 
@@ -27,36 +31,14 @@ export const Route = createFileRoute("/")({
     context.queryClient.ensureQueryData(coursesQuery);
     context.queryClient.ensureQueryData(companiesQuery);
     context.queryClient.ensureQueryData(homeContentQuery);
+    context.queryClient.ensureQueryData(testimonialsQuery);
+    context.queryClient.ensureQueryData(statisticsQuery);
   },
   component: Home,
 });
 
 type Stat = { label: string; value: string };
-const STAT_KEYS = [
-  "home.stats.years",
-  "home.stats.courses",
-  "home.stats.students",
-  "home.stats.companies",
-] as const;
-const STAT_VALUE_DEFAULTS = ["15+", "30+", "500+", "3"];
 
-function useQuickStats(t: (k: string) => string): Stat[] {
-  const [values, setValues] = useState<string[]>(STAT_VALUE_DEFAULTS);
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem("admin:quickStats");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length === 4) {
-          // Back-compat: accept either array of strings or array of {label,value}.
-          const vs = parsed.map((p: any) => (typeof p === "string" ? p : p?.value ?? ""));
-          setValues(vs);
-        }
-      }
-    } catch { /* ignore */ }
-  }, []);
-  return STAT_KEYS.map((k, i) => ({ label: t(k), value: values[i] ?? "" }));
-}
 
 function useCounter(target: string) {
   const [n, setN] = useState(0);
