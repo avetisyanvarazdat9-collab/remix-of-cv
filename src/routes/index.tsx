@@ -389,7 +389,55 @@ function Home() {
         </section>
       )}
 
+      {/* 5b. TESTIMONIALS */}
+      {(testimonials?.length ?? 0) > 0 && (
+        <section className="bg-background py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              {t("home.testimonials.label")}
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+              {t("home.testimonials.heading")}
+            </h2>
+            <div className="mt-10 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [scrollbar-width:thin] md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
+              {(testimonials ?? []).map((tm) => (
+                <figure
+                  key={tm.id}
+                  className="relative min-w-[85%] shrink-0 snap-center rounded-2xl border border-border bg-card p-6 shadow-sm transition-colors hover:border-primary/40 md:min-w-0"
+                >
+                  <Quote className="size-6 text-primary/60" />
+                  <blockquote className="mt-4 text-sm leading-relaxed text-foreground">
+                    {(loc(tm, "quote") as string) || tm.quote}
+                  </blockquote>
+                  <figcaption className="mt-5 flex items-center gap-3">
+                    {tm.avatar_url ? (
+                      <img src={tm.avatar_url} alt="" className="size-10 rounded-full object-cover" />
+                    ) : (
+                      <div className="size-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
+                        {tm.author_name.slice(0, 1)}
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-foreground">{tm.author_name}</p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {[tm.role, tm.organization].filter(Boolean).join(" · ")}
+                      </p>
+                    </div>
+                    {tm.category && (
+                      <span className="ml-auto rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                        {tm.category}
+                      </span>
+                    )}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* 6. CONTACT CTA */}
+
       <section
         className="relative overflow-hidden bg-background py-24"
       >
