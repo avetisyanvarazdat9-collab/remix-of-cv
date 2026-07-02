@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       blog_posts: {
         Row: {
+          category: string | null
           content: string | null
           cover_image_url: string | null
           created_at: string
@@ -24,12 +25,14 @@ export type Database = {
           id: string
           is_published: boolean
           published_at: string | null
+          read_time_minutes: number | null
           slug: string
           tags: string[] | null
           title: string
           updated_at: string
         }
         Insert: {
+          category?: string | null
           content?: string | null
           cover_image_url?: string | null
           created_at?: string
@@ -38,12 +41,14 @@ export type Database = {
           id?: string
           is_published?: boolean
           published_at?: string | null
+          read_time_minutes?: number | null
           slug: string
           tags?: string[] | null
           title: string
           updated_at?: string
         }
         Update: {
+          category?: string | null
           content?: string | null
           cover_image_url?: string | null
           created_at?: string
@@ -52,6 +57,7 @@ export type Database = {
           id?: string
           is_published?: boolean
           published_at?: string | null
+          read_time_minutes?: number | null
           slug?: string
           tags?: string[] | null
           title?: string
@@ -112,6 +118,7 @@ export type Database = {
       }
       companies: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
           display_order: number
@@ -127,6 +134,7 @@ export type Database = {
           website_url: string | null
         }
         Insert: {
+          category?: string | null
           created_at?: string
           description?: string | null
           display_order?: number
@@ -142,6 +150,7 @@ export type Database = {
           website_url?: string | null
         }
         Update: {
+          category?: string | null
           created_at?: string
           description?: string | null
           display_order?: number
@@ -160,6 +169,7 @@ export type Database = {
       }
       courses: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
           display_order: number | null
@@ -167,6 +177,7 @@ export type Database = {
           i18n: Json
           id: string
           image_url: string | null
+          is_featured: boolean
           is_visible: boolean
           learning_outcomes: string[]
           level: string | null
@@ -178,6 +189,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string | null
           created_at?: string
           description?: string | null
           display_order?: number | null
@@ -185,6 +197,7 @@ export type Database = {
           i18n?: Json
           id?: string
           image_url?: string | null
+          is_featured?: boolean
           is_visible?: boolean
           learning_outcomes?: string[]
           level?: string | null
@@ -196,6 +209,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string | null
           created_at?: string
           description?: string | null
           display_order?: number | null
@@ -203,6 +217,7 @@ export type Database = {
           i18n?: Json
           id?: string
           image_url?: string | null
+          is_featured?: boolean
           is_visible?: boolean
           learning_outcomes?: string[]
           level?: string | null
@@ -505,6 +520,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
           display_order: number
@@ -522,6 +538,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string | null
           created_at?: string
           description?: string | null
           display_order?: number
@@ -539,6 +556,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string | null
           created_at?: string
           description?: string | null
           display_order?: number
@@ -623,8 +641,42 @@ export type Database = {
         }
         Relationships: []
       }
+      statistics: {
+        Row: {
+          created_at: string
+          display_order: number
+          i18n: Json
+          id: string
+          is_visible: boolean
+          label: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          i18n?: Json
+          id?: string
+          is_visible?: boolean
+          label: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          i18n?: Json
+          id?: string
+          is_visible?: boolean
+          label?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       talks: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
           display_order: number
@@ -640,6 +692,7 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          category?: string | null
           created_at?: string
           description?: string | null
           display_order?: number
@@ -655,6 +708,7 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          category?: string | null
           created_at?: string
           description?: string | null
           display_order?: number
@@ -668,6 +722,51 @@ export type Database = {
           title?: string
           updated_at?: string
           video_url?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          author_name: string
+          avatar_url: string | null
+          category: string | null
+          created_at: string
+          display_order: number
+          i18n: Json
+          id: string
+          is_visible: boolean
+          organization: string | null
+          quote: string
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_name: string
+          avatar_url?: string | null
+          category?: string | null
+          created_at?: string
+          display_order?: number
+          i18n?: Json
+          id?: string
+          is_visible?: boolean
+          organization?: string | null
+          quote: string
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          avatar_url?: string | null
+          category?: string | null
+          created_at?: string
+          display_order?: number
+          i18n?: Json
+          id?: string
+          is_visible?: boolean
+          organization?: string | null
+          quote?: string
+          role?: string | null
+          updated_at?: string
         }
         Relationships: []
       }

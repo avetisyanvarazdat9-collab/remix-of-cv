@@ -9,14 +9,18 @@ import {
   BookOpen,
   BrainCircuit,
   Briefcase,
+  Quote,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { ContactDialog } from "@/components/ContactDialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   profileQuery,
   coursesQuery,
   companiesQuery,
   homeContentQuery,
+  testimonialsQuery,
+  statisticsQuery,
 } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 
@@ -27,36 +31,14 @@ export const Route = createFileRoute("/")({
     context.queryClient.ensureQueryData(coursesQuery);
     context.queryClient.ensureQueryData(companiesQuery);
     context.queryClient.ensureQueryData(homeContentQuery);
+    context.queryClient.ensureQueryData(testimonialsQuery);
+    context.queryClient.ensureQueryData(statisticsQuery);
   },
   component: Home,
 });
 
 type Stat = { label: string; value: string };
-const STAT_KEYS = [
-  "home.stats.years",
-  "home.stats.courses",
-  "home.stats.students",
-  "home.stats.companies",
-] as const;
-const STAT_VALUE_DEFAULTS = ["15+", "30+", "500+", "3"];
 
-function useQuickStats(t: (k: string) => string): Stat[] {
-  const [values, setValues] = useState<string[]>(STAT_VALUE_DEFAULTS);
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem("admin:quickStats");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length === 4) {
-          // Back-compat: accept either array of strings or array of {label,value}.
-          const vs = parsed.map((p: any) => (typeof p === "string" ? p : p?.value ?? ""));
-          setValues(vs);
-        }
-      }
-    } catch { /* ignore */ }
-  }, []);
-  return STAT_KEYS.map((k, i) => ({ label: t(k), value: values[i] ?? "" }));
-}
 
 function useCounter(target: string) {
   const [n, setN] = useState(0);
@@ -101,9 +83,15 @@ function Home() {
   const { data: courses } = useSuspenseQuery(coursesQuery);
   const { data: companies } = useSuspenseQuery(companiesQuery);
   const { data: content } = useSuspenseQuery(homeContentQuery);
+  const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
+  const { data: statsRows } = useSuspenseQuery(statisticsQuery);
   const loc = useLocalized();
   const t = useT();
-  const stats = useQuickStats(t);
+  const stats: Stat[] = (statsRows ?? []).map((s) => ({
+    label: (loc(s, "label") as string) || s.label,
+    value: (loc(s, "value") as string) || s.value,
+  }));
+
 
   const featuredCourses = (courses ?? []).filter((c) => c.is_visible).slice(0, 3);
 
@@ -271,11 +259,14 @@ function Home() {
       {/* 3. STATS */}
       <section className="bg-background pb-20">
         <div className="mx-auto grid max-w-7xl gap-5 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
-          {stats.map((s) => (
-            <StatCard key={s.label} stat={s} />
-          ))}
+          {stats.length > 0
+            ? stats.map((s) => <StatCard key={s.label} stat={s} />)
+            : Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-32 rounded-2xl" />
+              ))}
         </div>
       </section>
+
 
       {/* 4. FEATURED COURSES */}
       {featuredCourses.length > 0 && (
@@ -398,7 +389,55 @@ function Home() {
         </section>
       )}
 
+      {/* 5b. TESTIMONIALS */}
+      {(testimonials?.length ?? 0) > 0 && (
+        <section className="bg-background py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              {t("home.testimonials.label")}
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+              {t("home.testimonials.heading")}
+            </h2>
+            <div className="mt-10 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [scrollbar-width:thin] md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
+              {(testimonials ?? []).map((tm) => (
+                <figure
+                  key={tm.id}
+                  className="relative min-w-[85%] shrink-0 snap-center rounded-2xl border border-border bg-card p-6 shadow-sm transition-colors hover:border-primary/40 md:min-w-0"
+                >
+                  <Quote className="size-6 text-primary/60" />
+                  <blockquote className="mt-4 text-sm leading-relaxed text-foreground">
+                    {(loc(tm, "quote") as string) || tm.quote}
+                  </blockquote>
+                  <figcaption className="mt-5 flex items-center gap-3">
+                    {tm.avatar_url ? (
+                      <img src={tm.avatar_url} alt="" className="size-10 rounded-full object-cover" />
+                    ) : (
+                      <div className="size-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
+                        {tm.author_name.slice(0, 1)}
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-foreground">{tm.author_name}</p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {[tm.role, tm.organization].filter(Boolean).join(" · ")}
+                      </p>
+                    </div>
+                    {tm.category && (
+                      <span className="ml-auto rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                        {tm.category}
+                      </span>
+                    )}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* 6. CONTACT CTA */}
+
       <section
         className="relative overflow-hidden bg-background py-24"
       >

@@ -15,7 +15,10 @@ const TABLE_QUERY_KEYS: Record<string, string> = {
   education: "education",
   home_content: "home_content",
   navigation_menu: "navigation_menu",
+  testimonials: "testimonials",
+  statistics: "statistics",
 };
+
 
 const TABLES = Object.keys(TABLE_QUERY_KEYS);
 
