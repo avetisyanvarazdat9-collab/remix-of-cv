@@ -63,7 +63,7 @@ export function SiteHeader() {
         </div>
       </div>
       {open && (
-        <div className="border-t border-border/60 bg-background/95 lg:hidden">
+        <div className="animate-fade-in-up border-t border-border/60 bg-background/95 lg:hidden">
           <nav className="mx-auto grid max-w-7xl gap-1 p-4">
             {visible.map((item: any) => (
               <Link
