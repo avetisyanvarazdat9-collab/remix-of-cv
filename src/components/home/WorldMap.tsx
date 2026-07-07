@@ -80,6 +80,7 @@ export function WorldMap() {
         <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
           <span className="inline-flex items-center gap-1.5 text-muted-foreground">
             <Filter className="size-3.5" /> Filter
+            {isFetching && <Loader2 className="size-3 animate-spin text-primary" />}
           </span>
 
           <button
