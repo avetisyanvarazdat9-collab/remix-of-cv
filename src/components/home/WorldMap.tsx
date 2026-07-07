@@ -268,7 +268,8 @@ export function WorldMap() {
                 return (
                   <li
                     key={r.id}
-                    className="relative rounded-xl border border-border bg-card p-4 pl-6"
+                    style={{ animationDelay: `${Math.min(rows.indexOf(r as never), 8) * 40}ms` }}
+                    className="animate-fade-in-up hover-lift relative rounded-xl border border-border bg-card p-4 pl-6"
                   >
                     <span className="absolute left-2 top-5 size-2 rounded-full bg-primary shadow-[0_0_0_3px_color-mix(in_oklab,var(--primary)_25%,transparent)]" />
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
