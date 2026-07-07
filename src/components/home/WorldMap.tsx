@@ -28,6 +28,7 @@ export function WorldMap() {
   const { data } = useQuery(internationalExperienceQuery);
   const rows = (data ?? []) as IntlRow[];
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<IntlRow | null>(null);
   const [mounted, setMounted] = useState(false);
   const [category, setCategory] = useState<string>(ALL);
   const [fromYear, setFromYear] = useState<string>(ALL);
@@ -206,7 +207,13 @@ export function WorldMap() {
               </Geographies>
               {pins.map((p) => (
                 <Marker key={p.id} coordinates={[p.lng as number, p.lat as number]}>
-                  <g>
+                  <g
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelected(p);
+                    }}
+                  >
                     <circle r={8} fill="color-mix(in oklab, var(--primary) 30%, transparent)" />
                     <circle r={4} fill="var(--primary)" stroke="var(--background)" strokeWidth={1.2} />
                   </g>
@@ -310,6 +317,80 @@ export function WorldMap() {
                 </li>
               )}
             </ol>
+          </div>
+        </div>
+      )}
+
+      {selected && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 p-4 pt-16 backdrop-blur-sm"
+          onClick={() => setSelected(null)}
+        >
+          <div
+            className="relative w-full max-w-md rounded-2xl border border-border bg-background p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelected(null)}
+              className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground hover:bg-accent"
+              aria-label="Close"
+            >
+              <X className="size-4" />
+            </button>
+
+            {(() => {
+              const title = (loc(selected, "title") as string) || selected.title || "Untitled";
+              const desc = (loc(selected, "description") as string) || selected.description;
+              return (
+                <>
+                  <h3 className="font-display text-xl font-bold text-foreground pr-8">{title}</h3>
+
+                  <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                    {selected.event_date && (
+                      <span className="inline-flex items-center gap-1">
+                        <Calendar className="size-3.5" />
+                        {new Date(selected.event_date).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
+                    )}
+                    {selected.location && (
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin className="size-3.5" />
+                        {selected.location}
+                      </span>
+                    )}
+                  </div>
+
+                  {selected.category && (
+                    <span className="mt-3 inline-block rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                      {selected.category}
+                    </span>
+                  )}
+
+                  {selected.organization && (
+                    <p className="mt-2 text-sm text-muted-foreground">{selected.organization}</p>
+                  )}
+
+                  {desc && (
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+                  )}
+
+                  {selected.url && (
+                    <a
+                      href={selected.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                    >
+                      <ExternalLink className="size-3.5" /> More details
+                    </a>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
       )}
