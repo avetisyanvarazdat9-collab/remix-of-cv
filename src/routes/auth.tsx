@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { ensureDefaultAdmin, resolveUsernameEmail } from "@/lib/admin-auth.functions";
+import { resolveUsernameEmail } from "@/lib/admin-auth.functions";
 import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth")({
@@ -18,10 +18,8 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const t = useT();
 
-  // Ensure the default admin (admin / admin123) exists. Idempotent.
-  useEffect(() => {
-    ensureDefaultAdmin().catch(() => { /* surface only on login attempts */ });
-  }, []);
+  // Default-admin auto-provisioning removed for security.
+
 
   useEffect(() => {
     if (user && !loading) navigate({ to: "/admin" });
@@ -36,8 +34,6 @@ function AuthPage() {
 
     setBusy(true);
     try {
-      // Make sure the default admin exists before the very first sign-in.
-      await ensureDefaultAdmin();
       const { email } = await resolveUsernameEmail({ data: { username } });
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
