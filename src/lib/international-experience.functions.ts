@@ -31,7 +31,7 @@ export type IntlExperienceRow = {
   event_date: string | null;
   description: string | null;
   url: string | null;
-  i18n: string | null;
+  i18n: Record<string, Record<string, string>> | null;
 };
 
 export const getInternationalExperience = createServerFn({ method: "GET" })
