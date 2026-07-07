@@ -28,6 +28,7 @@ export function WorldMap() {
   const { data } = useQuery(internationalExperienceQuery);
   const rows = (data ?? []) as IntlRow[];
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<IntlRow | null>(null);
   const [mounted, setMounted] = useState(false);
   const [category, setCategory] = useState<string>(ALL);
   const [fromYear, setFromYear] = useState<string>(ALL);
