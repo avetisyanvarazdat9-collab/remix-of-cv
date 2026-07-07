@@ -91,7 +91,7 @@ export const Route = createFileRoute("/")({
     context.queryClient.ensureQueryData(homeContentQuery);
     context.queryClient.ensureQueryData(testimonialsQuery);
     context.queryClient.ensureQueryData(statisticsQuery);
-    context.queryClient.ensureQueryData(internationalExperienceQuery);
+    context.queryClient.ensureQueryData(internationalExperienceQuery());
   },
   component: Home,
 });
