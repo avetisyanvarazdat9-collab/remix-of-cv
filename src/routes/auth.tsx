@@ -34,8 +34,6 @@ function AuthPage() {
 
     setBusy(true);
     try {
-      // Make sure the default admin exists before the very first sign-in.
-      await ensureDefaultAdmin();
       const { email } = await resolveUsernameEmail({ data: { username } });
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
