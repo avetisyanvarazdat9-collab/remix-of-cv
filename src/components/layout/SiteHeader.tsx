@@ -34,8 +34,8 @@ export function SiteHeader() {
             <Link
               key={item.id}
               to={item.path as any}
-              className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              activeProps={{ className: "rounded-md px-3 py-1.5 text-sm text-foreground bg-accent" }}
+              className="nav-link rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+              activeProps={{ className: "nav-link rounded-md px-3 py-1.5 text-sm text-foreground bg-accent/60" }}
               activeOptions={{ exact: item.path === "/" }}
             >
               {labelFor(item)}
@@ -44,7 +44,7 @@ export function SiteHeader() {
           {isAdmin && (
             <Link
               to="/admin"
-              className="ml-2 rounded-md border border-primary/40 px-3 py-1.5 text-sm text-primary hover:bg-primary/10"
+              className="hover-lift-sm ml-2 rounded-md border border-primary/40 px-3 py-1.5 text-sm text-primary hover:bg-primary/10"
             >
               {t("nav.admin")}
             </Link>
