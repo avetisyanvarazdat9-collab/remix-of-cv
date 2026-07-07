@@ -1,6 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import {
+  getInternationalExperience,
+  getInternationalExperienceFacets,
+  type IntlFilters,
+} from "@/lib/international-experience.functions";
 
 async function run<T>(query: PromiseLike<{ data: T | null; error: unknown }>): Promise<T> {
   const { data, error } = await query;
@@ -108,16 +113,22 @@ export const statisticsQuery = queryOptions({
     run(supabase.from("statistics").select("*").eq("is_visible", true).order("display_order")),
 });
 
-export const internationalExperienceQuery = queryOptions({
-  queryKey: ["international_experience"],
-  queryFn: () =>
-    run(
-      (supabase.from as any)("international_experience")
-        .select("*")
-        .eq("is_visible", true)
-        .order("event_date", { ascending: false, nullsFirst: false }),
-    ),
+export const internationalExperienceQuery = (filters: IntlFilters = {}) =>
+  queryOptions({
+    queryKey: [
+      "international_experience",
+      filters.category ?? null,
+      filters.fromYear ?? null,
+      filters.toYear ?? null,
+    ],
+    queryFn: () => getInternationalExperience({ data: filters }),
+  });
+
+export const internationalExperienceFacetsQuery = queryOptions({
+  queryKey: ["international_experience", "facets"],
+  queryFn: () => getInternationalExperienceFacets(),
 });
+
 
 
 

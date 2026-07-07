@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
-import { X, MapPin, Calendar, ExternalLink, Filter } from "lucide-react";
-import { internationalExperienceQuery } from "@/lib/queries";
+import { X, MapPin, Calendar, ExternalLink, Filter, Loader2 } from "lucide-react";
+import {
+  internationalExperienceQuery,
+  internationalExperienceFacetsQuery,
+} from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 
 type IntlRow = {
@@ -25,8 +28,6 @@ const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
 const ALL = "__all__";
 
 export function WorldMap() {
-  const { data } = useQuery(internationalExperienceQuery);
-  const rows = (data ?? []) as IntlRow[];
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<IntlRow | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -37,50 +38,34 @@ export function WorldMap() {
 
   useEffect(() => setMounted(true), []);
 
-  const categories = useMemo(
-    () => Array.from(new Set(rows.map((r) => r.category).filter((c): c is string => !!c))).sort(),
-    [rows],
-  );
-  const years = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          rows
-            .map((r) => (r.event_date ? new Date(r.event_date).getFullYear() : null))
-            .filter((y): y is number => y !== null),
-        ),
-      ).sort((a, b) => b - a),
-    [rows],
+  const facetsQ = useQuery(internationalExperienceFacetsQuery);
+  const categories = facetsQ.data?.categories ?? [];
+  const years = facetsQ.data?.years ?? [];
+  const totalRows = facetsQ.data?.total ?? 0;
+
+  const filters = useMemo(
+    () => ({
+      category: category === ALL ? null : category,
+      fromYear: fromYear === ALL ? null : Number(fromYear),
+      toYear: toYear === ALL ? null : Number(toYear),
+    }),
+    [category, fromYear, toYear],
   );
 
-  const filtered = useMemo(() => {
-    const from = fromYear === ALL ? null : Number(fromYear);
-    const to = toYear === ALL ? null : Number(toYear);
-    return rows.filter((r) => {
-      if (category !== ALL && r.category !== category) return false;
-      const year = r.event_date ? new Date(r.event_date).getFullYear() : null;
-      if (from !== null && (year === null || year < from)) return false;
-      if (to !== null && (year === null || year > to)) return false;
-      return true;
-    });
-  }, [rows, category, fromYear, toYear]);
+  const rowsQ = useQuery({
+    ...internationalExperienceQuery(filters),
+    placeholderData: keepPreviousData,
+  });
+  const filtered = (rowsQ.data ?? []) as IntlRow[];
+  const isFetching = rowsQ.isFetching;
 
   const pins = useMemo(
     () => filtered.filter((r) => typeof r.lat === "number" && typeof r.lng === "number"),
     [filtered],
   );
 
-  const timeline = useMemo(
-    () =>
-      [...filtered].sort((a, b) => {
-        const da = a.event_date ? new Date(a.event_date).getTime() : 0;
-        const db = b.event_date ? new Date(b.event_date).getTime() : 0;
-        return db - da;
-      }),
-    [filtered],
-  );
+  const timeline = filtered; // server already orders by event_date desc
 
-  const totalRows = rows.length;
   const hasFilters = category !== ALL || fromYear !== ALL || toYear !== ALL;
   const resetFilters = () => {
     setCategory(ALL);
@@ -95,6 +80,7 @@ export function WorldMap() {
         <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
           <span className="inline-flex items-center gap-1.5 text-muted-foreground">
             <Filter className="size-3.5" /> Filter
+            {isFetching && <Loader2 className="size-3 animate-spin text-primary" />}
           </span>
 
           <button
