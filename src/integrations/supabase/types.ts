@@ -389,6 +389,63 @@ export type Database = {
         }
         Relationships: []
       }
+      international_experience: {
+        Row: {
+          category: string | null
+          country_code: string | null
+          created_at: string
+          description: string | null
+          display_order: number
+          event_date: string | null
+          i18n: Json | null
+          id: string
+          is_visible: boolean
+          lat: number | null
+          lng: number | null
+          location: string | null
+          organization: string | null
+          title: string | null
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          category?: string | null
+          country_code?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          event_date?: string | null
+          i18n?: Json | null
+          id?: string
+          is_visible?: boolean
+          lat?: number | null
+          lng?: number | null
+          location?: string | null
+          organization?: string | null
+          title?: string | null
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          category?: string | null
+          country_code?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          event_date?: string | null
+          i18n?: Json | null
+          id?: string
+          is_visible?: boolean
+          lat?: number | null
+          lng?: number | null
+          location?: string | null
+          organization?: string | null
+          title?: string | null
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           body: string

@@ -10,11 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VideoCoursesRouteImport } from './routes/video-courses'
+import { Route as TransformRouteImport } from './routes/transform'
 import { Route as TalksRouteImport } from './routes/talks'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as LearnRouteImport } from './routes/learn'
+import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CompaniesRouteImport } from './routes/companies'
+import { Route as CollaborateRouteImport } from './routes/collaborate'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
@@ -37,6 +41,7 @@ import { Route as AuthenticatedAdminProfileRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminPartnersRouteImport } from './routes/_authenticated/admin.partners'
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
 import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
+import { Route as AuthenticatedAdminInternationalExperienceRouteImport } from './routes/_authenticated/admin.international-experience'
 import { Route as AuthenticatedAdminHomeRouteImport } from './routes/_authenticated/admin.home'
 import { Route as AuthenticatedAdminErrorLogsRouteImport } from './routes/_authenticated/admin.error-logs'
 import { Route as AuthenticatedAdminEducationRouteImport } from './routes/_authenticated/admin.education'
@@ -51,6 +56,11 @@ const VideoCoursesRoute = VideoCoursesRouteImport.update({
   path: '/video-courses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TransformRoute = TransformRouteImport.update({
+  id: '/transform',
+  path: '/transform',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TalksRoute = TalksRouteImport.update({
   id: '/talks',
   path: '/talks',
@@ -59,6 +69,16 @@ const TalksRoute = TalksRouteImport.update({
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnRoute = LearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImpactRoute = ImpactRouteImport.update({
+  id: '/impact',
+  path: '/impact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -74,6 +94,11 @@ const ContactRoute = ContactRouteImport.update({
 const CompaniesRoute = CompaniesRouteImport.update({
   id: '/companies',
   path: '/companies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollaborateRoute = CollaborateRouteImport.update({
+  id: '/collaborate',
+  path: '/collaborate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogRoute = BlogRouteImport.update({
@@ -195,6 +220,12 @@ const AuthenticatedAdminMessagesRoute =
     path: '/messages',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminInternationalExperienceRoute =
+  AuthenticatedAdminInternationalExperienceRouteImport.update({
+    id: '/international-experience',
+    path: '/international-experience',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminHomeRoute = AuthenticatedAdminHomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -246,11 +277,15 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
+  '/collaborate': typeof CollaborateRoute
   '/companies': typeof CompaniesRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/impact': typeof ImpactRoute
+  '/learn': typeof LearnRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
+  '/transform': typeof TransformRoute
   '/video-courses': typeof VideoCoursesRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
@@ -265,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/admin/education': typeof AuthenticatedAdminEducationRoute
   '/admin/error-logs': typeof AuthenticatedAdminErrorLogsRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
+  '/admin/international-experience': typeof AuthenticatedAdminInternationalExperienceRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
@@ -283,11 +319,15 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
+  '/collaborate': typeof CollaborateRoute
   '/companies': typeof CompaniesRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/impact': typeof ImpactRoute
+  '/learn': typeof LearnRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
+  '/transform': typeof TransformRoute
   '/video-courses': typeof VideoCoursesRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
@@ -302,6 +342,7 @@ export interface FileRoutesByTo {
   '/admin/education': typeof AuthenticatedAdminEducationRoute
   '/admin/error-logs': typeof AuthenticatedAdminErrorLogsRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
+  '/admin/international-experience': typeof AuthenticatedAdminInternationalExperienceRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
@@ -322,11 +363,15 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
+  '/collaborate': typeof CollaborateRoute
   '/companies': typeof CompaniesRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/impact': typeof ImpactRoute
+  '/learn': typeof LearnRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
+  '/transform': typeof TransformRoute
   '/video-courses': typeof VideoCoursesRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
@@ -341,6 +386,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/education': typeof AuthenticatedAdminEducationRoute
   '/_authenticated/admin/error-logs': typeof AuthenticatedAdminErrorLogsRoute
   '/_authenticated/admin/home': typeof AuthenticatedAdminHomeRoute
+  '/_authenticated/admin/international-experience': typeof AuthenticatedAdminInternationalExperienceRoute
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/_authenticated/admin/partners': typeof AuthenticatedAdminPartnersRoute
@@ -361,11 +407,15 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/blog'
+    | '/collaborate'
     | '/companies'
     | '/contact'
     | '/courses'
+    | '/impact'
+    | '/learn'
     | '/projects'
     | '/talks'
+    | '/transform'
     | '/video-courses'
     | '/admin'
     | '/blog/$slug'
@@ -380,6 +430,7 @@ export interface FileRouteTypes {
     | '/admin/education'
     | '/admin/error-logs'
     | '/admin/home'
+    | '/admin/international-experience'
     | '/admin/messages'
     | '/admin/navigation'
     | '/admin/partners'
@@ -398,11 +449,15 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/blog'
+    | '/collaborate'
     | '/companies'
     | '/contact'
     | '/courses'
+    | '/impact'
+    | '/learn'
     | '/projects'
     | '/talks'
+    | '/transform'
     | '/video-courses'
     | '/admin'
     | '/blog/$slug'
@@ -417,6 +472,7 @@ export interface FileRouteTypes {
     | '/admin/education'
     | '/admin/error-logs'
     | '/admin/home'
+    | '/admin/international-experience'
     | '/admin/messages'
     | '/admin/navigation'
     | '/admin/partners'
@@ -436,11 +492,15 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/blog'
+    | '/collaborate'
     | '/companies'
     | '/contact'
     | '/courses'
+    | '/impact'
+    | '/learn'
     | '/projects'
     | '/talks'
+    | '/transform'
     | '/video-courses'
     | '/_authenticated/admin'
     | '/blog/$slug'
@@ -455,6 +515,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/education'
     | '/_authenticated/admin/error-logs'
     | '/_authenticated/admin/home'
+    | '/_authenticated/admin/international-experience'
     | '/_authenticated/admin/messages'
     | '/_authenticated/admin/navigation'
     | '/_authenticated/admin/partners'
@@ -475,11 +536,15 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
+  CollaborateRoute: typeof CollaborateRoute
   CompaniesRoute: typeof CompaniesRoute
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRouteWithChildren
+  ImpactRoute: typeof ImpactRoute
+  LearnRoute: typeof LearnRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
   TalksRoute: typeof TalksRoute
+  TransformRoute: typeof TransformRoute
   VideoCoursesRoute: typeof VideoCoursesRouteWithChildren
 }
 
@@ -490,6 +555,13 @@ declare module '@tanstack/react-router' {
       path: '/video-courses'
       fullPath: '/video-courses'
       preLoaderRoute: typeof VideoCoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transform': {
+      id: '/transform'
+      path: '/transform'
+      fullPath: '/transform'
+      preLoaderRoute: typeof TransformRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/talks': {
@@ -504,6 +576,20 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn': {
+      id: '/learn'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LearnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/impact': {
+      id: '/impact'
+      path: '/impact'
+      fullPath: '/impact'
+      preLoaderRoute: typeof ImpactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -525,6 +611,13 @@ declare module '@tanstack/react-router' {
       path: '/companies'
       fullPath: '/companies'
       preLoaderRoute: typeof CompaniesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collaborate': {
+      id: '/collaborate'
+      path: '/collaborate'
+      fullPath: '/collaborate'
+      preLoaderRoute: typeof CollaborateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog': {
@@ -681,6 +774,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminMessagesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/international-experience': {
+      id: '/_authenticated/admin/international-experience'
+      path: '/international-experience'
+      fullPath: '/admin/international-experience'
+      preLoaderRoute: typeof AuthenticatedAdminInternationalExperienceRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/home': {
       id: '/_authenticated/admin/home'
       path: '/home'
@@ -749,6 +849,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminEducationRoute: typeof AuthenticatedAdminEducationRoute
   AuthenticatedAdminErrorLogsRoute: typeof AuthenticatedAdminErrorLogsRoute
   AuthenticatedAdminHomeRoute: typeof AuthenticatedAdminHomeRoute
+  AuthenticatedAdminInternationalExperienceRoute: typeof AuthenticatedAdminInternationalExperienceRoute
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
   AuthenticatedAdminPartnersRoute: typeof AuthenticatedAdminPartnersRoute
@@ -772,6 +873,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminEducationRoute: AuthenticatedAdminEducationRoute,
   AuthenticatedAdminErrorLogsRoute: AuthenticatedAdminErrorLogsRoute,
   AuthenticatedAdminHomeRoute: AuthenticatedAdminHomeRoute,
+  AuthenticatedAdminInternationalExperienceRoute:
+    AuthenticatedAdminInternationalExperienceRoute,
   AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
   AuthenticatedAdminPartnersRoute: AuthenticatedAdminPartnersRoute,
@@ -851,11 +954,15 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
+  CollaborateRoute: CollaborateRoute,
   CompaniesRoute: CompaniesRoute,
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRouteWithChildren,
+  ImpactRoute: ImpactRoute,
+  LearnRoute: LearnRoute,
   ProjectsRoute: ProjectsRouteWithChildren,
   TalksRoute: TalksRoute,
+  TransformRoute: TransformRoute,
   VideoCoursesRoute: VideoCoursesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
