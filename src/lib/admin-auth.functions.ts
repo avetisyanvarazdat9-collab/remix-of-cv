@@ -1,50 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-
-/**
- * Ensures the default admin account exists.
- * - Email: admin@admin.local  (username "admin")
- * - Password: admin123
- *
- * Idempotent: only creates the account when no admin role exists yet.
- * Passwords are stored hashed by Supabase Auth (bcrypt).
- */
-export const ensureDefaultAdmin = createServerFn({ method: "POST" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-  // Look for the canonical default-admin user by its shadow email.
-  // We intentionally do NOT short-circuit on "any admin exists" — other admin
-  // users may have been seeded, but the default admin/admin123 login must
-  // still work out of the box per spec.
-  const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({
-    page: 1,
-    perPage: 200,
-  });
-  if (listErr) throw new Error(listErr.message);
-  const existing = list.users.find((u) => u.email?.toLowerCase() === "admin@admin.local");
-  if (existing) {
-    // Make sure it still has the admin role.
-    await supabaseAdmin.from("user_roles").upsert({ user_id: existing.id, role: "admin" });
-    return { ok: true, created: false };
-  }
-
-  // Create the default admin user.
-  const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
-    email: "admin@admin.local",
-    password: "admin123",
-    email_confirm: true,
-    user_metadata: { username: "admin" },
-  });
-  if (createErr) throw new Error(createErr.message);
-  const userId = created.user?.id;
-  if (!userId) throw new Error("Failed to create default admin");
-
-  // Grant admin role (handle_new_user trigger may already have, but be safe).
-  await supabaseAdmin.from("user_roles").upsert({ user_id: userId, role: "admin" });
-
-  return { ok: true, created: true };
-});
+// NOTE: The previous `ensureDefaultAdmin` server function was removed because
+// it was an unauthenticated endpoint that provisioned an admin account with a
+// hardcoded password (admin/admin123). Admin accounts must be created via a
+// secure out-of-band process (SQL migration or Supabase Auth admin tools).
 
 
 /**
