@@ -19,13 +19,28 @@ export type IntlFilters = {
   toYear?: number | null;
 };
 
+export type IntlExperienceRow = {
+  id: string;
+  title: string | null;
+  organization: string | null;
+  location: string | null;
+  country_code: string | null;
+  lat: number | null;
+  lng: number | null;
+  category: string | null;
+  event_date: string | null;
+  description: string | null;
+  url: string | null;
+  i18n: unknown;
+};
+
 export const getInternationalExperience = createServerFn({ method: "GET" })
   .inputValidator((input: IntlFilters) => ({
     category: input?.category ?? null,
     fromYear: input?.fromYear ?? null,
     toYear: input?.toYear ?? null,
   }))
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<IntlExperienceRow[]> => {
     const supabase = getClient();
     let q = supabase
       .from("international_experience")
@@ -39,7 +54,7 @@ export const getInternationalExperience = createServerFn({ method: "GET" })
 
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
-    return (rows ?? []) as Array<Record<string, unknown>>;
+    return (rows ?? []) as unknown as IntlExperienceRow[];
   });
 
 export const getInternationalExperienceFacets = createServerFn({ method: "GET" }).handler(
