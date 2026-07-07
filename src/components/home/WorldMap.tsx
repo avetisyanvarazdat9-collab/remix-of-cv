@@ -232,7 +232,7 @@ export function WorldMap() {
           <button
             onClick={() => setOpen(true)}
             disabled={timeline.length === 0}
-            className="inline-flex items-center gap-2 rounded-md border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 disabled:opacity-50"
+            className="hover-lift-sm inline-flex items-center gap-2 rounded-md border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 disabled:opacity-50"
           >
             View Timeline →
           </button>
@@ -241,11 +241,11 @@ export function WorldMap() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 p-4 pt-16 backdrop-blur-sm"
+          className="animate-backdrop-in fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 p-4 pt-16 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         >
           <div
-            className="relative w-full max-w-2xl rounded-2xl border border-border bg-background p-6 shadow-2xl"
+            className="animate-pop-in relative w-full max-w-2xl rounded-2xl border border-border bg-background p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
