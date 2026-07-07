@@ -194,14 +194,25 @@ export function WorldMap() {
               {pins.map((p) => (
                 <Marker key={p.id} coordinates={[p.lng as number, p.lat as number]}>
                   <g
+                    className="[&_.pin-halo]:transition-all [&_.pin-halo]:duration-200 [&_.pin-dot]:transition-transform [&_.pin-dot]:duration-200 hover:[&_.pin-halo]:r-[12] hover:[&_.pin-dot]:scale-125"
                     style={{ cursor: "pointer" }}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelected(p);
                     }}
                   >
-                    <circle r={8} fill="color-mix(in oklab, var(--primary) 30%, transparent)" />
-                    <circle r={4} fill="var(--primary)" stroke="var(--background)" strokeWidth={1.2} />
+                    <circle
+                      className="pin-halo animate-pin-pulse"
+                      r={8}
+                      fill="color-mix(in oklab, var(--primary) 30%, transparent)"
+                    />
+                    <circle
+                      className="pin-dot"
+                      r={4}
+                      fill="var(--primary)"
+                      stroke="var(--background)"
+                      strokeWidth={1.2}
+                    />
                   </g>
                 </Marker>
               ))}
