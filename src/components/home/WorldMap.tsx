@@ -207,7 +207,13 @@ export function WorldMap() {
               </Geographies>
               {pins.map((p) => (
                 <Marker key={p.id} coordinates={[p.lng as number, p.lat as number]}>
-                  <g>
+                  <g
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelected(p);
+                    }}
+                  >
                     <circle r={8} fill="color-mix(in oklab, var(--primary) 30%, transparent)" />
                     <circle r={4} fill="var(--primary)" stroke="var(--background)" strokeWidth={1.2} />
                   </g>
