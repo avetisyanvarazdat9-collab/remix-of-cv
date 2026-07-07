@@ -77,7 +77,7 @@ export function WorldMap() {
     <div>
       {/* Filters */}
       {mounted && totalRows > 0 && (
-        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
+        <div className="animate-fade-in-up mb-3 flex flex-wrap items-center gap-2 text-xs">
           <span className="inline-flex items-center gap-1.5 text-muted-foreground">
             <Filter className="size-3.5" /> Filter
             {isFetching && <Loader2 className="size-3 animate-spin text-primary" />}
@@ -86,9 +86,9 @@ export function WorldMap() {
           <button
             type="button"
             onClick={() => setCategory(ALL)}
-            className={`rounded-full border px-3 py-1 transition-colors ${
+            className={`hover-lift-sm rounded-full border px-3 py-1 ${
               category === ALL
-                ? "border-primary bg-primary/15 text-primary"
+                ? "border-primary bg-primary/15 text-primary shadow-sm"
                 : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
             }`}
           >
@@ -99,9 +99,9 @@ export function WorldMap() {
               key={c}
               type="button"
               onClick={() => setCategory(c)}
-              className={`rounded-full border px-3 py-1 transition-colors ${
+              className={`hover-lift-sm rounded-full border px-3 py-1 ${
                 category === c
-                  ? "border-primary bg-primary/15 text-primary"
+                  ? "border-primary bg-primary/15 text-primary shadow-sm"
                   : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
               }`}
             >
@@ -116,7 +116,7 @@ export function WorldMap() {
             <select
               value={fromYear}
               onChange={(e) => setFromYear(e.target.value)}
-              className="rounded-md border border-border bg-background px-2 py-1 text-foreground"
+              className="rounded-md border border-border bg-background px-2 py-1 text-foreground transition-colors focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
             >
               <option value={ALL}>Any</option>
               {years.map((y) => (
@@ -131,7 +131,7 @@ export function WorldMap() {
             <select
               value={toYear}
               onChange={(e) => setToYear(e.target.value)}
-              className="rounded-md border border-border bg-background px-2 py-1 text-foreground"
+              className="rounded-md border border-border bg-background px-2 py-1 text-foreground transition-colors focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
             >
               <option value={ALL}>Any</option>
               {years.map((y) => (
@@ -146,7 +146,7 @@ export function WorldMap() {
             <button
               type="button"
               onClick={resetFilters}
-              className="ml-auto text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              className="ml-auto text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline"
             >
               Clear filters
             </button>
@@ -154,7 +154,7 @@ export function WorldMap() {
         </div>
       )}
 
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-card transition-shadow duration-300 hover:shadow-[var(--shadow-elegant)]">
         <div
           aria-hidden
           className="absolute inset-0 opacity-40"
@@ -194,14 +194,25 @@ export function WorldMap() {
               {pins.map((p) => (
                 <Marker key={p.id} coordinates={[p.lng as number, p.lat as number]}>
                   <g
+                    className="[&_.pin-halo]:transition-all [&_.pin-halo]:duration-200 [&_.pin-dot]:transition-transform [&_.pin-dot]:duration-200 hover:[&_.pin-halo]:r-[12] hover:[&_.pin-dot]:scale-125"
                     style={{ cursor: "pointer" }}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelected(p);
                     }}
                   >
-                    <circle r={8} fill="color-mix(in oklab, var(--primary) 30%, transparent)" />
-                    <circle r={4} fill="var(--primary)" stroke="var(--background)" strokeWidth={1.2} />
+                    <circle
+                      className="pin-halo animate-pin-pulse"
+                      r={8}
+                      fill="color-mix(in oklab, var(--primary) 30%, transparent)"
+                    />
+                    <circle
+                      className="pin-dot"
+                      r={4}
+                      fill="var(--primary)"
+                      stroke="var(--background)"
+                      strokeWidth={1.2}
+                    />
                   </g>
                 </Marker>
               ))}
@@ -221,7 +232,7 @@ export function WorldMap() {
           <button
             onClick={() => setOpen(true)}
             disabled={timeline.length === 0}
-            className="inline-flex items-center gap-2 rounded-md border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 disabled:opacity-50"
+            className="hover-lift-sm inline-flex items-center gap-2 rounded-md border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 disabled:opacity-50"
           >
             View Timeline →
           </button>
@@ -230,16 +241,16 @@ export function WorldMap() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 p-4 pt-16 backdrop-blur-sm"
+          className="animate-backdrop-in fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 p-4 pt-16 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         >
           <div
-            className="relative w-full max-w-2xl rounded-2xl border border-border bg-background p-6 shadow-2xl"
+            className="animate-pop-in relative w-full max-w-2xl rounded-2xl border border-border bg-background p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setOpen(false)}
-              className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground hover:bg-accent"
+              className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground transition-all duration-200 hover:rotate-90 hover:bg-accent hover:text-foreground"
               aria-label="Close"
             >
               <X className="size-4" />
@@ -251,13 +262,14 @@ export function WorldMap() {
                 : "Trainings, workshops, conferences, and academic exchanges — most recent first."}
             </p>
             <ol className="mt-6 space-y-4">
-              {timeline.map((r) => {
+              {timeline.map((r, i) => {
                 const title = (loc(r, "title") as string) || r.title || "Untitled";
                 const desc = (loc(r, "description") as string) || r.description;
                 return (
                   <li
                     key={r.id}
-                    className="relative rounded-xl border border-border bg-card p-4 pl-6"
+                    style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}
+                    className="animate-fade-in-up hover-lift relative rounded-xl border border-border bg-card p-4 pl-6"
                   >
                     <span className="absolute left-2 top-5 size-2 rounded-full bg-primary shadow-[0_0_0_3px_color-mix(in_oklab,var(--primary)_25%,transparent)]" />
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -309,16 +321,16 @@ export function WorldMap() {
 
       {selected && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 p-4 pt-16 backdrop-blur-sm"
+          className="animate-backdrop-in fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 p-4 pt-16 backdrop-blur-sm"
           onClick={() => setSelected(null)}
         >
           <div
-            className="relative w-full max-w-md rounded-2xl border border-border bg-background p-6 shadow-2xl"
+            className="animate-pop-in relative w-full max-w-md rounded-2xl border border-border bg-background p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setSelected(null)}
-              className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground hover:bg-accent"
+              className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground transition-all duration-200 hover:rotate-90 hover:bg-accent hover:text-foreground"
               aria-label="Close"
             >
               <X className="size-4" />

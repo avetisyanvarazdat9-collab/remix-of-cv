@@ -157,3 +157,100 @@
   border: 1px solid var(--border);
   box-shadow: var(--shadow-elegant);
 }
+
+/* --- Motion utilities ----------------------------------------------------- */
+
+@utility hover-lift {
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elegant);
+  }
+  &:active {
+    transform: translateY(0);
+    transition-duration: 90ms;
+  }
+}
+
+@utility hover-lift-sm {
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    opacity 180ms ease;
+  &:hover {
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@utility nav-link {
+  position: relative;
+  transition: color 180ms ease, background-color 180ms ease;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.25rem;
+    height: 1.5px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    border-radius: 1px;
+  }
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pop-in {
+  0%   { opacity: 0; transform: scale(0.94) translateY(6px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pin-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.15); opacity: 0.85; }
+}
+
+@utility animate-fade-in-up {
+  animation: fade-in-up 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@utility animate-pop-in {
+  animation: pop-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@utility animate-backdrop-in {
+  animation: backdrop-in 200ms ease-out both;
+}
+@utility animate-pin-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pin-pulse 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+

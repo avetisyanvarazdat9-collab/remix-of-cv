@@ -34,8 +34,8 @@ export function SiteHeader() {
             <Link
               key={item.id}
               to={item.path as any}
-              className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              activeProps={{ className: "rounded-md px-3 py-1.5 text-sm text-foreground bg-accent" }}
+              className="nav-link rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+              activeProps={{ className: "nav-link rounded-md px-3 py-1.5 text-sm text-foreground bg-accent/60" }}
               activeOptions={{ exact: item.path === "/" }}
             >
               {labelFor(item)}
@@ -44,7 +44,7 @@ export function SiteHeader() {
           {isAdmin && (
             <Link
               to="/admin"
-              className="ml-2 rounded-md border border-primary/40 px-3 py-1.5 text-sm text-primary hover:bg-primary/10"
+              className="hover-lift-sm ml-2 rounded-md border border-primary/40 px-3 py-1.5 text-sm text-primary hover:bg-primary/10"
             >
               {t("nav.admin")}
             </Link>
@@ -56,14 +56,14 @@ export function SiteHeader() {
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen((v) => !v)}
-            className="rounded-md p-2"
+            className="rounded-md p-2 transition-transform duration-200 hover:bg-accent active:scale-90"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
       </div>
       {open && (
-        <div className="border-t border-border/60 bg-background/95 lg:hidden">
+        <div className="animate-fade-in-up border-t border-border/60 bg-background/95 lg:hidden">
           <nav className="mx-auto grid max-w-7xl gap-1 p-4">
             {visible.map((item: any) => (
               <Link
