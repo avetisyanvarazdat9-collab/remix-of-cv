@@ -77,7 +77,7 @@ export function WorldMap() {
     <div>
       {/* Filters */}
       {mounted && totalRows > 0 && (
-        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
+        <div className="animate-fade-in-up mb-3 flex flex-wrap items-center gap-2 text-xs">
           <span className="inline-flex items-center gap-1.5 text-muted-foreground">
             <Filter className="size-3.5" /> Filter
             {isFetching && <Loader2 className="size-3 animate-spin text-primary" />}
@@ -86,9 +86,9 @@ export function WorldMap() {
           <button
             type="button"
             onClick={() => setCategory(ALL)}
-            className={`rounded-full border px-3 py-1 transition-colors ${
+            className={`hover-lift-sm rounded-full border px-3 py-1 ${
               category === ALL
-                ? "border-primary bg-primary/15 text-primary"
+                ? "border-primary bg-primary/15 text-primary shadow-sm"
                 : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
             }`}
           >
@@ -99,9 +99,9 @@ export function WorldMap() {
               key={c}
               type="button"
               onClick={() => setCategory(c)}
-              className={`rounded-full border px-3 py-1 transition-colors ${
+              className={`hover-lift-sm rounded-full border px-3 py-1 ${
                 category === c
-                  ? "border-primary bg-primary/15 text-primary"
+                  ? "border-primary bg-primary/15 text-primary shadow-sm"
                   : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
               }`}
             >
@@ -116,7 +116,7 @@ export function WorldMap() {
             <select
               value={fromYear}
               onChange={(e) => setFromYear(e.target.value)}
-              className="rounded-md border border-border bg-background px-2 py-1 text-foreground"
+              className="rounded-md border border-border bg-background px-2 py-1 text-foreground transition-colors focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
             >
               <option value={ALL}>Any</option>
               {years.map((y) => (
@@ -131,7 +131,7 @@ export function WorldMap() {
             <select
               value={toYear}
               onChange={(e) => setToYear(e.target.value)}
-              className="rounded-md border border-border bg-background px-2 py-1 text-foreground"
+              className="rounded-md border border-border bg-background px-2 py-1 text-foreground transition-colors focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/25"
             >
               <option value={ALL}>Any</option>
               {years.map((y) => (
@@ -146,7 +146,7 @@ export function WorldMap() {
             <button
               type="button"
               onClick={resetFilters}
-              className="ml-auto text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              className="ml-auto text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline"
             >
               Clear filters
             </button>
@@ -154,7 +154,7 @@ export function WorldMap() {
         </div>
       )}
 
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-card transition-shadow duration-300 hover:shadow-[var(--shadow-elegant)]">
         <div
           aria-hidden
           className="absolute inset-0 opacity-40"
