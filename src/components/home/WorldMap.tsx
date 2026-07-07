@@ -321,16 +321,16 @@ export function WorldMap() {
 
       {selected && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 p-4 pt-16 backdrop-blur-sm"
+          className="animate-backdrop-in fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-foreground/40 p-4 pt-16 backdrop-blur-sm"
           onClick={() => setSelected(null)}
         >
           <div
-            className="relative w-full max-w-md rounded-2xl border border-border bg-background p-6 shadow-2xl"
+            className="animate-pop-in relative w-full max-w-md rounded-2xl border border-border bg-background p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setSelected(null)}
-              className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground hover:bg-accent"
+              className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground transition-all duration-200 hover:rotate-90 hover:bg-accent hover:text-foreground"
               aria-label="Close"
             >
               <X className="size-4" />
