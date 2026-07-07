@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
-import { X, MapPin, Calendar, ExternalLink } from "lucide-react";
+import { X, MapPin, Calendar, ExternalLink, Filter } from "lucide-react";
 import { internationalExperienceQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 
@@ -22,31 +22,151 @@ type IntlRow = {
 
 // Public world topojson (110m) — small, cached by browsers.
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const ALL = "__all__";
 
 export function WorldMap() {
   const { data } = useQuery(internationalExperienceQuery);
   const rows = (data ?? []) as IntlRow[];
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [category, setCategory] = useState<string>(ALL);
+  const [fromYear, setFromYear] = useState<string>(ALL);
+  const [toYear, setToYear] = useState<string>(ALL);
   const loc = useLocalized();
 
   useEffect(() => setMounted(true), []);
 
-  const pins = useMemo(
-    () => rows.filter((r) => typeof r.lat === "number" && typeof r.lng === "number"),
+  const categories = useMemo(
+    () => Array.from(new Set(rows.map((r) => r.category).filter((c): c is string => !!c))).sort(),
+    [rows],
+  );
+  const years = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          rows
+            .map((r) => (r.event_date ? new Date(r.event_date).getFullYear() : null))
+            .filter((y): y is number => y !== null),
+        ),
+      ).sort((a, b) => b - a),
     [rows],
   );
 
-  const timeline = useMemo(() => {
-    return [...rows].sort((a, b) => {
-      const da = a.event_date ? new Date(a.event_date).getTime() : 0;
-      const db = b.event_date ? new Date(b.event_date).getTime() : 0;
-      return db - da;
+  const filtered = useMemo(() => {
+    const from = fromYear === ALL ? null : Number(fromYear);
+    const to = toYear === ALL ? null : Number(toYear);
+    return rows.filter((r) => {
+      if (category !== ALL && r.category !== category) return false;
+      const year = r.event_date ? new Date(r.event_date).getFullYear() : null;
+      if (from !== null && (year === null || year < from)) return false;
+      if (to !== null && (year === null || year > to)) return false;
+      return true;
     });
-  }, [rows]);
+  }, [rows, category, fromYear, toYear]);
+
+  const pins = useMemo(
+    () => filtered.filter((r) => typeof r.lat === "number" && typeof r.lng === "number"),
+    [filtered],
+  );
+
+  const timeline = useMemo(
+    () =>
+      [...filtered].sort((a, b) => {
+        const da = a.event_date ? new Date(a.event_date).getTime() : 0;
+        const db = b.event_date ? new Date(b.event_date).getTime() : 0;
+        return db - da;
+      }),
+    [filtered],
+  );
+
+  const totalRows = rows.length;
+  const hasFilters = category !== ALL || fromYear !== ALL || toYear !== ALL;
+  const resetFilters = () => {
+    setCategory(ALL);
+    setFromYear(ALL);
+    setToYear(ALL);
+  };
 
   return (
     <div>
+      {/* Filters */}
+      {mounted && totalRows > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
+          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+            <Filter className="size-3.5" /> Filter
+          </span>
+
+          <button
+            type="button"
+            onClick={() => setCategory(ALL)}
+            className={`rounded-full border px-3 py-1 transition-colors ${
+              category === ALL
+                ? "border-primary bg-primary/15 text-primary"
+                : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+            }`}
+          >
+            All
+          </button>
+          {categories.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCategory(c)}
+              className={`rounded-full border px-3 py-1 transition-colors ${
+                category === c
+                  ? "border-primary bg-primary/15 text-primary"
+                  : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+
+          <span className="mx-1 h-4 w-px bg-border" aria-hidden />
+
+          <label className="inline-flex items-center gap-1.5 text-muted-foreground">
+            From
+            <select
+              value={fromYear}
+              onChange={(e) => setFromYear(e.target.value)}
+              className="rounded-md border border-border bg-background px-2 py-1 text-foreground"
+            >
+              <option value={ALL}>Any</option>
+              {years.map((y) => (
+                <option key={y} value={String(y)}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="inline-flex items-center gap-1.5 text-muted-foreground">
+            To
+            <select
+              value={toYear}
+              onChange={(e) => setToYear(e.target.value)}
+              className="rounded-md border border-border bg-background px-2 py-1 text-foreground"
+            >
+              <option value={ALL}>Any</option>
+              {years.map((y) => (
+                <option key={y} value={String(y)}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="ml-auto text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
         <div
           aria-hidden
@@ -97,13 +217,17 @@ export function WorldMap() {
         </div>
         <div className="relative flex flex-wrap items-center justify-between gap-3 border-t border-border/60 px-4 py-3 text-sm text-muted-foreground">
           <span>
-            {pins.length > 0
-              ? `${pins.length} location${pins.length === 1 ? "" : "s"} across ${new Set(pins.map((p) => p.country_code ?? p.location)).size} countries`
-              : "Add international experience entries in the admin panel to populate the map."}
+            {!mounted
+              ? "Loading map…"
+              : totalRows === 0
+                ? "Add international experience entries in the admin panel to populate the map."
+                : pins.length === 0
+                  ? "No entries match the current filters."
+                  : `${pins.length} location${pins.length === 1 ? "" : "s"} across ${new Set(pins.map((p) => p.country_code ?? p.location)).size} countries${hasFilters ? ` (of ${totalRows})` : ""}`}
           </span>
           <button
             onClick={() => setOpen(true)}
-            disabled={rows.length === 0}
+            disabled={timeline.length === 0}
             className="inline-flex items-center gap-2 rounded-md border border-primary/40 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 disabled:opacity-50"
           >
             View Timeline →
@@ -129,7 +253,9 @@ export function WorldMap() {
             </button>
             <h3 className="font-display text-2xl font-bold text-foreground">International Experience</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Trainings, workshops, conferences, and academic exchanges — most recent first.
+              {hasFilters
+                ? `Filtered view — ${timeline.length} of ${totalRows} entries.`
+                : "Trainings, workshops, conferences, and academic exchanges — most recent first."}
             </p>
             <ol className="mt-6 space-y-4">
               {timeline.map((r) => {
@@ -180,7 +306,7 @@ export function WorldMap() {
               {timeline.length === 0 && (
                 <li className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
                   <MapPin className="mx-auto mb-2 size-5" />
-                  No entries yet.
+                  No entries match the current filters.
                 </li>
               )}
             </ol>
