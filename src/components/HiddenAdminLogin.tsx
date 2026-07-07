@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { X, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { ensureDefaultAdmin, resolveUsernameEmail } from "@/lib/admin-auth.functions";
+import { resolveUsernameEmail } from "@/lib/admin-auth.functions";
 
 /**
  * Global hidden admin trigger.
@@ -36,10 +36,9 @@ export function HiddenAdminLogin() {
     return () => window.removeEventListener("keydown", onKey);
   }, [user, isAdmin, loading, navigate]);
 
-  // Seed default admin once the overlay is opened.
-  useEffect(() => {
-    if (open) ensureDefaultAdmin().catch(() => { /* errors will surface on submit */ });
-  }, [open]);
+  // Default-admin auto-provisioning removed for security. Admins must be
+  // created via a secure out-of-band process.
+
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -48,7 +47,6 @@ export function HiddenAdminLogin() {
     const password = String(fd.get("password") ?? "");
     setBusy(true);
     try {
-      await ensureDefaultAdmin();
       const { email } = await resolveUsernameEmail({ data: { username } });
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
