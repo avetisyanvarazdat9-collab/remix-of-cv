@@ -13,6 +13,7 @@ import { Route as VideoCoursesRouteImport } from './routes/video-courses'
 import { Route as TransformRouteImport } from './routes/transform'
 import { Route as TalksRouteImport } from './routes/talks'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as CoursesRouteImport } from './routes/courses'
@@ -69,6 +70,11 @@ const TalksRoute = TalksRouteImport.update({
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -283,6 +289,7 @@ export interface FileRoutesByFullPath {
   '/courses': typeof CoursesRouteWithChildren
   '/impact': typeof ImpactRoute
   '/learn': typeof LearnRoute
+  '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
   '/transform': typeof TransformRoute
@@ -325,6 +332,7 @@ export interface FileRoutesByTo {
   '/courses': typeof CoursesRouteWithChildren
   '/impact': typeof ImpactRoute
   '/learn': typeof LearnRoute
+  '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
   '/transform': typeof TransformRoute
@@ -369,6 +377,7 @@ export interface FileRoutesById {
   '/courses': typeof CoursesRouteWithChildren
   '/impact': typeof ImpactRoute
   '/learn': typeof LearnRoute
+  '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
   '/transform': typeof TransformRoute
@@ -413,6 +422,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/impact'
     | '/learn'
+    | '/privacy'
     | '/projects'
     | '/talks'
     | '/transform'
@@ -455,6 +465,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/impact'
     | '/learn'
+    | '/privacy'
     | '/projects'
     | '/talks'
     | '/transform'
@@ -498,6 +509,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/impact'
     | '/learn'
+    | '/privacy'
     | '/projects'
     | '/talks'
     | '/transform'
@@ -542,6 +554,7 @@ export interface RootRouteChildren {
   CoursesRoute: typeof CoursesRouteWithChildren
   ImpactRoute: typeof ImpactRoute
   LearnRoute: typeof LearnRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
   TalksRoute: typeof TalksRoute
   TransformRoute: typeof TransformRoute
@@ -576,6 +589,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -960,6 +980,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesRoute: CoursesRouteWithChildren,
   ImpactRoute: ImpactRoute,
   LearnRoute: LearnRoute,
+  PrivacyRoute: PrivacyRoute,
   ProjectsRoute: ProjectsRouteWithChildren,
   TalksRoute: TalksRoute,
   TransformRoute: TransformRoute,
