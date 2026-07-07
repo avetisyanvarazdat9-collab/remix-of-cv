@@ -56,7 +56,7 @@ export function SiteHeader() {
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen((v) => !v)}
-            className="rounded-md p-2"
+            className="rounded-md p-2 transition-transform duration-200 hover:bg-accent active:scale-90"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
