@@ -262,13 +262,13 @@ export function WorldMap() {
                 : "Trainings, workshops, conferences, and academic exchanges — most recent first."}
             </p>
             <ol className="mt-6 space-y-4">
-              {timeline.map((r) => {
+              {timeline.map((r, i) => {
                 const title = (loc(r, "title") as string) || r.title || "Untitled";
                 const desc = (loc(r, "description") as string) || r.description;
                 return (
                   <li
                     key={r.id}
-                    style={{ animationDelay: `${Math.min(rows.indexOf(r as never), 8) * 40}ms` }}
+                    style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}
                     className="animate-fade-in-up hover-lift relative rounded-xl border border-border bg-card p-4 pl-6"
                   >
                     <span className="absolute left-2 top-5 size-2 rounded-full bg-primary shadow-[0_0_0_3px_color-mix(in_oklab,var(--primary)_25%,transparent)]" />
