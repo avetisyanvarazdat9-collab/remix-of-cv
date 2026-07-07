@@ -6,14 +6,26 @@ import {
   Mail,
   Linkedin,
   GraduationCap,
-  BookOpen,
-  BrainCircuit,
   Briefcase,
+  Users2,
+  Globe2,
+  BrainCircuit,
+  Sparkles,
+  Database,
+  Cpu,
+  Layers,
+  Bot,
+  MessageSquare,
+  BookOpen,
+  Wand2,
   Quote,
+  BookOpenCheck,
+  Rocket,
+  Handshake,
+  Award,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
-import { ContactDialog } from "@/components/ContactDialog";
-import { Skeleton } from "@/components/ui/skeleton";
+import { WorldMap } from "@/components/home/WorldMap";
 import {
   profileQuery,
   coursesQuery,
@@ -21,11 +33,57 @@ import {
   homeContentQuery,
   testimonialsQuery,
   statisticsQuery,
+  internationalExperienceQuery,
 } from "@/lib/queries";
-import { useLocalized, useT } from "@/lib/i18n";
+import { useLocalized } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "AI / ML Researcher & Educator" }] }),
+  head: () => ({
+    meta: [
+      { title: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist" },
+      {
+        name: "description",
+        content:
+          "Dr. Varazdat Avetisyan — AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies. AI Training Armenia, Generative AI, Machine Learning.",
+      },
+      {
+        name: "keywords",
+        content:
+          "AI Training Armenia, Generative AI Armenia, Machine Learning Instructor Armenia, Data Science Training Armenia, Prompt Engineering Armenia, AI Consultant Armenia, AI Speaker Armenia, Computer Science Professor Armenia",
+      },
+      { property: "og:title", content: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist" },
+      {
+        property: "og:description",
+        content: "Bridging research, education, and industry through intelligent technologies.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: "Dr. Varazdat Avetisyan",
+          jobTitle: "AI Educator, Data Scientist, CTO, University Professor",
+          nationality: "Armenian",
+          worksFor: { "@type": "Organization", name: "Luseen Mobile" },
+          knowsAbout: [
+            "Artificial Intelligence",
+            "Generative AI",
+            "Machine Learning",
+            "Deep Learning",
+            "Data Science",
+            "Prompt Engineering",
+            "AI Agents",
+            "Computer Science Education",
+          ],
+          address: { "@type": "PostalAddress", addressCountry: "AM" },
+        }),
+      },
+    ],
+  }),
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(profileQuery);
     context.queryClient.ensureQueryData(coursesQuery);
@@ -33,18 +91,18 @@ export const Route = createFileRoute("/")({
     context.queryClient.ensureQueryData(homeContentQuery);
     context.queryClient.ensureQueryData(testimonialsQuery);
     context.queryClient.ensureQueryData(statisticsQuery);
+    context.queryClient.ensureQueryData(internationalExperienceQuery);
   },
   component: Home,
 });
 
-type Stat = { label: string; value: string };
-
-
+// -- Counters ---------------------------------------------------------------
 function useCounter(target: string) {
   const [n, setN] = useState(0);
   const match = target.match(/(\d+)/);
   const num = match ? parseInt(match[1], 10) : 0;
   const suffix = match ? target.slice(match.index! + match[1].length) : target;
+  const prefix = match ? target.slice(0, match.index!) : "";
   useEffect(() => {
     if (!num) return;
     const start = performance.now();
@@ -58,24 +116,66 @@ function useCounter(target: string) {
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [num]);
-  return num ? `${n}${suffix}` : target;
+  return num ? `${prefix}${n}${suffix}` : target;
 }
 
-function StatCard({ stat }: { stat: Stat }) {
-  const display = useCounter(stat.value);
+function StatBlock({ value, label }: { value: string; label: string }) {
+  const display = useCounter(value);
   return (
     <div className="rounded-2xl border border-border bg-card p-6 text-center">
       <div className="font-display text-4xl font-bold text-primary sm:text-5xl">{display}</div>
-      <div className="mt-2 text-sm text-muted-foreground">{stat.label}</div>
+      <div className="mt-2 text-sm text-muted-foreground">{label}</div>
     </div>
   );
 }
 
-const PARTNER_GROUPS = [
-  { key: "home.partners.universities", match: /universit|college|school/i },
-  { key: "home.partners.training", match: /train|academ|bootcamp|institute/i },
-  { key: "home.partners.companies", match: /compan|startup|inc|ltd|llc|cto|cofounder|founder|ceo/i },
-  { key: "home.partners.organizations", match: /org|foundation|ngo|society|association/i },
+// -- Constants for cards ----------------------------------------------------
+const PILLARS = [
+  {
+    icon: GraduationCap,
+    title: "Academic Leadership",
+    bullets: ["PhD in Computer Engineering", "University Professor", "AI & Computer Science Educator", "Research & Curriculum Development", "International Academic Collaborations"],
+    to: "/collaborate",
+  },
+  {
+    icon: Briefcase,
+    title: "Industry Leadership",
+    bullets: ["CTO & Co-Founder, Luseen Mobile", "AI Consultant", "Technology Strategy", "Software Engineering", "Digital Transformation"],
+    to: "/transform",
+  },
+  {
+    icon: Users2,
+    title: "Education & Training",
+    bullets: ["AI Course Development", "University Teaching", "Corporate Training", "Workshops & Professional Development", "Student Mentorship"],
+    to: "/learn",
+  },
+  {
+    icon: Globe2,
+    title: "International Experience",
+    bullets: ["Trainings & workshops across Europe", "Academic exchange programs", "Conference speaking", "Cross-institutional research", "Global professional network"],
+    to: null as string | null,
+    isMap: true,
+  },
+];
+
+const EXPERTISE = [
+  { icon: BrainCircuit, label: "Artificial Intelligence", to: "/courses" },
+  { icon: Sparkles, label: "Generative AI", to: "/courses" },
+  { icon: Database, label: "Data Science", to: "/courses" },
+  { icon: Cpu, label: "Machine Learning", to: "/courses" },
+  { icon: Layers, label: "Deep Learning", to: "/courses" },
+  { icon: Wand2, label: "Prompt Engineering", to: "/courses" },
+  { icon: Bot, label: "AI Agents", to: "/projects" },
+  { icon: BookOpen, label: "Computer Science Education", to: "/collaborate" },
+  { icon: Rocket, label: "Educational Innovation", to: "/learn" },
+  { icon: MessageSquare, label: "Digital Transformation", to: "/transform" },
+];
+
+const JOURNEYS = [
+  { icon: BookOpenCheck, eyebrow: "Learn", title: "Develop AI & Technology Skills", text: "Courses, videos, and articles for AI beginners through practitioners.", cta: "Explore Learning →", to: "/learn" },
+  { icon: Rocket, eyebrow: "Transform", title: "Transform Your Organization", text: "Consulting, corporate training, AI adoption, and digital transformation.", cta: "Transform With Me →", to: "/transform" },
+  { icon: Handshake, eyebrow: "Collaborate", title: "Research & Partnerships", text: "Publications, speaking engagements, academic and industry collaborations.", cta: "Let's Collaborate →", to: "/collaborate" },
+  { icon: Award, eyebrow: "Impact", title: "See the Measurable Impact", text: "Awards, talks, media appearances, achievements, and partnerships.", cta: "See the Impact →", to: "/impact" },
 ];
 
 function Home() {
@@ -86,88 +186,71 @@ function Home() {
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const { data: statsRows } = useSuspenseQuery(statisticsQuery);
   const loc = useLocalized();
-  const t = useT();
-  const stats: Stat[] = (statsRows ?? []).map((s) => ({
+
+  const stats = (statsRows ?? []).map((s: any) => ({
     label: (loc(s, "label") as string) || s.label,
     value: (loc(s, "value") as string) || s.value,
   }));
+  const fallbackStats = [
+    { value: "10+", label: "Years of Experience" },
+    { value: "5,000+", label: "Students Trained" },
+    { value: "100+", label: "Workshops Delivered" },
+    { value: "20+", label: "AI Courses Developed" },
+  ];
+  const shownStats = stats.length > 0 ? stats : fallbackStats;
 
-
-  const featuredCourses = (courses ?? []).filter((c) => c.is_visible).slice(0, 3);
-
-  const visiblePartners = (companies ?? []).filter((c) => c.is_visible);
-  const groups = PARTNER_GROUPS.map((g, gi) => ({
-    ...g,
-    items: visiblePartners.filter((p) => {
-      const text = `${p.role ?? ""} ${p.description ?? ""}`;
-      const matchedEarlier = PARTNER_GROUPS.slice(0, gi).some((e) => e.match.test(text));
-      return !matchedEarlier && g.match.test(text);
-    }),
-  }));
-  const unmatched = visiblePartners.filter(
-    (p) => !PARTNER_GROUPS.some((g) => g.match.test(`${p.role ?? ""} ${p.description ?? ""}`)),
-  );
-  const companiesGroup = groups.find((g) => g.key === "home.partners.companies");
-  if (companiesGroup) companiesGroup.items = [...companiesGroup.items, ...unmatched];
-
-  const email = profile?.email ?? "";
-  const mailto = email ? `mailto:${email}` : "/contact";
-  // Resolve admin-editable button URLs; empty falls back to the contact mailto.
-  const resolveHref = (url?: string | null) => (url && url.trim() !== "" ? url : mailto);
+  const visiblePartners = (companies ?? []).filter((c: any) => c.is_visible);
+  const featuredCourses = (courses ?? []).filter((c: any) => c.is_visible).slice(0, 6);
 
   return (
     <PublicLayout>
-      {/* 1. HERO */}
+      {/* ================ SECTION 1 · HERO ================ */}
       <section className="relative overflow-hidden bg-background">
         <div
           aria-hidden
-          className="absolute inset-0 opacity-60"
+          className="absolute inset-0 opacity-70"
           style={{
             background:
-              "radial-gradient(60% 60% at 80% 0%, color-mix(in oklab, var(--primary) 35%, transparent), transparent 70%), radial-gradient(50% 50% at 0% 100%, color-mix(in oklab, var(--primary) 20%, transparent), transparent 70%)",
+              "radial-gradient(60% 60% at 85% 0%, color-mix(in oklab, var(--primary) 25%, transparent), transparent 70%), radial-gradient(45% 45% at 0% 100%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 70%)",
           }}
         />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:py-32">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
               <span className="relative flex size-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex size-2 rounded-full bg-primary" />
               </span>
-              {loc(content, "hero_badge")}
+              PhD · AI Educator · CTO · Professor
             </span>
             <h1 className="mt-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              {loc(profile, "name") || profile?.name || "Your Name"}
+              Bridging Research, Education, and Industry Through Intelligent Technologies
             </h1>
-            <p className="mt-4 text-xl text-primary">{loc(profile, "title")}</p>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              {loc(profile, "bio") || loc(profile, "tagline")}
+            <p className="mt-6 text-lg text-primary">
+              Educator · Researcher · Technologist · Entrepreneur · Innovator
+            </p>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              A place for personalized AI solutions — courses, consulting, and collaboration for individuals, universities, and organizations across Armenia and beyond.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              {content?.hero_btn1_label && (
-                <a
-                  href={resolveHref(content.hero_btn1_url)}
-                  className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_0_30px_-5px_color-mix(in_oklab,var(--primary)_70%,transparent)] transition-transform hover:-translate-y-0.5"
-                >
-                  {loc(content, "hero_btn1_label")} <ArrowRight className="size-4" />
-                </a>
-              )}
-              {content?.hero_btn2_label && (
-                <a
-                  href={resolveHref(content.hero_btn2_url)}
-                  className="inline-flex items-center gap-2 rounded-md border border-primary/60 px-5 py-2.5 text-sm font-medium text-primary hover:bg-primary/10"
-                >
-                  {loc(content, "hero_btn2_label")}
-                </a>
-              )}
-              {content?.hero_btn3_label && (
-                <a
-                  href={resolveHref(content.hero_btn3_url)}
-                  className="inline-flex items-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
-                >
-                  <Mail className="size-4" /> {loc(content, "hero_btn3_label")}
-                </a>
-              )}
+              <Link
+                to="/learn"
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_0_30px_-5px_color-mix(in_oklab,var(--primary)_70%,transparent)] transition-transform hover:-translate-y-0.5"
+              >
+                Explore Courses <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                to="/transform"
+                className="inline-flex items-center gap-2 rounded-md border border-primary/60 px-5 py-2.5 text-sm font-medium text-primary hover:bg-primary/10"
+              >
+                Request a Consultation
+              </Link>
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+              >
+                <Mail className="size-4" /> Contact Me
+              </Link>
             </div>
             {profile?.linkedin_url && (
               <a
@@ -188,7 +271,7 @@ function Home() {
                 className="absolute inset-0 rounded-full blur-2xl"
                 style={{
                   background:
-                    "radial-gradient(circle, color-mix(in oklab, var(--primary) 50%, transparent), transparent 70%)",
+                    "radial-gradient(circle, color-mix(in oklab, var(--primary) 45%, transparent), transparent 70%)",
                 }}
               />
               <div
@@ -202,12 +285,12 @@ function Home() {
                   {profile?.photo_url ? (
                     <img
                       src={profile.photo_url}
-                      alt={loc(profile, "name") || profile.name || "Profile photo"}
+                      alt={(loc(profile, "name") as string) || profile.name || "Dr. Varazdat Avetisyan"}
                       className="size-full object-cover"
                     />
                   ) : (
                     <div className="flex size-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
-                      {t("home.photoPlaceholder")}
+                      Add a photo in the admin Profile section.
                     </div>
                   )}
                 </div>
@@ -217,195 +300,168 @@ function Home() {
         </div>
       </section>
 
-      {/* 2. ABOUT PREVIEW */}
+      {/* ================ SECTION 2 · MEET DR. VARAZDAT ================ */}
       <section className="bg-background py-20">
-        <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              {loc(content, "about_label")}
-            </p>
+        <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-5 lg:items-center">
+          <div className="lg:col-span-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Meet Dr. Varazdat</p>
             <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
-              {loc(content, "about_heading") || loc(profile, "tagline")}
+              The person behind the expertise
             </h2>
             <p className="mt-5 line-clamp-6 whitespace-pre-line text-base leading-relaxed text-muted-foreground">
-              {loc(profile, "bio")}
+              {(loc(profile, "bio") as string) ||
+                "Dr. Varazdat Avetisyan is an AI Educator, Data Scientist, Computer Science Professor, and CTO with over 10 years of experience across artificial intelligence, machine learning, software engineering, and higher education."}
             </p>
-            <a
-              href={resolveHref(content?.about_btn_url)}
+            <Link
+              to="/about"
               className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
             >
-              {loc(content, "about_btn_label")} <ArrowRight className="size-4" />
-            </a>
+              Learn More <ArrowRight className="size-4" />
+            </Link>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              { icon: GraduationCap, key: "home.role.phd" },
-              { icon: BookOpen, key: "home.role.professor" },
-              { icon: BrainCircuit, key: "home.role.researcher" },
-              { icon: Briefcase, key: "home.role.cto" },
-            ].map(({ icon: Icon, key }) => (
-              <div
-                key={key}
-                className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
-              >
-                <Icon className="size-8 text-primary" />
-                <p className="mt-4 font-display text-lg font-semibold text-foreground">{t(key)}</p>
+          <div className="lg:col-span-2">
+            <div className="rounded-2xl border border-border bg-card p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">In brief</p>
+              <ul className="mt-4 space-y-3 text-sm text-foreground">
+                <li className="flex items-start gap-3"><GraduationCap className="mt-0.5 size-4 text-primary" /> PhD in Computer Engineering</li>
+                <li className="flex items-start gap-3"><Briefcase className="mt-0.5 size-4 text-primary" /> CTO & Co-Founder, Luseen Mobile</li>
+                <li className="flex items-start gap-3"><BookOpen className="mt-0.5 size-4 text-primary" /> Professor at UFAR, NPUA, GSU</li>
+                <li className="flex items-start gap-3"><Globe2 className="mt-0.5 size-4 text-primary" /> International speaker & trainer</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================ SECTION 3 · WHAT SETS HIM APART ================ */}
+      <section className="bg-background py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">What sets him apart</p>
+            <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+              Four worlds. One practitioner.
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Academic depth, industry execution, real teaching, and international perspective — combined in one person.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            {PILLARS.map((p) => (
+              <div key={p.title} className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-primary/40">
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <p.icon className="size-5" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold text-foreground">{p.title}</h3>
+                </div>
+                <ul className="mt-4 space-y-1.5 text-sm text-muted-foreground">
+                  {p.bullets.map((b) => (
+                    <li key={b} className="flex items-start gap-2">
+                      <span className="mt-1.5 size-1 shrink-0 rounded-full bg-primary/60" />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+                {p.isMap ? (
+                  <div className="mt-6">
+                    <WorldMap />
+                  </div>
+                ) : (
+                  p.to && (
+                    <Link
+                      to={p.to as any}
+                      className="mt-6 inline-flex items-center gap-1.5 self-start text-sm font-medium text-primary hover:underline"
+                    >
+                      Learn More <ArrowRight className="size-4" />
+                    </Link>
+                  )
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 3. STATS */}
-      <section className="bg-background pb-20">
-        <div className="mx-auto grid max-w-7xl gap-5 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
-          {stats.length > 0
-            ? stats.map((s) => <StatCard key={s.label} stat={s} />)
-            : Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-32 rounded-2xl" />
-              ))}
+      {/* ================ SECTION 4 · AREAS OF EXPERTISE ================ */}
+      <section className="bg-background py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Areas of expertise</p>
+            <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+              Where I can help
+            </h2>
+          </div>
+          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            {EXPERTISE.map((e) => (
+              <Link
+                key={e.label}
+                to={e.to as any}
+                className="group flex flex-col items-start gap-3 rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/40"
+              >
+                <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                  <e.icon className="size-4" />
+                </div>
+                <span className="text-sm font-medium text-foreground">{e.label}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
-
-      {/* 4. FEATURED COURSES */}
-      {featuredCourses.length > 0 && (
-        <section className="bg-background py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="mb-10 flex items-end justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                  {loc(content, "courses_label")}
-                </p>
-                <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
-                  {loc(content, "courses_heading")}
-                </h2>
-              </div>
-              <Link to="/courses" className="text-sm text-primary hover:underline">
-                {t("common.viewAllArrow")}
-              </Link>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {featuredCourses.map((c) => (
-                <article
-                  key={c.id}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/40"
-                >
-                  {c.image_url ? (
-                    <img src={c.image_url} alt={loc(c, "title")} className="h-44 w-full object-cover" />
-                  ) : (
-                    <div
-                      className="h-44 w-full"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, color-mix(in oklab, var(--primary) 30%, transparent), color-mix(in oklab, var(--accent) 30%, transparent))",
-                      }}
-                    />
-                  )}
-                  <div className="flex flex-1 flex-col p-6">
-                    <h3 className="font-display text-lg font-semibold text-foreground">{loc(c, "title")}</h3>
-                    <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{loc(c, "description")}</p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {[loc(c, "level"), loc(c, "duration")].filter(Boolean).map((t) => (
-                        <span
-                          key={t as string}
-                          className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-xs text-primary"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="mt-auto pt-5">
-                      {c.link_url ? (
-                        <a
-                          href={c.link_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                        >
-                          {t("common.learnMore")} <ArrowRight className="size-4" />
-                        </a>
-                      ) : (
-                        <Link
-                          to="/courses"
-                          className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                        >
-                          {t("common.learnMore")} <ArrowRight className="size-4" />
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 5. PARTNER ORGANIZATIONS */}
-      {visiblePartners.length > 0 && (
-        <section className="bg-background py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-              {loc(content, "partners_heading")}
-            </h2>
-            <div className="mt-10 space-y-10">
-              {groups.map((g) =>
-                g.items.length > 0 ? (
-                  <div key={g.key}>
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                      {t(g.key)}
-                    </p>
-                    <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                      {g.items.map((p) => (
-                        <a
-                          key={p.id}
-                          href={p.website_url ?? "#"}
-                          target={p.website_url ? "_blank" : undefined}
-                          rel="noreferrer"
-                          className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/40"
-                        >
-                          {p.logo_url && (
-                            <img
-                              src={p.logo_url}
-                              alt=""
-                              className="size-10 rounded-md bg-background object-contain p-1"
-                            />
-                          )}
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-medium text-foreground">{p.name}</p>
-                            {p.role && (
-                              <p className="truncate text-xs text-muted-foreground">{p.role}</p>
-                            )}
-                          </div>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                ) : null,
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 5b. TESTIMONIALS */}
-      {(testimonials?.length ?? 0) > 0 && (
-        <section className="bg-background py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              {t("home.testimonials.label")}
-            </p>
+      {/* ================ SECTION 5 · TRUST & CREDIBILITY ================ */}
+      <section className="bg-background py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Impact in action</p>
             <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
-              {t("home.testimonials.heading")}
+              A decade of measurable results
             </h2>
-            <div className="mt-10 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [scrollbar-width:thin] md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
-              {(testimonials ?? []).map((tm) => (
-                <figure
-                  key={tm.id}
-                  className="relative min-w-[85%] shrink-0 snap-center rounded-2xl border border-border bg-card p-6 shadow-sm transition-colors hover:border-primary/40 md:min-w-0"
-                >
-                  <Quote className="size-6 text-primary/60" />
+          </div>
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {shownStats.map((s) => (
+              <StatBlock key={s.label} value={s.value} label={s.label} />
+            ))}
+          </div>
+
+          {visiblePartners.length > 0 && (
+            <div className="mt-16">
+              <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Trusted by universities, training centers, and organizations
+              </p>
+              <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+                {visiblePartners.slice(0, 12).map((p: any) => (
+                  <a
+                    key={p.id}
+                    href={p.website_url ?? "#"}
+                    target={p.website_url ? "_blank" : undefined}
+                    rel="noreferrer"
+                    className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4 text-center transition-colors hover:border-primary/40"
+                    title={p.name}
+                  >
+                    {p.logo_url ? (
+                      <img src={p.logo_url} alt={p.name} className="h-10 w-auto object-contain" />
+                    ) : (
+                      <div className="flex size-10 items-center justify-center rounded-md bg-primary/10 text-xs font-semibold text-primary">
+                        {p.name?.slice(0, 2)}
+                      </div>
+                    )}
+                    <p className="line-clamp-1 text-xs text-muted-foreground">{p.name}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Optional testimonials strip (keeps admin's testimonial data in front of visitors) */}
+      {(testimonials?.length ?? 0) > 0 && (
+        <section className="bg-background pb-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {(testimonials ?? []).slice(0, 3).map((tm: any) => (
+                <figure key={tm.id} className="rounded-2xl border border-border bg-card p-6">
+                  <Quote className="size-5 text-primary/60" />
                   <blockquote className="mt-4 text-sm leading-relaxed text-foreground">
                     {(loc(tm, "quote") as string) || tm.quote}
                   </blockquote>
@@ -413,8 +469,8 @@ function Home() {
                     {tm.avatar_url ? (
                       <img src={tm.avatar_url} alt="" className="size-10 rounded-full object-cover" />
                     ) : (
-                      <div className="size-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
-                        {tm.author_name.slice(0, 1)}
+                      <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                        {tm.author_name?.slice(0, 1)}
                       </div>
                     )}
                     <div className="min-w-0">
@@ -423,11 +479,6 @@ function Home() {
                         {[tm.role, tm.organization].filter(Boolean).join(" · ")}
                       </p>
                     </div>
-                    {tm.category && (
-                      <span className="ml-auto rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
-                        {tm.category}
-                      </span>
-                    )}
                   </figcaption>
                 </figure>
               ))}
@@ -436,33 +487,80 @@ function Home() {
         </section>
       )}
 
-      {/* 6. CONTACT CTA */}
+      {/* Featured courses — quick preview so home isn't just navigation */}
+      {featuredCourses.length > 0 && (
+        <section className="bg-background pb-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="mb-8 flex items-end justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Featured courses</p>
+                <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+                  Popular programs
+                </h2>
+              </div>
+              <Link to="/learn" className="text-sm text-primary hover:underline">View all →</Link>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {featuredCourses.slice(0, 3).map((c: any) => (
+                <article
+                  key={c.id}
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/40"
+                >
+                  {c.image_url ? (
+                    <img src={c.image_url} alt={loc(c, "title")} className="h-40 w-full object-cover" />
+                  ) : (
+                    <div className="h-40 w-full" style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--primary) 30%, transparent), color-mix(in oklab, var(--accent) 30%, transparent))" }} />
+                  )}
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="font-display text-base font-semibold text-foreground">{loc(c, "title")}</h3>
+                    <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{loc(c, "description")}</p>
+                    <Link to="/learn" className="mt-auto pt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
+                      Learn more <ArrowRight className="size-4" />
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-      <section
-        className="relative overflow-hidden bg-background py-24"
-      >
+      {/* ================ SECTION 6 · CHOOSE YOUR JOURNEY ================ */}
+      <section className="relative overflow-hidden bg-background py-24">
         <div
           aria-hidden
-          className="absolute inset-0 opacity-50"
+          className="absolute inset-0 opacity-40"
           style={{
             background:
-              "radial-gradient(50% 60% at 50% 0%, color-mix(in oklab, var(--primary) 30%, transparent), transparent 70%)",
+              "radial-gradient(50% 60% at 50% 0%, color-mix(in oklab, var(--primary) 20%, transparent), transparent 70%)",
           }}
         />
-        <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl">
-            {loc(content, "cta_heading")}
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            {loc(content, "cta_text")}
-          </p>
-          <ContactDialog>
-            <button
-              className="mt-8 inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[0_0_40px_-5px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
-            >
-              <Mail className="size-4" /> {loc(content, "cta_btn_label")}
-            </button>
-          </ContactDialog>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Choose your journey</p>
+            <h2 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">
+              Where would you like to go next?
+            </h2>
+          </div>
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {JOURNEYS.map((j) => (
+              <Link
+                key={j.eyebrow}
+                to={j.to as any}
+                className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/40"
+              >
+                <div className="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <j.icon className="size-5" />
+                </div>
+                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-primary">{j.eyebrow}</p>
+                <h3 className="mt-1 font-display text-lg font-semibold text-foreground">{j.title}</h3>
+                <p className="mt-2 flex-1 text-sm text-muted-foreground">{j.text}</p>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary group-hover:underline">
+                  {j.cta}
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </PublicLayout>

@@ -17,6 +17,8 @@ const TABLE_QUERY_KEYS: Record<string, string> = {
   navigation_menu: "navigation_menu",
   testimonials: "testimonials",
   statistics: "statistics",
+  international_experience: "international_experience",
+
 };
 
 
