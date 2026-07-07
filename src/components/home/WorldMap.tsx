@@ -250,7 +250,7 @@ export function WorldMap() {
           >
             <button
               onClick={() => setOpen(false)}
-              className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground hover:bg-accent"
+              className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground transition-all duration-200 hover:rotate-90 hover:bg-accent hover:text-foreground"
               aria-label="Close"
             >
               <X className="size-4" />
