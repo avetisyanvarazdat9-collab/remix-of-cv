@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2 } from "lucide-react";
+import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
