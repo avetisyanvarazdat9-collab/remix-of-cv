@@ -91,12 +91,18 @@ function AuthPage() {
           </button>
         </form>
 
-        <div className="mt-5 text-center">
+        <div className="mt-5 flex items-center justify-center gap-4">
           <Link
             to="/"
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary"
           >
             {t("auth.backHome")}
+          </Link>
+          <Link
+            to="/auth-status"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary"
+          >
+            Auth status
           </Link>
         </div>
       </div>
