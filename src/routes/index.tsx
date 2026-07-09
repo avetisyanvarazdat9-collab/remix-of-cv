@@ -218,77 +218,50 @@ function Home() {
 
   return (
     <PublicLayout>
-      {/* ================ SECTION 1 · HERO ================ */}
-      <section className="relative flex min-h-[85vh] items-center overflow-hidden">
-        {/* Full-bleed background portrait */}
+      {/* ================ SECTION 1 · HERO (split-screen) ================ */}
+      <section className="relative overflow-hidden bg-background">
+        {/* Subtle ambient gradient wash */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: profile?.photo_url ? `url(${profile.photo_url})` : "none",
-          }}
-        />
-        {/* Fallback gradient when no photo */}
-        {!profile?.photo_url && (
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(60% 60% at 85% 0%, color-mix(in oklab, var(--primary) 25%, transparent), transparent 70%), radial-gradient(45% 45% at 0% 100%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 70%)",
-            }}
-          />
-        )}
-        {/* Elegant readability overlay — deep blue mist */}
-        <div
-          aria-hidden
-          className="absolute inset-0"
+          className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "linear-gradient(135deg, oklch(0.16 0.04 265 / 0.92) 0%, oklch(0.16 0.04 265 / 0.65) 45%, oklch(0.16 0.04 265 / 0.30) 100%)",
+              "radial-gradient(55% 55% at 90% 10%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 70%), radial-gradient(45% 45% at 0% 100%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 70%)",
           }}
         />
-        {/* Bottom vignette for depth */}
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to top, oklch(0.16 0.04 265 / 0.60) 0%, transparent 40%)",
-          }}
-        />
-        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center justify-center px-4 py-28 text-center sm:px-6 lg:py-32">
-          <div className="max-w-4xl">
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:py-28">
+          {/* LEFT · text */}
+          <div className="text-left">
             <span
-              className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm"
+              className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
               style={{ animationDelay: "40ms" }}
             >
               <span className="relative flex size-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/75" />
-                <span className="relative inline-flex size-2 rounded-full bg-white" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
+                <span className="relative inline-flex size-2 rounded-full bg-primary" />
               </span>
               PhD · AI Educator · CTO · Professor
             </span>
             <h1
-              className="animate-fade-in-up mt-5 font-display text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl"
+              className="animate-fade-in-up mt-5 font-display text-4xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
               style={{ animationDelay: "120ms", animationDuration: "600ms" }}
             >
               Bridging Research, Education, and Industry Through Intelligent Technologies
             </h1>
             <p
-              className="animate-fade-in-up mt-5 text-lg text-white/90"
+              className="animate-fade-in-up mt-5 text-lg text-foreground/80"
               style={{ animationDelay: "220ms", animationDuration: "600ms" }}
             >
               Educator · Researcher · Technologist · Entrepreneur · Innovator
             </p>
             <p
-              className="animate-fade-in-up mt-4 max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg"
+              className="animate-fade-in-up mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
               style={{ animationDelay: "300ms", animationDuration: "600ms" }}
             >
               A place for personalized AI solutions — courses, consulting, and collaboration for individuals, universities, and organizations across Armenia and beyond.
             </p>
             <div
-              className="animate-fade-in-up mt-8 flex flex-wrap justify-center gap-3"
+              className="animate-fade-in-up mt-8 flex flex-wrap gap-3"
               style={{ animationDelay: "380ms", animationDuration: "600ms" }}
             >
               <Link
@@ -299,13 +272,13 @@ function Home() {
               </Link>
               <Link
                 to="/transform"
-                className="inline-flex items-center gap-2 rounded-md border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
               >
                 Request a Consultation
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-md border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-medium text-white/80 backdrop-blur-sm transition-colors hover:bg-white/10 hover:text-white"
+                className="inline-flex items-center gap-2 rounded-md border border-border/70 bg-transparent px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 <Mail className="size-4" /> Contact Me
               </Link>
@@ -315,7 +288,7 @@ function Home() {
                 href={profile.linkedin_url}
                 target="_blank"
                 rel="noreferrer"
-                className="animate-fade-in-up mt-6 inline-flex size-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/20 hover:text-white"
+                className="animate-fade-in-up mt-6 inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-foreground/80 transition-colors hover:border-primary hover:text-primary"
                 style={{ animationDelay: "460ms", animationDuration: "600ms" }}
                 aria-label="LinkedIn"
               >
@@ -323,8 +296,59 @@ function Home() {
               </a>
             )}
           </div>
+
+          {/* RIGHT · image */}
+          <div
+            className="animate-fade-in-up relative order-first lg:order-last"
+            style={{ animationDelay: "180ms", animationDuration: "700ms" }}
+          >
+            <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-3xl border border-border shadow-[0_30px_80px_-20px_color-mix(in_oklab,var(--primary)_35%,transparent)] lg:max-w-none">
+              {profile?.photo_url ? (
+                <img
+                  src={profile.photo_url}
+                  alt={(loc(profile, "name") as string) || "Dr. Varazdat Avetisyan"}
+                  className="h-full w-full object-cover"
+                  loading="eager"
+                />
+              ) : (
+                <div
+                  aria-hidden
+                  className="h-full w-full"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, color-mix(in oklab, var(--primary) 40%, transparent), color-mix(in oklab, var(--accent) 30%, transparent))",
+                  }}
+                />
+              )}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(180deg, transparent 60%, oklch(0.16 0.04 265 / 0.35) 100%)",
+                }}
+              />
+            </div>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-6 -top-6 -z-10 size-40 rounded-full blur-3xl"
+              style={{
+                background:
+                  "radial-gradient(circle, color-mix(in oklab, var(--primary) 40%, transparent), transparent 70%)",
+              }}
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -bottom-8 -left-8 -z-10 size-48 rounded-full blur-3xl"
+              style={{
+                background:
+                  "radial-gradient(circle, color-mix(in oklab, var(--accent) 35%, transparent), transparent 70%)",
+              }}
+            />
+          </div>
         </div>
       </section>
+
 
       {/* ================ SECTION 2 · MEET DR. VARAZDAT ================ */}
       <section className="bg-background py-20">
