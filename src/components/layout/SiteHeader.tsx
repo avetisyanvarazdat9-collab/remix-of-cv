@@ -66,8 +66,10 @@ export function SiteHeader() {
             </Link>
           )}
           <LanguageSwitcher className="ml-2" />
+          <ThemeToggle className="ml-1" />
         </nav>
         <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
           <LanguageSwitcher />
           <button
             aria-label="Toggle menu"
