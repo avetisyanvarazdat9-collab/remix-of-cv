@@ -266,6 +266,9 @@
 @utility animate-breathe-glow {
   animation: breathe-glow 5s ease-in-out infinite;
 }
+@utility animate-marquee {
+  animation: marquee 30s linear infinite;
+}
 
 @utility border-shimmer {
   position: relative;
