@@ -230,23 +230,38 @@ function Home() {
         />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <span
+              className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+              style={{ animationDelay: "40ms" }}
+            >
               <span className="relative flex size-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex size-2 rounded-full bg-primary" />
               </span>
               PhD · AI Educator · CTO · Professor
             </span>
-            <h1 className="mt-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+            <h1
+              className="animate-fade-in-up mt-5 font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl lg:text-7xl"
+              style={{ animationDelay: "120ms", animationDuration: "600ms" }}
+            >
               Bridging Research, Education, and Industry Through Intelligent Technologies
             </h1>
-            <p className="mt-6 text-lg text-primary">
+            <p
+              className="animate-fade-in-up mt-6 text-lg text-primary"
+              style={{ animationDelay: "220ms", animationDuration: "600ms" }}
+            >
               Educator · Researcher · Technologist · Entrepreneur · Innovator
             </p>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p
+              className="animate-fade-in-up mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+              style={{ animationDelay: "300ms", animationDuration: "600ms" }}
+            >
               A place for personalized AI solutions — courses, consulting, and collaboration for individuals, universities, and organizations across Armenia and beyond.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div
+              className="animate-fade-in-up mt-8 flex flex-wrap gap-3"
+              style={{ animationDelay: "380ms", animationDuration: "600ms" }}
+            >
               <Link
                 to="/learn"
                 className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_0_30px_-5px_color-mix(in_oklab,var(--primary)_70%,transparent)] transition-transform hover:-translate-y-0.5"
@@ -271,7 +286,8 @@ function Home() {
                 href={profile.linkedin_url}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-6 inline-flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
+                className="animate-fade-in-up mt-6 inline-flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
+                style={{ animationDelay: "460ms", animationDuration: "600ms" }}
                 aria-label="LinkedIn"
               >
                 <Linkedin className="size-5" />
@@ -280,37 +296,46 @@ function Home() {
           </div>
 
           <div className="flex justify-center lg:justify-end">
-            <div className="relative">
+            <div
+              className="group animate-fade-in-up relative"
+              style={{ animationDelay: "180ms", animationDuration: "700ms" }}
+            >
               <div
-                className="absolute inset-0 rounded-full blur-2xl"
+                aria-hidden
+                className="animate-breathe-glow absolute -inset-6 rounded-[2rem] blur-3xl"
                 style={{
                   background:
-                    "radial-gradient(circle, color-mix(in oklab, var(--primary) 45%, transparent), transparent 70%)",
+                    "radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--primary) 55%, transparent), transparent 65%), radial-gradient(circle at 70% 70%, color-mix(in oklab, var(--accent) 45%, transparent), transparent 65%)",
                 }}
               />
-              <div
-                className="relative rounded-full p-1.5"
-                style={{
-                  background:
-                    "linear-gradient(135deg, var(--primary), color-mix(in oklab, var(--primary) 50%, var(--accent)))",
-                }}
-              >
-                <div className="size-64 overflow-hidden rounded-full bg-card sm:size-80">
-                  {profile?.photo_url ? (
-                    <img
-                      src={profile.photo_url}
-                      alt={(loc(profile, "name") as string) || profile.name || "Dr. Varazdat Avetisyan"}
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex size-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
-                      Add a photo in the admin Profile section.
-                    </div>
-                  )}
+              <div className="animate-float border-shimmer relative rounded-3xl">
+                <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-[0_25px_60px_-20px_color-mix(in_oklab,var(--primary)_45%,transparent)] transition-all duration-500 group-hover:-translate-y-1 group-hover:scale-[1.02] group-hover:shadow-[0_35px_80px_-20px_color-mix(in_oklab,var(--primary)_60%,transparent)]">
+                  <div className="h-80 w-64 sm:h-[26rem] sm:w-80">
+                    {profile?.photo_url ? (
+                      <img
+                        src={profile.photo_url}
+                        alt={(loc(profile, "name") as string) || profile.name || "Dr. Varazdat Avetisyan"}
+                        className="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex size-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
+                        Add a photo in the admin Profile section.
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{
+                      background:
+                        "linear-gradient(120deg, transparent 30%, color-mix(in oklab, var(--primary) 25%, transparent) 50%, transparent 70%)",
+                    }}
+                  />
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
