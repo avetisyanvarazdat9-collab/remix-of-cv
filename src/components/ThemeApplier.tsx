@@ -46,8 +46,11 @@ export function ThemeApplier() {
         () => load(),
       )
       .subscribe();
+    const onLight = () => load();
+    window.addEventListener("lovable:theme-light", onLight);
     return () => {
       supabase.removeChannel(channel);
+      window.removeEventListener("lovable:theme-light", onLight);
     };
   }, []);
   return null;
