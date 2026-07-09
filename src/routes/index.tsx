@@ -225,22 +225,22 @@ function Home() {
           backgroundColor: "var(--background)",
         }}
       >
-        {/* Portrait image anchored to the right, scaled to full height */}
+        {/* Portrait image anchored off-screen right on desktop */}
         {profile?.photo_url && (
           <img
             src={profile.photo_url}
             alt=""
-            className="absolute top-0 right-0 h-full w-auto max-w-none"
+            className="absolute top-0 right-0 h-full w-auto max-w-none md:right-[-15%] lg:right-[-10%]"
             aria-hidden
           />
         )}
-        {/* Dark readability mask — heavier on the left where text lives */}
+        {/* Strong dark readability mask — left 55% is solid */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, oklch(0.12 0.03 260 / 0.88) 0%, oklch(0.12 0.03 260 / 0.70) 45%, oklch(0.12 0.03 260 / 0.25) 70%, transparent 100%)",
+              "linear-gradient(90deg, oklch(0.12 0.03 260 / 0.95) 0%, oklch(0.12 0.03 260 / 0.90) 40%, oklch(0.12 0.03 260 / 0.50) 65%, transparent 85%)",
           }}
         />
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:py-40">
