@@ -16,6 +16,7 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as ImpactRouteImport } from './routes/impact'
+import { Route as CvRouteImport } from './routes/cv'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CompaniesRouteImport } from './routes/companies'
@@ -86,6 +87,11 @@ const LearnRoute = LearnRouteImport.update({
 const ImpactRoute = ImpactRouteImport.update({
   id: '/impact',
   path: '/impact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CvRoute = CvRouteImport.update({
+  id: '/cv',
+  path: '/cv',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -294,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/companies': typeof CompaniesRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/cv': typeof CvRoute
   '/impact': typeof ImpactRoute
   '/learn': typeof LearnRoute
   '/privacy': typeof PrivacyRoute
@@ -338,6 +345,7 @@ export interface FileRoutesByTo {
   '/companies': typeof CompaniesRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/cv': typeof CvRoute
   '/impact': typeof ImpactRoute
   '/learn': typeof LearnRoute
   '/privacy': typeof PrivacyRoute
@@ -384,6 +392,7 @@ export interface FileRoutesById {
   '/companies': typeof CompaniesRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/cv': typeof CvRoute
   '/impact': typeof ImpactRoute
   '/learn': typeof LearnRoute
   '/privacy': typeof PrivacyRoute
@@ -430,6 +439,7 @@ export interface FileRouteTypes {
     | '/companies'
     | '/contact'
     | '/courses'
+    | '/cv'
     | '/impact'
     | '/learn'
     | '/privacy'
@@ -474,6 +484,7 @@ export interface FileRouteTypes {
     | '/companies'
     | '/contact'
     | '/courses'
+    | '/cv'
     | '/impact'
     | '/learn'
     | '/privacy'
@@ -519,6 +530,7 @@ export interface FileRouteTypes {
     | '/companies'
     | '/contact'
     | '/courses'
+    | '/cv'
     | '/impact'
     | '/learn'
     | '/privacy'
@@ -565,6 +577,7 @@ export interface RootRouteChildren {
   CompaniesRoute: typeof CompaniesRoute
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRouteWithChildren
+  CvRoute: typeof CvRoute
   ImpactRoute: typeof ImpactRoute
   LearnRoute: typeof LearnRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -623,6 +636,13 @@ declare module '@tanstack/react-router' {
       path: '/impact'
       fullPath: '/impact'
       preLoaderRoute: typeof ImpactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cv': {
+      id: '/cv'
+      path: '/cv'
+      fullPath: '/cv'
+      preLoaderRoute: typeof CvRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -999,6 +1019,7 @@ const rootRouteChildren: RootRouteChildren = {
   CompaniesRoute: CompaniesRoute,
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRouteWithChildren,
+  CvRoute: CvRoute,
   ImpactRoute: ImpactRoute,
   LearnRoute: LearnRoute,
   PrivacyRoute: PrivacyRoute,
@@ -1010,13 +1031,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

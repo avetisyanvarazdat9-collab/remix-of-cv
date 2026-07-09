@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Download } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import {
   profileQuery,
@@ -52,7 +53,18 @@ function AboutPage() {
   return (
     <PublicLayout>
       <section className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
-        <h1 className="font-display text-4xl font-bold sm:text-5xl">{t("about.heading")}</h1>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <h1 className="font-display text-4xl font-bold sm:text-5xl">{t("about.heading")}</h1>
+          <Link
+            to="/cv"
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90"
+          >
+            <Download className="h-4 w-4" />
+            Download CV
+          </Link>
+        </div>
         <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-muted-foreground">
           {loc(profile, "bio")}
         </p>
