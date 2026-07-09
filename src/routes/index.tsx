@@ -220,12 +220,20 @@ function Home() {
     <PublicLayout>
       {/* ================ SECTION 1 · HERO (full-bleed background) ================ */}
       <section
-        className="relative overflow-hidden bg-cover bg-right bg-no-repeat"
+        className="relative overflow-hidden bg-no-repeat"
         style={{
-          backgroundImage: profile?.photo_url ? `url(${profile.photo_url})` : undefined,
           backgroundColor: "var(--background)",
         }}
       >
+        {/* Portrait image anchored to the right, scaled to full height */}
+        {profile?.photo_url && (
+          <img
+            src={profile.photo_url}
+            alt=""
+            className="absolute top-0 right-0 h-full w-auto max-w-none"
+            aria-hidden
+          />
+        )}
         {/* Dark readability mask — heavier on the left where text lives */}
         <div
           aria-hidden
