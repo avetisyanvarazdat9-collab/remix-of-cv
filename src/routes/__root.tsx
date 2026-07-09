@@ -17,6 +17,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { HiddenAdminLogin } from "@/components/HiddenAdminLogin";
 import { ThemeApplier } from "@/components/ThemeApplier";
 import { LanguageProvider } from "@/lib/i18n";
+import { SupabaseEnvCheck } from "@/components/SupabaseEnvCheck";
 
 function NotFoundComponent() {
   return (
@@ -148,9 +149,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <Outlet />
-        <ThemeApplier />
-        <HiddenAdminLogin />
+        <SupabaseEnvCheck>
+          <Outlet />
+          <ThemeApplier />
+          <HiddenAdminLogin />
+        </SupabaseEnvCheck>
         <Toaster richColors />
       </LanguageProvider>
     </QueryClientProvider>
