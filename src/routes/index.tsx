@@ -455,26 +455,22 @@ function Home() {
               <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 Trusted by universities, training centers, and organizations
               </p>
-              <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-                {visiblePartners.slice(0, 12).map((p: any) => (
-                  <a
-                    key={p.id}
-                    href={p.website_url ?? "#"}
-                    target={p.website_url ? "_blank" : undefined}
-                    rel="noreferrer"
-                    className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-4 text-center transition-colors hover:border-primary/40"
-                    title={p.name}
-                  >
-                    {p.logo_url ? (
-                      <img src={p.logo_url} alt={p.name} className="h-10 w-auto object-contain" />
-                    ) : (
-                      <div className="flex size-10 items-center justify-center rounded-md bg-primary/10 text-xs font-semibold text-primary">
-                        {p.name?.slice(0, 2)}
-                      </div>
-                    )}
-                    <p className="line-clamp-1 text-xs text-muted-foreground">{p.name}</p>
-                  </a>
-                ))}
+              <div className="relative mt-6 overflow-hidden">
+                <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent sm:w-24" />
+                <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent sm:w-24" />
+                <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
+                  {[...visiblePartners, ...visiblePartners].map((p: any, idx: number) => (
+                    <div key={`${p.id}-${idx}`} className="mx-8 flex h-16 shrink-0 items-center justify-center sm:mx-12">
+                      {p.logo_url ? (
+                        <img src={p.logo_url} alt={p.name} className="max-h-10 w-auto object-contain grayscale opacity-60 transition-all duration-300 hover:opacity-100 hover:grayscale-0" />
+                      ) : (
+                        <span className="whitespace-nowrap text-sm font-semibold text-muted-foreground opacity-60 transition-opacity duration-300 hover:opacity-100">
+                          {p.name}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
