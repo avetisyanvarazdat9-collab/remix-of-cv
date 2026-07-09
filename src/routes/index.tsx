@@ -227,12 +227,17 @@ function Home() {
       >
         {/* Portrait image anchored off-screen right on desktop */}
         {profile?.photo_url && (
-          <img
-            src={profile.photo_url}
-            alt=""
-            className="absolute bottom-0 right-0 h-full max-h-full w-auto max-w-none object-cover object-bottom md:-right-[260px] lg:-right-[320px]"
-            aria-hidden
-          />
+          <div
+            className="absolute bottom-0 right-0 overflow-hidden md:-right-[260px] lg:-right-[320px]"
+            style={{ height: '60%' }}
+          >
+            <img
+              src={profile.photo_url}
+              alt=""
+              className="h-[170%] w-auto max-w-none"
+              aria-hidden
+            />
+          </div>
         )}
         {/* Strong dark readability mask — left 55% is solid */}
         <div
