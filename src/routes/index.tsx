@@ -376,9 +376,22 @@ function Home() {
                     </li>
                   ))}
                 </ul>
-                {p.isMap ? (
-                  <div className="mt-6">
-                    <WorldMap />
+                {(p as any).isTimeline ? (
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                      <Globe2 className="size-3.5" />
+                      {countryCount > 0 ? `${countryCount} countries` : "Global reach"}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+                      {timelineEntries.length}+ engagements
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setTimelineOpen(true)}
+                      className="hover-lift-sm ml-auto inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:brightness-110"
+                    >
+                      View Timeline <ArrowRight className="size-4" />
+                    </button>
                   </div>
                 ) : (
                   p.to && (
@@ -390,6 +403,7 @@ function Home() {
                     </Link>
                   )
                 )}
+
               </div>
             ))}
           </div>
