@@ -25,7 +25,7 @@ import {
   Award,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
-import { WorldMap } from "@/components/home/WorldMap";
+
 import {
   profileQuery,
   coursesQuery,
