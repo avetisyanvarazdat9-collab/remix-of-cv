@@ -146,7 +146,20 @@ function AuthStatusPage() {
               Diagnostics for Supabase connectivity and current session.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-1.5 text-sm hover:bg-accent transition-colors"
+              title="Copy full report to clipboard"
+            >
+              {copied ? (
+                <Check className="size-4 text-emerald-600" />
+              ) : (
+                <ClipboardCopy className="size-4 text-muted-foreground" />
+              )}
+              {copied ? "Copied!" : "Copy report"}
+            </button>
             <Link
               to="/auth"
               className="rounded-md border border-input bg-background px-3 py-1.5 text-sm hover:bg-accent"
