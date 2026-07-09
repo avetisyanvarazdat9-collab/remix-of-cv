@@ -21,6 +21,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CompaniesRouteImport } from './routes/companies'
 import { Route as CollaborateRouteImport } from './routes/collaborate'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AuthStatusRouteImport } from './routes/auth-status'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -110,6 +111,11 @@ const CollaborateRoute = CollaborateRouteImport.update({
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthStatusRoute = AuthStatusRouteImport.update({
+  id: '/auth-status',
+  path: '/auth-status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -282,6 +288,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/auth-status': typeof AuthStatusRoute
   '/blog': typeof BlogRouteWithChildren
   '/collaborate': typeof CollaborateRoute
   '/companies': typeof CompaniesRoute
@@ -325,6 +332,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/auth-status': typeof AuthStatusRoute
   '/blog': typeof BlogRouteWithChildren
   '/collaborate': typeof CollaborateRoute
   '/companies': typeof CompaniesRoute
@@ -370,6 +378,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/auth-status': typeof AuthStatusRoute
   '/blog': typeof BlogRouteWithChildren
   '/collaborate': typeof CollaborateRoute
   '/companies': typeof CompaniesRoute
@@ -415,6 +424,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/auth-status'
     | '/blog'
     | '/collaborate'
     | '/companies'
@@ -458,6 +468,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/auth-status'
     | '/blog'
     | '/collaborate'
     | '/companies'
@@ -502,6 +513,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/about'
     | '/auth'
+    | '/auth-status'
     | '/blog'
     | '/collaborate'
     | '/companies'
@@ -547,6 +559,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
+  AuthStatusRoute: typeof AuthStatusRoute
   BlogRoute: typeof BlogRouteWithChildren
   CollaborateRoute: typeof CollaborateRoute
   CompaniesRoute: typeof CompaniesRoute
@@ -645,6 +658,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth-status': {
+      id: '/auth-status'
+      path: '/auth-status'
+      fullPath: '/auth-status'
+      preLoaderRoute: typeof AuthStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -973,6 +993,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
+  AuthStatusRoute: AuthStatusRoute,
   BlogRoute: BlogRouteWithChildren,
   CollaborateRoute: CollaborateRoute,
   CompaniesRoute: CompaniesRoute,
