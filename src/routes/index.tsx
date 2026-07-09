@@ -186,7 +186,9 @@ function Home() {
   const { data: content } = useSuspenseQuery(homeContentQuery);
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const { data: statsRows } = useSuspenseQuery(statisticsQuery);
+  const { data: intlRows } = useSuspenseQuery(internationalExperienceQuery());
   const loc = useLocalized();
+  const [timelineOpen, setTimelineOpen] = useState(false);
 
   const stats = (statsRows ?? []).map((s: any) => ({
     label: (loc(s, "label") as string) || s.label,
@@ -202,6 +204,17 @@ function Home() {
 
   const visiblePartners = (companies ?? []).filter((c: any) => c.is_visible);
   const featuredCourses = (courses ?? []).filter((c: any) => c.is_visible).slice(0, 6);
+
+  const timelineEntries = [...(intlRows ?? [])].sort((a: any, b: any) => {
+    const ad = a.event_date ? new Date(a.event_date).getTime() : 0;
+    const bd = b.event_date ? new Date(b.event_date).getTime() : 0;
+    return bd - ad;
+  });
+  const countryCount = new Set(
+    (intlRows ?? []).map((r: any) => r.country_code).filter(Boolean),
+  ).size;
+
+
 
   return (
     <PublicLayout>
