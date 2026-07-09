@@ -154,8 +154,9 @@ const PILLARS = [
     title: "International Experience",
     bullets: ["Trainings & workshops across Europe", "Academic exchange programs", "Conference speaking", "Cross-institutional research", "Global professional network"],
     to: null as string | null,
-    isMap: true,
+    isTimeline: true,
   },
+
 ];
 
 const EXPERTISE = [
