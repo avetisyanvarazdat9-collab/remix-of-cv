@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { CheckCircle2, XCircle, Loader2, ClipboardCopy, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -20,6 +20,7 @@ function AuthStatusPage() {
   const { user, isAdmin, loading, session } = useAuth();
   const [reachOk, setReachOk] = useState<boolean | null>(null);
   const [reachError, setReachError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
   const key =
@@ -52,7 +53,6 @@ function AuthStatusPage() {
       cancelled = true;
     };
   }, [url, key]);
-
   const envRows: Row[] = [
     {
       label: "VITE_SUPABASE_URL",
@@ -95,6 +95,45 @@ function AuthStatusPage() {
           },
         ];
 
+  const buildReport = (): string => {
+    const lines: string[] = [];
+    lines.push("Auth Status Report");
+    lines.push("==================");
+    lines.push("");
+    lines.push("Environment variables:");
+    for (const row of envRows) {
+      lines.push(`  ${row.label}: ${row.value}`);
+    }
+    lines.push("");
+    lines.push("Backend reachability:");
+    if (reachOk === null) {
+      lines.push("  Connectivity: checking…");
+    } else if (reachOk) {
+      lines.push("  Connectivity: OK (query succeeded)");
+    } else {
+      lines.push(`  Connectivity: failed — ${reachError ?? "unknown error"}`);
+    }
+    lines.push("");
+    lines.push("Session:");
+    for (const row of authRows) {
+      lines.push(`  ${row.label}: ${row.value}`);
+      if (row.hint) lines.push(`    Hint: ${row.hint}`);
+    }
+    lines.push("");
+    lines.push("Generated: " + new Date().toISOString());
+    return lines.join("\n");
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(buildReport());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // silently ignore
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background px-4 py-10">
       <div className="mx-auto max-w-2xl space-y-6">
@@ -107,7 +146,20 @@ function AuthStatusPage() {
               Diagnostics for Supabase connectivity and current session.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-1.5 text-sm hover:bg-accent transition-colors"
+              title="Copy full report to clipboard"
+            >
+              {copied ? (
+                <Check className="size-4 text-emerald-600" />
+              ) : (
+                <ClipboardCopy className="size-4 text-muted-foreground" />
+              )}
+              {copied ? "Copied!" : "Copy report"}
+            </button>
             <Link
               to="/auth"
               className="rounded-md border border-input bg-background px-3 py-1.5 text-sm hover:bg-accent"
