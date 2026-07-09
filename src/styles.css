@@ -241,6 +241,10 @@
 @keyframes border-spin {
   to { transform: rotate(360deg); }
 }
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
 @utility animate-fade-in-up {
   animation: fade-in-up 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
