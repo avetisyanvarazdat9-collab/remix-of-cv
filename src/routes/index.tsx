@@ -230,7 +230,7 @@ function Home() {
           <img
             src={profile.photo_url}
             alt=""
-            className="absolute top-0 right-0 h-full w-auto max-w-none md:right-[-25%] lg:right-[-20%]"
+            className="absolute top-0 right-0 h-full w-auto max-w-none md:-right-[100px] lg:-right-[100px]"
             aria-hidden
           />
         )}
