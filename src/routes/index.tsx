@@ -218,22 +218,27 @@ function Home() {
 
   return (
     <PublicLayout>
-      {/* ================ SECTION 1 · HERO (split-screen) ================ */}
-      <section className="relative overflow-hidden bg-background">
-        {/* Subtle ambient gradient wash */}
+      {/* ================ SECTION 1 · HERO (full-bleed background) ================ */}
+      <section
+        className="relative overflow-hidden bg-cover bg-right bg-no-repeat"
+        style={{
+          backgroundImage: profile?.photo_url ? `url(${profile.photo_url})` : undefined,
+          backgroundColor: "var(--background)",
+        }}
+      >
+        {/* Dark readability mask — heavier on the left where text lives */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(55% 55% at 90% 10%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 70%), radial-gradient(45% 45% at 0% 100%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 70%)",
+              "linear-gradient(90deg, oklch(0.12 0.03 260 / 0.88) 0%, oklch(0.12 0.03 260 / 0.70) 45%, oklch(0.12 0.03 260 / 0.25) 70%, transparent 100%)",
           }}
         />
-        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:py-28">
-          {/* LEFT · text */}
-          <div className="text-left">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:py-40">
+          <div className="max-w-2xl">
             <span
-              className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
+              className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary backdrop-blur-sm"
               style={{ animationDelay: "40ms" }}
             >
               <span className="relative flex size-2">
@@ -243,19 +248,19 @@ function Home() {
               PhD · AI Educator · CTO · Professor
             </span>
             <h1
-              className="animate-fade-in-up mt-5 font-display text-4xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+              className="animate-fade-in-up mt-5 font-display text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl"
               style={{ animationDelay: "120ms", animationDuration: "600ms" }}
             >
               Bridging Research, Education, and Industry Through Intelligent Technologies
             </h1>
             <p
-              className="animate-fade-in-up mt-5 text-lg text-foreground/80"
+              className="animate-fade-in-up mt-5 text-lg text-white/90"
               style={{ animationDelay: "220ms", animationDuration: "600ms" }}
             >
               Educator · Researcher · Technologist · Entrepreneur · Innovator
             </p>
             <p
-              className="animate-fade-in-up mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+              className="animate-fade-in-up mt-4 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg"
               style={{ animationDelay: "300ms", animationDuration: "600ms" }}
             >
               A place for personalized AI solutions — courses, consulting, and collaboration for individuals, universities, and organizations across Armenia and beyond.
@@ -272,13 +277,13 @@ function Home() {
               </Link>
               <Link
                 to="/transform"
-                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                className="inline-flex items-center gap-2 rounded-md border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
               >
                 Request a Consultation
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-md border border-border/70 bg-transparent px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-transparent px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:text-white"
               >
                 <Mail className="size-4" /> Contact Me
               </Link>
@@ -288,63 +293,13 @@ function Home() {
                 href={profile.linkedin_url}
                 target="_blank"
                 rel="noreferrer"
-                className="animate-fade-in-up mt-6 inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-foreground/80 transition-colors hover:border-primary hover:text-primary"
+                className="animate-fade-in-up mt-6 inline-flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-primary hover:text-primary"
                 style={{ animationDelay: "460ms", animationDuration: "600ms" }}
                 aria-label="LinkedIn"
               >
                 <Linkedin className="size-5" />
               </a>
             )}
-          </div>
-
-          {/* RIGHT · image */}
-          <div
-            className="animate-fade-in-up relative order-first lg:order-last"
-            style={{ animationDelay: "180ms", animationDuration: "700ms" }}
-          >
-            <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-3xl border border-border shadow-[0_30px_80px_-20px_color-mix(in_oklab,var(--primary)_35%,transparent)] lg:max-w-none">
-              {profile?.photo_url ? (
-                <img
-                  src={profile.photo_url}
-                  alt={(loc(profile, "name") as string) || "Dr. Varazdat Avetisyan"}
-                  className="h-full w-full object-cover"
-                  loading="eager"
-                />
-              ) : (
-                <div
-                  aria-hidden
-                  className="h-full w-full"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, color-mix(in oklab, var(--primary) 40%, transparent), color-mix(in oklab, var(--accent) 30%, transparent))",
-                  }}
-                />
-              )}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(180deg, transparent 60%, oklch(0.16 0.04 265 / 0.35) 100%)",
-                }}
-              />
-            </div>
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-6 -top-6 -z-10 size-40 rounded-full blur-3xl"
-              style={{
-                background:
-                  "radial-gradient(circle, color-mix(in oklab, var(--primary) 40%, transparent), transparent 70%)",
-              }}
-            />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -bottom-8 -left-8 -z-10 size-48 rounded-full blur-3xl"
-              style={{
-                background:
-                  "radial-gradient(circle, color-mix(in oklab, var(--accent) 35%, transparent), transparent 70%)",
-              }}
-            />
           </div>
         </div>
       </section>
