@@ -230,7 +230,7 @@ function Home() {
           <img
             src={profile.photo_url}
             alt=""
-            className="absolute top-0 right-0 h-full w-auto max-w-none md:-right-[260px] lg:-right-[320px]"
+            className="absolute bottom-0 right-0 h-full max-h-full w-auto max-w-none object-cover object-bottom md:-right-[260px] lg:-right-[320px]"
             aria-hidden
           />
         )}
@@ -243,7 +243,7 @@ function Home() {
               "linear-gradient(90deg, oklch(0.12 0.03 260 / 0.95) 0%, oklch(0.12 0.03 260 / 0.90) 40%, oklch(0.12 0.03 260 / 0.50) 65%, transparent 85%)",
           }}
         />
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:py-40">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-24 pb-12 sm:px-6 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-16">
           <div className="max-w-2xl">
             <span
               className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary backdrop-blur-sm"
