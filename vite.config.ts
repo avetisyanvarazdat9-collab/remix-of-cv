@@ -12,7 +12,7 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
-  // Force the Nitro build target to Vercel when building outside the Lovable sandbox
+  // Force the Nitro build target to Vercel for production redeploys outside the Lovable sandbox
   // (e.g. on Vercel CI). Inside Lovable builds this override is ignored and Cloudflare
   // is used automatically, so previews still work.
   nitro: { preset: "vercel" },
