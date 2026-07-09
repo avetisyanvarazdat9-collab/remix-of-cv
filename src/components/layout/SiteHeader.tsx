@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteLogo } from "@/hooks/useSiteLogo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useT, useLang } from "@/lib/i18n";
 import { navigationMenuQuery } from "@/lib/queries";
 
@@ -65,8 +66,10 @@ export function SiteHeader() {
             </Link>
           )}
           <LanguageSwitcher className="ml-2" />
+          <ThemeToggle className="ml-1" />
         </nav>
         <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
           <LanguageSwitcher />
           <button
             aria-label="Toggle menu"

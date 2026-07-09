@@ -112,7 +112,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
-const THEME_PREHYDRATE = `(function(){try{var s=localStorage.getItem('lovable.theme.v1');if(!s)return;var d=JSON.parse(s);if(d&&d.vars){var r=document.documentElement;for(var k in d.vars){r.style.setProperty(k,d.vars[k]);}if(d.colorScheme){r.style.colorScheme=d.colorScheme;}}}catch(e){}})();`;
+const THEME_PREHYDRATE = `(function(){try{var r=document.documentElement;var s=localStorage.getItem('lovable.theme.v1');if(s){var d=JSON.parse(s);if(d&&d.vars){for(var k in d.vars){r.style.setProperty(k,d.vars[k]);}if(d.colorScheme){r.style.colorScheme=d.colorScheme;}}}var m=localStorage.getItem('lovable.darkMode.v1');if(m==='dark'){r.classList.add('dark');r.style.colorScheme='dark';}else if(m==='light'){r.classList.remove('dark');r.style.colorScheme='light';}}catch(e){}})();`;
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
