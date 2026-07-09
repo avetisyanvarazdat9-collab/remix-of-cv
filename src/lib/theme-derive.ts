@@ -101,3 +101,11 @@ export function applyTheme(root: HTMLElement, theme: ThemeInput) {
   const isLight = luminance(hexToRgb(theme.background)) > 0.5;
   root.style.colorScheme = isLight ? "light" : "dark";
 }
+
+export function clearTheme(root: HTMLElement) {
+  const vars = deriveTheme({ primary: "#000000", background: "#ffffff", text: "#000000" });
+  for (const k of Object.keys(vars)) {
+    root.style.removeProperty(k);
+  }
+  root.style.removeProperty("colorScheme");
+}

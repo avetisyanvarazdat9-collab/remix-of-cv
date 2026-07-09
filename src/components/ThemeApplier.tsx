@@ -1,10 +1,15 @@
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { applyTheme, deriveTheme } from "@/lib/theme-derive";
+import { applyTheme, deriveTheme, clearTheme } from "@/lib/theme-derive";
 
 const STORAGE_KEY = "lovable.theme.v1";
 
 async function load() {
+  const root = document.documentElement;
+  if (root.classList.contains("dark")) {
+    clearTheme(root);
+    return;
+  }
   const { data } = await supabase
     .from("site_settings")
     .select("primary_color, background_color, text_color")
@@ -16,11 +21,11 @@ async function load() {
     background: data.background_color,
     text: data.text_color,
   };
-  applyTheme(document.documentElement, input);
+  applyTheme(root, input);
   try {
     const vars = deriveTheme(input);
     const isLight =
-      document.documentElement.style.colorScheme === "light" ? true : false;
+      root.style.colorScheme === "light" ? true : false;
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ vars, colorScheme: isLight ? "light" : "dark" }),
@@ -41,8 +46,11 @@ export function ThemeApplier() {
         () => load(),
       )
       .subscribe();
+    const onLight = () => load();
+    window.addEventListener("lovable:theme-light", onLight);
     return () => {
       supabase.removeChannel(channel);
+      window.removeEventListener("lovable:theme-light", onLight);
     };
   }, []);
   return null;

@@ -7,7 +7,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
   // Single shared realtime channel for all public CMS tables.
   useRealtimeCms();
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen bg-background">
       <div className="bg-grid pointer-events-none absolute inset-0 opacity-40" />
       <div className="relative flex min-h-screen flex-col">
         <SiteHeader />
