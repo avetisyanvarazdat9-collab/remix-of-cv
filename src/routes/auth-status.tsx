@@ -20,6 +20,7 @@ function AuthStatusPage() {
   const { user, isAdmin, loading, session } = useAuth();
   const [reachOk, setReachOk] = useState<boolean | null>(null);
   const [reachError, setReachError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
   const key =
@@ -52,6 +53,45 @@ function AuthStatusPage() {
       cancelled = true;
     };
   }, [url, key]);
+
+  const buildReport = (): string => {
+    const lines: string[] = [];
+    lines.push("Auth Status Report");
+    lines.push("==================");
+    lines.push("");
+    lines.push("Environment variables:");
+    for (const row of envRows) {
+      lines.push(`  ${row.label}: ${row.value}`);
+    }
+    lines.push("");
+    lines.push("Backend reachability:");
+    if (reachOk === null) {
+      lines.push("  Connectivity: checking…");
+    } else if (reachOk) {
+      lines.push("  Connectivity: OK (query succeeded)");
+    } else {
+      lines.push(`  Connectivity: failed — ${reachError ?? "unknown error"}`);
+    }
+    lines.push("");
+    lines.push("Session:");
+    for (const row of authRows) {
+      lines.push(`  ${row.label}: ${row.value}`);
+      if (row.hint) lines.push(`    Hint: ${row.hint}`);
+    }
+    lines.push("");
+    lines.push("Generated: " + new Date().toISOString());
+    return lines.join("\n");
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(buildReport());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // silently ignore
+    }
+  };
 
   const envRows: Row[] = [
     {
