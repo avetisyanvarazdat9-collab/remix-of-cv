@@ -25,7 +25,7 @@ import {
   Award,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
-import { WorldMap } from "@/components/home/WorldMap";
+
 import {
   profileQuery,
   coursesQuery,
@@ -154,8 +154,9 @@ const PILLARS = [
     title: "International Experience",
     bullets: ["Trainings & workshops across Europe", "Academic exchange programs", "Conference speaking", "Cross-institutional research", "Global professional network"],
     to: null as string | null,
-    isMap: true,
+    isTimeline: true,
   },
+
 ];
 
 const EXPERTISE = [
@@ -185,7 +186,9 @@ function Home() {
   const { data: content } = useSuspenseQuery(homeContentQuery);
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const { data: statsRows } = useSuspenseQuery(statisticsQuery);
+  const { data: intlRows } = useSuspenseQuery(internationalExperienceQuery());
   const loc = useLocalized();
+  const [timelineOpen, setTimelineOpen] = useState(false);
 
   const stats = (statsRows ?? []).map((s: any) => ({
     label: (loc(s, "label") as string) || s.label,
@@ -201,6 +204,17 @@ function Home() {
 
   const visiblePartners = (companies ?? []).filter((c: any) => c.is_visible);
   const featuredCourses = (courses ?? []).filter((c: any) => c.is_visible).slice(0, 6);
+
+  const timelineEntries = [...(intlRows ?? [])].sort((a: any, b: any) => {
+    const ad = a.event_date ? new Date(a.event_date).getTime() : 0;
+    const bd = b.event_date ? new Date(b.event_date).getTime() : 0;
+    return bd - ad;
+  });
+  const countryCount = new Set(
+    (intlRows ?? []).map((r: any) => r.country_code).filter(Boolean),
+  ).size;
+
+
 
   return (
     <PublicLayout>
@@ -362,9 +376,22 @@ function Home() {
                     </li>
                   ))}
                 </ul>
-                {p.isMap ? (
-                  <div className="mt-6">
-                    <WorldMap />
+                {(p as any).isTimeline ? (
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                      <Globe2 className="size-3.5" />
+                      {countryCount > 0 ? `${countryCount} countries` : "Global reach"}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+                      {timelineEntries.length}+ engagements
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setTimelineOpen(true)}
+                      className="hover-lift-sm ml-auto inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:brightness-110"
+                    >
+                      View Timeline <ArrowRight className="size-4" />
+                    </button>
                   </div>
                 ) : (
                   p.to && (
@@ -376,6 +403,7 @@ function Home() {
                     </Link>
                   )
                 )}
+
               </div>
             ))}
           </div>
@@ -563,6 +591,94 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* International Experience Timeline modal */}
+      {timelineOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-backdrop-in"
+          role="dialog"
+          aria-modal="true"
+          aria-label="International experience timeline"
+          onClick={() => setTimelineOpen(false)}
+        >
+          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" />
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-[0_30px_80px_-20px_color-mix(in_oklab,var(--primary)_35%,transparent)] animate-pop-in"
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                  International Experience
+                </p>
+                <h3 className="mt-1 font-display text-xl font-bold text-foreground">
+                  Trainings, talks & workshops — most recent first
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setTimelineOpen(false)}
+                className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="overflow-y-auto px-6 py-6">
+              {timelineEntries.length === 0 ? (
+                <p className="py-8 text-center text-sm text-muted-foreground">
+                  No entries yet.
+                </p>
+              ) : (
+                <ol className="relative space-y-6 border-l border-border pl-6">
+                  {timelineEntries.map((r: any) => {
+                    const year = r.event_date
+                      ? new Date(r.event_date).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                        })
+                      : "";
+                    return (
+                      <li key={r.id} className="relative">
+                        <span className="absolute -left-[29px] top-1.5 flex size-3 items-center justify-center">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/40" />
+                          <span className="relative inline-flex size-3 rounded-full border-2 border-background bg-primary" />
+                        </span>
+                        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                          {year && (
+                            <span className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
+                              {year}
+                            </span>
+                          )}
+                          {r.category && (
+                            <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                              {r.category}
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="mt-1 font-display text-base font-semibold text-foreground">
+                          {(loc(r, "title") as string) || r.title}
+                        </h4>
+                        {(r.organization || r.location) && (
+                          <p className="mt-0.5 text-sm text-muted-foreground">
+                            {[r.organization, r.location].filter(Boolean).join(" · ")}
+                          </p>
+                        )}
+                        {r.description && (
+                          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                            {(loc(r, "description") as string) || r.description}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </PublicLayout>
+
   );
 }
