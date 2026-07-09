@@ -477,40 +477,6 @@ function Home() {
         </div>
       </section>
 
-      {/* ================ LOGO MARQUEE ================ */}
-      {visiblePartners.length > 0 && (
-        <section className="relative overflow-hidden bg-background py-10">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent sm:w-24"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent sm:w-24"
-          />
-          <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
-            {[...visiblePartners, ...visiblePartners].map((p: any, idx: number) => (
-              <div
-                key={`${p.id}-${idx}`}
-                className="mx-8 flex h-16 w-auto shrink-0 items-center justify-center sm:mx-12"
-              >
-                {p.logo_url ? (
-                  <img
-                    src={p.logo_url}
-                    alt={p.name}
-                    className="max-h-10 w-auto object-contain grayscale opacity-60 transition-all duration-300 hover:opacity-100 hover:grayscale-0"
-                  />
-                ) : (
-                  <span className="whitespace-nowrap text-sm font-semibold text-muted-foreground opacity-60 transition-opacity duration-300 hover:opacity-100">
-                    {p.name}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* Optional testimonials strip (keeps admin's testimonial data in front of visitors) */}
       {(testimonials?.length ?? 0) > 0 && (
         <section className="bg-background pb-20">
