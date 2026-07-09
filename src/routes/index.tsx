@@ -373,7 +373,7 @@ function Home() {
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2">
             {PILLARS.map((p) => (
-              <div key={p.title} className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-primary/40">
+              <div key={p.title} className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_20px_40px_-20px_color-mix(in_oklab,var(--primary)_35%,transparent)]">
                 <div className="flex items-center gap-3">
                   <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <p.icon className="size-5" />
