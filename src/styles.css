@@ -309,7 +309,8 @@
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  transform: translateY(-50px);
+  transform: scale(1.07);
+  transform-origin: center top;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -227,7 +227,7 @@ function Home() {
       >
         {/* Portrait image anchored off-screen right on desktop */}
         {profile?.photo_url && (
-          <div className="hero-image absolute top-0 right-0 h-full w-[60%] md:w-[55%] lg:w-[50%]">
+          <div className="hero-image absolute top-0 right-0 h-[80%] w-[60%] md:w-[55%] lg:w-[50%]">
             <img
               src={profile.photo_url}
               alt=""
