@@ -11,6 +11,7 @@ export const Route = createFileRoute("/_authenticated/admin/companies")({
       displayColumns={["name", "role", "start_year", "end_year", "is_current"]}
       fields={[
         { name: "name", label: "Name (brand)", type: "text" },
+        { name: "category", label: "Category badge (e.g. University, Industry)", type: "text" },
         { name: "role", label: "Role", type: "i18n" },
         { name: "description", label: "Description", type: "i18n-textarea" },
         { name: "logo_url", label: "Logo URL", type: "url" },
