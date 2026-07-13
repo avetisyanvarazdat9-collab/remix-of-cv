@@ -450,33 +450,56 @@ function Home() {
               <StatBlock key={s.label} value={s.value} label={s.label} />
             ))}
           </div>
-
-          {visiblePartners.length > 0 && (
-            <div className="mt-16">
-              <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                Trusted by universities, training centers, and organizations
-              </p>
-              <div className="relative mt-6 overflow-hidden">
-                <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent sm:w-24" />
-                <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent sm:w-24" />
-                <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
-                  {[...visiblePartners, ...visiblePartners].map((p: any, idx: number) => (
-                    <div key={`${p.id}-${idx}`} className="mx-8 flex h-16 shrink-0 items-center justify-center sm:mx-12">
-                      {p.logo_url ? (
-                        <img src={p.logo_url} alt={p.name} className="max-h-10 w-auto object-contain grayscale opacity-60 transition-all duration-300 hover:opacity-100 hover:grayscale-0" />
-                      ) : (
-                        <span className="whitespace-nowrap text-sm font-semibold text-muted-foreground opacity-60 transition-opacity duration-300 hover:opacity-100">
-                          {p.name}
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </section>
+
+      {/* ================ SECTION 6 · TRUSTED BY ================ */}
+      {visiblePartners.length > 0 && (
+        <section className="bg-background py-24 sm:py-28 lg:py-32">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="rounded-3xl border-t border-border/50 bg-[#F8FAFC] p-8 dark:bg-muted/30 sm:p-12 lg:p-16">
+              <div className="mx-auto max-w-2xl text-center">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Trusted by</p>
+                <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+                  Universities, Companies & Training Centers
+                </h2>
+                <p className="mt-3 text-sm text-muted-foreground sm:text-base">
+                  Organizations that I have worked with, taught at, collaborated with, or conducted research for.
+                </p>
+              </div>
+              <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {visiblePartners.map((p: any) => (
+                  <a
+                    key={p.id}
+                    href={p.website_url || undefined}
+                    target={p.website_url ? "_blank" : undefined}
+                    rel={p.website_url ? "noopener noreferrer" : undefined}
+                    className="group flex h-full flex-col items-center rounded-[20px] border border-border bg-white p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-[3px] hover:border-primary hover:shadow-md dark:bg-card"
+                  >
+                    <div className="flex h-16 w-full items-center justify-center">
+                      {p.logo_url ? (
+                        <img
+                          src={p.logo_url}
+                          alt=""
+                          className="max-h-12 w-auto object-contain grayscale transition-all duration-300 group-hover:grayscale-0"
+                        />
+                      ) : (
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-lg font-bold text-primary">
+                          {p.name?.slice(0, 1)}
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="mt-4 font-display text-base font-semibold text-foreground">{p.name}</h3>
+                    <span className="mt-2 inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                      {p.category || "Partner"}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Optional testimonials strip (keeps admin's testimonial data in front of visitors) */}
       {(testimonials?.length ?? 0) > 0 && (
