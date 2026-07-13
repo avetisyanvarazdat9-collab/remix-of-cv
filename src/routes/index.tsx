@@ -227,12 +227,13 @@ function Home() {
       >
         {/* Portrait image anchored off-screen right on desktop */}
         {profile?.photo_url && (
-          <img
-            src={profile.photo_url}
-            alt=""
-            className="absolute top-0 right-0 h-full w-auto max-w-none md:-right-[260px] lg:-right-[320px]"
-            aria-hidden
-          />
+          <div className="hero-image absolute top-0 right-0 h-full w-[60%] md:w-[55%] lg:w-[50%]">
+            <img
+              src={profile.photo_url}
+              alt=""
+              aria-hidden
+            />
+          </div>
         )}
         {/* Strong dark readability mask — left 55% is solid */}
         <div
