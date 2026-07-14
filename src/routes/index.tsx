@@ -220,28 +220,52 @@ function Home() {
     <PublicLayout>
       {/* ================ SECTION 1 · HERO (full-bleed background) ================ */}
       <section
-        className="relative overflow-hidden bg-no-repeat"
+        className="relative overflow-hidden"
         style={{
-          backgroundColor: "var(--background)",
+          background:
+            "linear-gradient(90deg, oklch(0.14 0.035 265) 0%, oklch(0.16 0.04 265) 38%, oklch(0.55 0.03 260) 62%, oklch(0.92 0.01 250) 80%, oklch(0.97 0.005 250) 100%)",
         }}
       >
-        {/* Portrait image anchored off-screen right on desktop */}
+        {/* Soft light halo behind portrait for seamless blend */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute top-0 right-0 h-full w-[60%]"
+          style={{
+            background:
+              "radial-gradient(60% 70% at 75% 45%, oklch(1 0 0 / 0.85) 0%, oklch(0.97 0.005 250 / 0.55) 45%, transparent 75%)",
+          }}
+        />
+        {/* Portrait — cropped tightly just below crossed arms */}
         {profile?.photo_url && (
-          <div className="hero-image absolute top-0 right-0 h-[80%] w-[60%] md:w-[55%] lg:w-[50%]">
+          <div className="hero-image absolute bottom-0 right-0 h-[70%] w-[58%] md:h-[80%] md:w-[52%] lg:w-[48%]">
             <img
               src={profile.photo_url}
               alt=""
               aria-hidden
+              style={{
+                objectPosition: "center 12%",
+                transform: "scale(1.18)",
+                transformOrigin: "center top",
+              }}
+            />
+            {/* Blend edges of portrait into light background */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, oklch(0.97 0.005 250) 0%, transparent 20%, transparent 100%), linear-gradient(180deg, transparent 55%, oklch(0.97 0.005 250 / 0.85) 88%, oklch(0.97 0.005 250) 100%)",
+              }}
             />
           </div>
         )}
-        {/* Strong dark readability mask — left 55% is solid */}
+        {/* Left-side dark readability wash (fades into light on right) */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, oklch(0.12 0.03 260 / 0.95) 0%, oklch(0.12 0.03 260 / 0.90) 40%, oklch(0.12 0.03 260 / 0.50) 65%, transparent 85%)",
+              "linear-gradient(90deg, oklch(0.14 0.035 265 / 0.92) 0%, oklch(0.14 0.035 265 / 0.75) 35%, oklch(0.14 0.035 265 / 0.32) 55%, transparent 72%)",
           }}
         />
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:py-40">
