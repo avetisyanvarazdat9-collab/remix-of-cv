@@ -235,26 +235,40 @@ function Home() {
               "radial-gradient(50% 55% at 85% 70%, oklch(0.55 0.12 200 / 0.35) 0%, transparent 70%), radial-gradient(40% 40% at 15% 20%, oklch(0.47 0.22 295 / 0.18) 0%, transparent 70%)",
           }}
         />
-        {/* Portrait — right side, blends into dark gradient */}
+        {/* Portrait — atmospheric vignette blend into the dark background */}
         {profile?.photo_url && (
-          <div className="hero-image pointer-events-none absolute bottom-0 right-0 h-[75%] w-[70%] md:h-[95%] md:w-[58%] lg:w-[52%]">
+          <div className="hero-image pointer-events-none absolute bottom-0 right-0 h-[85%] w-[75%] md:h-[100%] md:w-[62%] lg:w-[56%]">
             <img
               src={profile.photo_url}
               alt=""
               aria-hidden
               style={{
-                objectPosition: "center 10%",
-                transform: "scale(1.15)",
+                objectPosition: "center 8%",
+                transform: "scale(1.18)",
                 transformOrigin: "center top",
+                WebkitMaskImage:
+                  "radial-gradient(ellipse 78% 82% at 68% 42%, #000 30%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.4) 72%, transparent 92%)",
+                maskImage:
+                  "radial-gradient(ellipse 78% 82% at 68% 42%, #000 30%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.4) 72%, transparent 92%)",
+                filter: "saturate(0.92) contrast(1.02)",
               }}
             />
-            {/* Feather left/bottom edges of portrait into the dark gradient */}
+            {/* Color-wash overlay tinting portrait toward the deep navy palette */}
+            <div
+              aria-hidden
+              className="absolute inset-0 mix-blend-multiply"
+              style={{
+                background:
+                  "radial-gradient(ellipse 80% 85% at 68% 42%, transparent 35%, oklch(0.18 0.06 250 / 0.35) 65%, oklch(0.16 0.05 265) 95%)",
+              }}
+            />
+            {/* Directional feather — left, top & bottom fully dissolve */}
             <div
               aria-hidden
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(90deg, oklch(0.18 0.06 250) 0%, oklch(0.18 0.06 250 / 0.85) 14%, oklch(0.18 0.06 250 / 0.35) 32%, transparent 55%), linear-gradient(180deg, transparent 55%, oklch(0.18 0.06 250 / 0.7) 90%, oklch(0.18 0.06 250) 100%)",
+                  "linear-gradient(90deg, oklch(0.16 0.05 265) 0%, oklch(0.16 0.05 265 / 0.7) 18%, transparent 45%), linear-gradient(180deg, transparent 60%, oklch(0.16 0.05 265 / 0.6) 88%, oklch(0.16 0.05 265) 100%), linear-gradient(0deg, oklch(0.16 0.05 265) 0%, transparent 20%)",
               }}
             />
           </div>
