@@ -223,51 +223,52 @@ function Home() {
         className="relative overflow-hidden"
         style={{
           background:
-            "linear-gradient(90deg, oklch(0.14 0.035 265) 0%, oklch(0.16 0.04 265) 38%, oklch(0.55 0.03 260) 62%, oklch(0.92 0.01 250) 80%, oklch(0.97 0.005 250) 100%)",
+            "linear-gradient(115deg, oklch(0.16 0.05 265) 0%, oklch(0.20 0.07 240) 45%, oklch(0.32 0.09 210) 75%, oklch(0.42 0.10 195) 100%)",
         }}
       >
-        {/* Soft light halo behind portrait for seamless blend */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute top-0 right-0 h-full w-[60%]"
-          style={{
-            background:
-              "radial-gradient(60% 70% at 75% 45%, oklch(1 0 0 / 0.85) 0%, oklch(0.97 0.005 250 / 0.55) 45%, transparent 75%)",
-          }}
-        />
-        {/* Portrait — cropped tightly just below crossed arms */}
-        {profile?.photo_url && (
-          <div className="hero-image absolute bottom-0 right-0 h-[70%] w-[58%] md:h-[80%] md:w-[52%] lg:w-[48%]">
-            <img
-              src={profile.photo_url}
-              alt=""
-              aria-hidden
-              style={{
-                objectPosition: "center 12%",
-                transform: "scale(1.18)",
-                transformOrigin: "center top",
-              }}
-            />
-            {/* Blend edges of portrait into light background */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(90deg, oklch(0.97 0.005 250) 0%, transparent 20%, transparent 100%), linear-gradient(180deg, transparent 55%, oklch(0.97 0.005 250 / 0.85) 88%, oklch(0.97 0.005 250) 100%)",
-              }}
-            />
-          </div>
-        )}
-        {/* Left-side dark readability wash (fades into light on right) */}
+        {/* Ambient teal + purple glow accents */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, oklch(0.14 0.035 265 / 0.92) 0%, oklch(0.14 0.035 265 / 0.75) 35%, oklch(0.14 0.035 265 / 0.32) 55%, transparent 72%)",
+              "radial-gradient(50% 55% at 85% 70%, oklch(0.55 0.12 200 / 0.35) 0%, transparent 70%), radial-gradient(40% 40% at 15% 20%, oklch(0.47 0.22 295 / 0.18) 0%, transparent 70%)",
           }}
         />
+        {/* Portrait — right side, blends into dark gradient */}
+        {profile?.photo_url && (
+          <div className="hero-image pointer-events-none absolute bottom-0 right-0 h-[75%] w-[70%] md:h-[95%] md:w-[58%] lg:w-[52%]">
+            <img
+              src={profile.photo_url}
+              alt=""
+              aria-hidden
+              style={{
+                objectPosition: "center 10%",
+                transform: "scale(1.15)",
+                transformOrigin: "center top",
+              }}
+            />
+            {/* Feather left/bottom edges of portrait into the dark gradient */}
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, oklch(0.18 0.06 250) 0%, oklch(0.18 0.06 250 / 0.85) 14%, oklch(0.18 0.06 250 / 0.35) 32%, transparent 55%), linear-gradient(180deg, transparent 55%, oklch(0.18 0.06 250 / 0.7) 90%, oklch(0.18 0.06 250) 100%)",
+              }}
+            />
+          </div>
+        )}
+        {/* Left-side readability wash */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, oklch(0.14 0.04 260 / 0.85) 0%, oklch(0.14 0.04 260 / 0.55) 40%, oklch(0.14 0.04 260 / 0.15) 60%, transparent 75%)",
+          }}
+        />
+
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:py-40">
           <div className="max-w-2xl">
             <span
