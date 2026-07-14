@@ -223,21 +223,19 @@ function Home() {
         className="relative overflow-hidden"
         style={{
           background:
-            "linear-gradient(115deg, oklch(0.16 0.05 265) 0%, oklch(0.20 0.07 240) 45%, oklch(0.32 0.09 210) 75%, oklch(0.42 0.10 195) 100%)",
+            "linear-gradient(115deg, oklch(0.98 0.003 260) 0%, oklch(0.96 0.005 250) 45%, oklch(0.95 0.008 220) 75%, oklch(0.94 0.012 200) 100%)",
         }}
       >
-        {/* Ambient teal + purple glow accents */}
+        {/* Ambient soft tint accents */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(50% 55% at 85% 70%, oklch(0.55 0.12 200 / 0.35) 0%, transparent 70%), radial-gradient(40% 40% at 15% 20%, oklch(0.47 0.22 295 / 0.18) 0%, transparent 70%)",
+              "radial-gradient(50% 55% at 85% 70%, oklch(0.75 0.08 200 / 0.20) 0%, transparent 70%), radial-gradient(40% 40% at 15% 20%, oklch(0.55 0.18 295 / 0.10) 0%, transparent 70%)",
           }}
         />
-        {/* Portrait — atmospheric vignette blend into the dark background.
-            Mobile: sits as a soft top backdrop behind the text.
-            Desktop: anchored to the right, blended into the gradient. */}
+        {/* Portrait — atmospheric vignette blend into the light background */}
         {profile?.photo_url && (
           <div className="hero-image pointer-events-none absolute right-0 top-0 h-[55%] w-full opacity-70 sm:opacity-90 md:bottom-0 md:top-auto md:h-[100%] md:w-[62%] md:opacity-100 lg:w-[56%]">
             <img
@@ -252,36 +250,36 @@ function Home() {
                   "radial-gradient(ellipse 78% 82% at 68% 42%, #000 30%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.4) 72%, transparent 92%)",
                 maskImage:
                   "radial-gradient(ellipse 78% 82% at 68% 42%, #000 30%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.4) 72%, transparent 92%)",
-                filter: "saturate(0.92) contrast(1.02)",
+                filter: "saturate(0.95) contrast(1.02) brightness(1.03)",
               }}
             />
-            {/* Color-wash overlay tinting portrait toward the deep navy palette */}
+            {/* Light color-wash overlay tinting portrait toward the soft gray palette */}
             <div
               aria-hidden
-              className="absolute inset-0 mix-blend-multiply"
+              className="absolute inset-0 mix-blend-screen"
               style={{
                 background:
-                  "radial-gradient(ellipse 80% 85% at 68% 42%, transparent 35%, oklch(0.18 0.06 250 / 0.35) 65%, oklch(0.16 0.05 265) 95%)",
+                  "radial-gradient(ellipse 80% 85% at 68% 42%, transparent 35%, oklch(0.96 0.005 250 / 0.35) 65%, oklch(0.96 0.005 250) 95%)",
               }}
             />
-            {/* Directional feather — dissolves into background on all sides */}
+            {/* Directional feather — dissolves into light background on all sides */}
             <div
               aria-hidden
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(90deg, oklch(0.16 0.05 265) 0%, oklch(0.16 0.05 265 / 0.7) 18%, transparent 45%), linear-gradient(180deg, transparent 55%, oklch(0.16 0.05 265 / 0.65) 85%, oklch(0.16 0.05 265) 100%), linear-gradient(0deg, oklch(0.16 0.05 265) 0%, transparent 20%)",
+                  "linear-gradient(90deg, oklch(0.96 0.005 250) 0%, oklch(0.96 0.005 250 / 0.7) 18%, transparent 45%), linear-gradient(180deg, transparent 55%, oklch(0.96 0.005 250 / 0.65) 85%, oklch(0.96 0.005 250) 100%), linear-gradient(0deg, oklch(0.96 0.005 250) 0%, transparent 20%)",
               }}
             />
           </div>
         )}
-        {/* Readability wash — stronger on mobile (top-down), directional on desktop */}
+        {/* Readability wash — light overlay, stronger on mobile */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, oklch(0.14 0.04 260 / 0.55) 0%, oklch(0.14 0.04 260 / 0.85) 45%, oklch(0.14 0.04 260 / 0.9) 100%)",
+              "linear-gradient(180deg, oklch(0.97 0.005 250 / 0.55) 0%, oklch(0.97 0.005 250 / 0.85) 45%, oklch(0.97 0.005 250 / 0.9) 100%)",
           }}
         />
         <div
@@ -289,7 +287,7 @@ function Home() {
           className="pointer-events-none absolute inset-0 hidden md:block"
           style={{
             background:
-              "linear-gradient(90deg, oklch(0.14 0.04 260 / 0.85) 0%, oklch(0.14 0.04 260 / 0.55) 40%, oklch(0.14 0.04 260 / 0.15) 60%, transparent 75%)",
+              "linear-gradient(90deg, oklch(0.97 0.005 250 / 0.85) 0%, oklch(0.97 0.005 250 / 0.55) 40%, oklch(0.97 0.005 250 / 0.15) 60%, transparent 75%)",
           }}
         />
 
@@ -306,19 +304,19 @@ function Home() {
               PhD · AI Educator · CTO · Professor
             </span>
             <h1
-              className="animate-fade-in-up mt-5 font-display text-[2rem] font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl"
+              className="animate-fade-in-up mt-5 font-display text-[2rem] font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
               style={{ animationDelay: "120ms", animationDuration: "600ms" }}
             >
               Bridging Research, Education, and Industry Through Intelligent Technologies
             </h1>
             <p
-              className="animate-fade-in-up mt-4 text-base text-white/90 sm:mt-5 sm:text-lg"
+              className="animate-fade-in-up mt-4 text-base text-foreground/85 sm:mt-5 sm:text-lg"
               style={{ animationDelay: "220ms", animationDuration: "600ms" }}
             >
               Educator · Researcher · Technologist · Entrepreneur · Innovator
             </p>
             <p
-              className="animate-fade-in-up mt-4 max-w-xl text-sm leading-relaxed text-white/75 sm:text-lg"
+              className="animate-fade-in-up mt-4 max-w-xl text-sm leading-relaxed text-foreground/70 sm:text-lg"
               style={{ animationDelay: "300ms", animationDuration: "600ms" }}
             >
               A place for personalized AI solutions — courses, consulting, and collaboration for individuals, universities, and organizations across Armenia and beyond.
@@ -335,13 +333,13 @@ function Home() {
               </Link>
               <Link
                 to="/transform"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-foreground/20 bg-foreground/5 px-5 py-2.5 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-foreground/10 sm:w-auto"
               >
                 Request a Consultation
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/15 bg-transparent px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:text-white sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-foreground/15 bg-transparent px-5 py-2.5 text-sm font-medium text-foreground/75 transition-colors hover:text-foreground sm:w-auto"
               >
                 <Mail className="size-4" /> Contact Me
               </Link>
@@ -351,7 +349,7 @@ function Home() {
                 href={profile.linkedin_url}
                 target="_blank"
                 rel="noreferrer"
-                className="animate-fade-in-up mt-6 inline-flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-primary hover:text-primary"
+                className="animate-fade-in-up mt-6 inline-flex size-10 items-center justify-center rounded-full border border-foreground/20 bg-foreground/5 text-foreground/80 backdrop-blur-sm transition-colors hover:border-primary hover:text-primary"
                 style={{ animationDelay: "460ms", animationDuration: "600ms" }}
                 aria-label="LinkedIn"
               >
