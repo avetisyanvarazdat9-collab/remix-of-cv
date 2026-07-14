@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VideoCoursesRouteImport } from './routes/video-courses'
 import { Route as TransformRouteImport } from './routes/transform'
+import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as TalksRouteImport } from './routes/talks'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -62,6 +63,11 @@ const VideoCoursesRoute = VideoCoursesRouteImport.update({
 const TransformRoute = TransformRouteImport.update({
   id: '/transform',
   path: '/transform',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TimelineRoute = TimelineRouteImport.update({
+  id: '/timeline',
+  path: '/timeline',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TalksRoute = TalksRouteImport.update({
@@ -306,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
+  '/timeline': typeof TimelineRoute
   '/transform': typeof TransformRoute
   '/video-courses': typeof VideoCoursesRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -351,6 +358,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
+  '/timeline': typeof TimelineRoute
   '/transform': typeof TransformRoute
   '/video-courses': typeof VideoCoursesRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -398,6 +406,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
+  '/timeline': typeof TimelineRoute
   '/transform': typeof TransformRoute
   '/video-courses': typeof VideoCoursesRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -445,6 +454,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/projects'
     | '/talks'
+    | '/timeline'
     | '/transform'
     | '/video-courses'
     | '/admin'
@@ -490,6 +500,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/projects'
     | '/talks'
+    | '/timeline'
     | '/transform'
     | '/video-courses'
     | '/admin'
@@ -536,6 +547,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/projects'
     | '/talks'
+    | '/timeline'
     | '/transform'
     | '/video-courses'
     | '/_authenticated/admin'
@@ -583,6 +595,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
   TalksRoute: typeof TalksRoute
+  TimelineRoute: typeof TimelineRoute
   TransformRoute: typeof TransformRoute
   VideoCoursesRoute: typeof VideoCoursesRouteWithChildren
 }
@@ -601,6 +614,13 @@ declare module '@tanstack/react-router' {
       path: '/transform'
       fullPath: '/transform'
       preLoaderRoute: typeof TransformRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/timeline': {
+      id: '/timeline'
+      path: '/timeline'
+      fullPath: '/timeline'
+      preLoaderRoute: typeof TimelineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/talks': {
@@ -1025,6 +1045,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProjectsRoute: ProjectsRouteWithChildren,
   TalksRoute: TalksRoute,
+  TimelineRoute: TimelineRoute,
   TransformRoute: TransformRoute,
   VideoCoursesRoute: VideoCoursesRouteWithChildren,
 }
