@@ -235,15 +235,17 @@ function Home() {
               "radial-gradient(50% 55% at 85% 70%, oklch(0.55 0.12 200 / 0.35) 0%, transparent 70%), radial-gradient(40% 40% at 15% 20%, oklch(0.47 0.22 295 / 0.18) 0%, transparent 70%)",
           }}
         />
-        {/* Portrait — atmospheric vignette blend into the dark background */}
+        {/* Portrait — atmospheric vignette blend into the dark background.
+            Mobile: sits as a soft top backdrop behind the text.
+            Desktop: anchored to the right, blended into the gradient. */}
         {profile?.photo_url && (
-          <div className="hero-image pointer-events-none absolute bottom-0 right-0 h-[85%] w-[75%] md:h-[100%] md:w-[62%] lg:w-[56%]">
+          <div className="hero-image pointer-events-none absolute right-0 top-0 h-[55%] w-full opacity-70 sm:opacity-90 md:bottom-0 md:top-auto md:h-[100%] md:w-[62%] md:opacity-100 lg:w-[56%]">
             <img
               src={profile.photo_url}
               alt=""
               aria-hidden
+              className="object-[center_12%] md:object-[center_8%]"
               style={{
-                objectPosition: "center 8%",
                 transform: "scale(1.18)",
                 transformOrigin: "center top",
                 WebkitMaskImage:
@@ -262,31 +264,39 @@ function Home() {
                   "radial-gradient(ellipse 80% 85% at 68% 42%, transparent 35%, oklch(0.18 0.06 250 / 0.35) 65%, oklch(0.16 0.05 265) 95%)",
               }}
             />
-            {/* Directional feather — left, top & bottom fully dissolve */}
+            {/* Directional feather — dissolves into background on all sides */}
             <div
               aria-hidden
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(90deg, oklch(0.16 0.05 265) 0%, oklch(0.16 0.05 265 / 0.7) 18%, transparent 45%), linear-gradient(180deg, transparent 60%, oklch(0.16 0.05 265 / 0.6) 88%, oklch(0.16 0.05 265) 100%), linear-gradient(0deg, oklch(0.16 0.05 265) 0%, transparent 20%)",
+                  "linear-gradient(90deg, oklch(0.16 0.05 265) 0%, oklch(0.16 0.05 265 / 0.7) 18%, transparent 45%), linear-gradient(180deg, transparent 55%, oklch(0.16 0.05 265 / 0.65) 85%, oklch(0.16 0.05 265) 100%), linear-gradient(0deg, oklch(0.16 0.05 265) 0%, transparent 20%)",
               }}
             />
           </div>
         )}
-        {/* Left-side readability wash */}
+        {/* Readability wash — stronger on mobile (top-down), directional on desktop */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, oklch(0.14 0.04 260 / 0.55) 0%, oklch(0.14 0.04 260 / 0.85) 45%, oklch(0.14 0.04 260 / 0.9) 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 hidden md:block"
           style={{
             background:
               "linear-gradient(90deg, oklch(0.14 0.04 260 / 0.85) 0%, oklch(0.14 0.04 260 / 0.55) 40%, oklch(0.14 0.04 260 / 0.15) 60%, transparent 75%)",
           }}
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:py-40">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-16 pt-24 sm:px-6 sm:py-32 lg:py-40">
           <div className="max-w-2xl">
             <span
-              className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary backdrop-blur-sm"
+              className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-medium text-primary backdrop-blur-sm sm:text-xs"
               style={{ animationDelay: "40ms" }}
             >
               <span className="relative flex size-2">
@@ -296,42 +306,42 @@ function Home() {
               PhD · AI Educator · CTO · Professor
             </span>
             <h1
-              className="animate-fade-in-up mt-5 font-display text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl"
+              className="animate-fade-in-up mt-5 font-display text-[2rem] font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl"
               style={{ animationDelay: "120ms", animationDuration: "600ms" }}
             >
               Bridging Research, Education, and Industry Through Intelligent Technologies
             </h1>
             <p
-              className="animate-fade-in-up mt-5 text-lg text-white/90"
+              className="animate-fade-in-up mt-4 text-base text-white/90 sm:mt-5 sm:text-lg"
               style={{ animationDelay: "220ms", animationDuration: "600ms" }}
             >
               Educator · Researcher · Technologist · Entrepreneur · Innovator
             </p>
             <p
-              className="animate-fade-in-up mt-4 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg"
+              className="animate-fade-in-up mt-4 max-w-xl text-sm leading-relaxed text-white/75 sm:text-lg"
               style={{ animationDelay: "300ms", animationDuration: "600ms" }}
             >
               A place for personalized AI solutions — courses, consulting, and collaboration for individuals, universities, and organizations across Armenia and beyond.
             </p>
             <div
-              className="animate-fade-in-up mt-8 flex flex-wrap gap-3"
+              className="animate-fade-in-up mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap"
               style={{ animationDelay: "380ms", animationDuration: "600ms" }}
             >
               <Link
                 to="/learn"
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_0_30px_-5px_color-mix(in_oklab,var(--primary)_70%,transparent)] transition-transform hover:-translate-y-0.5"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_0_30px_-5px_color-mix(in_oklab,var(--primary)_70%,transparent)] transition-transform hover:-translate-y-0.5 sm:w-auto"
               >
                 Explore Courses <ArrowRight className="size-4" />
               </Link>
               <Link
                 to="/transform"
-                className="inline-flex items-center gap-2 rounded-md border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:w-auto"
               >
                 Request a Consultation
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-transparent px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:text-white"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/15 bg-transparent px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:text-white sm:w-auto"
               >
                 <Mail className="size-4" /> Contact Me
               </Link>
