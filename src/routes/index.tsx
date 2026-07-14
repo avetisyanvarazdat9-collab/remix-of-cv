@@ -188,7 +188,7 @@ function Home() {
   const { data: statsRows } = useSuspenseQuery(statisticsQuery);
   const { data: intlRows } = useSuspenseQuery(internationalExperienceQuery());
   const loc = useLocalized();
-  const [timelineOpen, setTimelineOpen] = useState(false);
+  
 
   const stats = (statsRows ?? []).map((s: any) => ({
     label: (loc(s, "label") as string) || s.label,
