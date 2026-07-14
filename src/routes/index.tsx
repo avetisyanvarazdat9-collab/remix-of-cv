@@ -405,13 +405,12 @@ function Home() {
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
                       {timelineEntries.length}+ engagements
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setTimelineOpen(true)}
+                    <Link
+                      to="/timeline"
                       className="hover-lift-sm ml-auto inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:brightness-110"
                     >
                       View Timeline <ArrowRight className="size-4" />
-                    </button>
+                    </Link>
                   </div>
                 ) : (
                   p.to && (
