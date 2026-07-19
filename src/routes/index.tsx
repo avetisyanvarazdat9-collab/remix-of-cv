@@ -99,13 +99,15 @@ export const Route = createFileRoute("/")({
 
 // -- Counters ---------------------------------------------------------------
 function useCounter(target: string) {
-  const [n, setN] = useState(0);
   const match = target.match(/(\d+)/);
   const num = match ? parseInt(match[1], 10) : 0;
   const suffix = match ? target.slice(match.index! + match[1].length) : target;
   const prefix = match ? target.slice(0, match.index!) : "";
+  // Initialize to the final value so no "0" or "0+" ever renders on SSR / first paint.
+  const [n, setN] = useState(num);
   useEffect(() => {
     if (!num) return;
+    setN(0);
     const start = performance.now();
     const dur = 1200;
     let raf = 0;
