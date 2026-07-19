@@ -1,6 +1,6 @@
 -- =====================================================================
 -- Production fix: admin RLS on all CMS tables + storage bucket policies.
--- No function dependencies (no private.is_admin / private.has_role).
+-- No role-helper function dependencies.
 -- Every policy inlines an EXISTS check against public.user_roles.
 -- Run in Supabase SQL editor. Idempotent; safe to re-run.
 -- =====================================================================
@@ -15,10 +15,7 @@ DO $$ BEGIN
   END IF;
 END $$;
 
--- ---------- 1. Drop any policy that referenced the missing helpers ----------
--- These policies were created by earlier migrations that assumed
--- private.is_admin() or private.has_role() existed. Drop them so the fresh
--- inline policies below can be created cleanly.
+-- ---------- 1. Drop earlier generated admin policies ----------
 DO $$
 DECLARE r record;
 BEGIN
@@ -26,10 +23,13 @@ BEGIN
     SELECT schemaname, tablename, policyname
     FROM pg_policies
     WHERE schemaname IN ('public','storage')
-      AND (
-        qual        LIKE '%private.is_admin%' OR with_check LIKE '%private.is_admin%'
-     OR qual        LIKE '%private.has_role%' OR with_check LIKE '%private.has_role%'
-     OR qual        LIKE '%public.has_role%'  OR with_check LIKE '%public.has_role%'
+      AND policyname IN (
+        'cms_admin_access',
+        'portfolio_assets_admin_access',
+        'portfolio_admin_insert',
+        'portfolio_admin_update',
+        'portfolio_admin_delete',
+        'admins manage user_roles'
       )
   LOOP
     EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', r.policyname, r.schemaname, r.tablename);
@@ -57,9 +57,9 @@ BEGIN
     EXECUTE format('GRANT ALL ON public.%I TO service_role', t);
     EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', t);
 
-    EXECUTE format('DROP POLICY IF EXISTS admin_all ON public.%I', t);
+    EXECUTE format('DROP POLICY IF EXISTS cms_admin_access ON public.%I', t);
     EXECUTE format($f$
-      CREATE POLICY admin_all ON public.%I
+      CREATE POLICY cms_admin_access ON public.%I
         FOR ALL TO authenticated
         USING      (EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'))
         WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'))
@@ -132,7 +132,7 @@ CREATE POLICY portfolio_admin_delete ON storage.objects
 
 -- ---------- 6. Verification ----------
 -- After running, these should all succeed / return the expected rows:
---   SELECT policyname FROM pg_policies WHERE schemaname='public' AND policyname='admin_all';
+--   SELECT policyname FROM pg_policies WHERE schemaname='public' AND policyname='cms_admin_access';
 --   SELECT policyname FROM pg_policies WHERE schemaname='storage' AND policyname LIKE 'portfolio_%';
 --   SELECT u.email, r.role FROM auth.users u
 --     JOIN public.user_roles r ON r.user_id = u.id

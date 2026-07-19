@@ -8,9 +8,10 @@ export const Route = createFileRoute("/_authenticated/admin/courses")({
       description="Translatable fields show HY / EN / RU tabs."
       table="courses"
       orderBy={{ column: "display_order" }}
-      displayColumns={["title", "level", "duration", "is_visible"]}
+      displayColumns={["title", "slug", "level", "duration", "is_visible"]}
       fields={[
         { name: "title", label: "Title", type: "i18n", required: true },
+        { name: "slug", label: "Slug", type: "text", placeholder: "auto-generated-from-title" },
         { name: "description", label: "Description", type: "i18n-textarea" },
         { name: "level", label: "Level", type: "i18n" },
         { name: "duration", label: "Duration", type: "i18n" },

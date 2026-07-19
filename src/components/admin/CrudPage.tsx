@@ -29,6 +29,78 @@ export interface CrudPageProps {
 }
 
 type Row = Record<string, any>;
+const ASSET_BUCKET = "portfolio-assets";
+const ZERO_DEFAULT_FIELDS = new Set(["display_order", "order_index", "level", "read_time_minutes"]);
+const TRUE_DEFAULT_FIELDS = new Set(["is_visible"]);
+const FALSE_DEFAULT_FIELDS = new Set(["is_current", "is_published", "featured", "is_featured", "is_read"]);
+
+function isBlank(value: unknown) {
+  return value === null || value === undefined || (typeof value === "string" && value.trim() === "");
+}
+
+function slugify(value: unknown, fallback = "item") {
+  const base = String(value ?? "")
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/[^a-z0-9\u0400-\u04FF\u0530-\u058F\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  return base || fallback;
+}
+
+function coerceEmptyValue(table: string, field: Field, value: unknown) {
+  if (!isBlank(value)) return value;
+  if (field.type === "tags") return [];
+  if (field.type === "number" && ZERO_DEFAULT_FIELDS.has(field.name)) return 0;
+  if (field.type === "boolean" && TRUE_DEFAULT_FIELDS.has(field.name)) return true;
+  if (field.type === "boolean" && FALSE_DEFAULT_FIELDS.has(field.name)) return false;
+  if (table === "navigation_menu" && field.name === "label_en") return "Navigation item";
+  return null;
+}
+
+function applyTablePayloadDefaults(table: string, payload: Row) {
+  if (table === "navigation_menu") {
+    const label = String(payload.label_en || payload.label_hy || payload.label_ru || payload.path || "Navigation item").trim();
+    payload.label = label;
+    payload.label_en = String(payload.label_en || label).trim();
+    payload.label_hy = String(payload.label_hy || label).trim();
+    payload.label_ru = String(payload.label_ru || label).trim();
+    payload.path = String(payload.path || "/").trim();
+    payload.order_index = Number(payload.order_index ?? 0);
+    payload.is_visible = payload.is_visible ?? true;
+  }
+
+  if ((table === "courses" || table === "video_courses" || table === "blog_posts" || table === "projects") && isBlank(payload.slug)) {
+    payload.slug = slugify(payload.title, table === "video_courses" ? "video-course" : table.slice(0, -1) || "item");
+  }
+
+  if (table === "courses") {
+    payload.topics = Array.isArray(payload.topics) ? payload.topics : [];
+    payload.learning_outcomes = Array.isArray(payload.learning_outcomes) ? payload.learning_outcomes : [];
+    payload.prerequisites = Array.isArray(payload.prerequisites) ? payload.prerequisites : [];
+    payload.is_featured = payload.is_featured ?? false;
+  }
+
+  if (table === "video_courses") {
+    payload.topics = Array.isArray(payload.topics) ? payload.topics : [];
+  }
+
+  if (table === "blog_posts") payload.is_published = payload.is_published ?? false;
+  if (table === "projects") payload.featured = payload.featured ?? false;
+  if ("is_visible" in payload) payload.is_visible = payload.is_visible ?? true;
+}
+
+function canAutoDefaultRequiredField(table: string, fieldName: string) {
+  if ((table === "courses" || table === "video_courses" || table === "blog_posts" || table === "projects") && fieldName === "slug") {
+    return true;
+  }
+  if (table === "navigation_menu" && ["label_hy", "label_en", "label_ru", "label"].includes(fieldName)) {
+    return true;
+  }
+  return false;
+}
 
 export function CrudPage({ title, description, table, fields, orderBy, displayColumns, filter, defaults, hideHeader }: CrudPageProps) {
   const [rows, setRows] = useState<Row[]>([]);
@@ -72,13 +144,20 @@ export function CrudPage({ title, description, table, fields, orderBy, displayCo
           en: (bag.en ?? "").trim(),
           ru: (bag.ru ?? "").trim(),
         };
+        if (f.required && !tri.hy && !tri.en && !tri.ru) {
+          toast.error(`${f.label} is required`);
+          return;
+        }
         i18nBag[f.name] = tri;
         // Write English (or first non-empty) into the plain column for fallback / legacy queries.
-        payload[f.name] = tri.en || tri.hy || tri.ru || null;
+        payload[f.name] = tri.en || tri.hy || tri.ru || (f.required ? f.label : null);
         continue;
       }
-      let v = values[f.name];
-      if (v === "" || v === undefined) v = null;
+      if (f.required && isBlank(values[f.name]) && !canAutoDefaultRequiredField(table, f.name)) {
+        toast.error(`${f.label} is required`);
+        return;
+      }
+      let v = coerceEmptyValue(table, f, values[f.name]);
       if (f.type === "number" && v !== null) v = Number(v);
       if (f.type === "boolean") v = !!v;
       if (f.type === "tags" && typeof v === "string")
@@ -88,6 +167,7 @@ export function CrudPage({ title, description, table, fields, orderBy, displayCo
     if (fields.some((f) => f.type === "i18n" || f.type === "i18n-textarea")) {
       payload.i18n = i18nBag;
     }
+    applyTablePayloadDefaults(table, payload);
     let error;
     if (editing?.id) {
       ({ error } = await supabase.from(table as any).update(payload).eq("id", editing.id));
@@ -400,7 +480,7 @@ function ImageUploadField({ value, onChange, required }: { value: string; onChan
     setUploading(true);
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "png";
     const path = `${crypto.randomUUID()}.${ext}`;
-    const { error: uploadError } = await supabase.storage.from("site-assets").upload(path, file, {
+    const { error: uploadError } = await supabase.storage.from(ASSET_BUCKET).upload(path, file, {
       cacheControl: "3600",
       upsert: false,
       contentType: file.type,
@@ -411,7 +491,7 @@ function ImageUploadField({ value, onChange, required }: { value: string; onChan
       toast.error(uploadError.message);
       return;
     }
-    const { data } = supabase.storage.from("site-assets").getPublicUrl(path);
+    const { data } = supabase.storage.from(ASSET_BUCKET).getPublicUrl(path);
     onChange(data.publicUrl);
     setUploading(false);
     toast.success("Image uploaded");

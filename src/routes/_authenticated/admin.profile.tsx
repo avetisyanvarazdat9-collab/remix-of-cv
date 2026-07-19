@@ -42,6 +42,10 @@ const LANG_TABS: { code: "hy" | "en" | "ru"; label: string }[] = [
 
 const BUCKET = "portfolio-assets";
 const EXPECTED_PROJECT_REF = (import.meta.env.VITE_EXPECTED_SUPABASE_PROJECT_REF as string | undefined) || undefined;
+const REQUIRED_PROFILE_DEFAULTS = {
+  name: "Dr. Varazdat Avetisyan",
+  title: "AI/ML Researcher, Lecturer & Entrepreneur",
+};
 
 function getProjectRef(): string | null {
   const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?? "";
@@ -170,9 +174,11 @@ function ProfileEditor() {
     for (const f of fields) {
       if (f.type === "i18n" || f.type === "i18n-textarea") {
         const tri = i18n[f.name as string] ?? { hy: "", en: "", ru: "" };
-        payload[f.name] = tri.en || tri.hy || tri.ru || null;
+        payload[f.name] = tri.en || tri.hy || tri.ru || (REQUIRED_PROFILE_DEFAULTS as Record<string, string>)[f.name as string] || null;
       }
     }
+    payload.name = payload.name || REQUIRED_PROFILE_DEFAULTS.name;
+    payload.title = payload.title || REQUIRED_PROFILE_DEFAULTS.title;
     payload.i18n = i18n;
     const { error } = id
       ? await supabase.from("profile").update(payload).eq("id", id)
