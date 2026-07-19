@@ -26,7 +26,7 @@ const fields: FieldDef[] = [
   { name: "bio", label: "Bio", type: "i18n-textarea" },
   { name: "email", label: "Email" },
   { name: "phone", label: "Phone" },
-  { name: "photo_url", label: "Photo URL", type: "url" },
+  { name: "photo_url", label: "Profile Photo", type: "image" },
   { name: "cv_url", label: "CV URL", type: "url" },
   { name: "github_url", label: "GitHub URL", type: "url" },
   { name: "linkedin_url", label: "LinkedIn URL", type: "url" },
