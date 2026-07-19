@@ -307,3 +307,41 @@ function I18nInput({ value, onChange, multiline }: { value: Tri; onChange: (v: T
     </div>
   );
 }
+
+function PreflightBanner({ preflight, onRetry }: { preflight: Preflight; onRetry: () => void }) {
+  const { checking, projectRef, projectOk, bucketOk, error } = preflight;
+  const ok = projectOk && bucketOk;
+  const tone = checking
+    ? "border-border bg-background/40 text-muted-foreground"
+    : ok
+      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+      : "border-destructive/50 bg-destructive/10 text-destructive";
+  return (
+    <div className={`mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm ${tone}`}>
+      <div className="space-y-0.5">
+        <div className="font-medium">
+          {checking
+            ? "Checking Supabase connection…"
+            : ok
+              ? `Connected to project "${projectRef}" · bucket "${BUCKET}" ready`
+              : "Storage preflight failed"}
+        </div>
+        {!checking && !ok && (
+          <div className="text-xs opacity-90">
+            Project: <code>{projectRef ?? "unknown"}</code>
+            {EXPECTED_PROJECT_REF ? <> · expected <code>{EXPECTED_PROJECT_REF}</code></> : null}
+            {" · "}Bucket "{BUCKET}": {bucketOk ? "ok" : "missing"}
+            {error ? <> · {error}</> : null}
+          </div>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="rounded-md border border-current/30 px-3 py-1 text-xs font-medium hover:bg-current/10"
+      >
+        Re-check
+      </button>
+    </div>
+  );
+}
