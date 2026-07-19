@@ -24,8 +24,8 @@ BEGIN
     FROM pg_policies
     WHERE schemaname IN ('public','storage')
       AND policyname IN (
-        'admin_all',
-        'portfolio_assets_admin_all',
+        'cms_admin_access',
+        'portfolio_assets_admin_access',
         'portfolio_admin_insert',
         'portfolio_admin_update',
         'portfolio_admin_delete',
@@ -57,9 +57,9 @@ BEGIN
     EXECUTE format('GRANT ALL ON public.%I TO service_role', t);
     EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', t);
 
-    EXECUTE format('DROP POLICY IF EXISTS admin_all ON public.%I', t);
+    EXECUTE format('DROP POLICY IF EXISTS cms_admin_access ON public.%I', t);
     EXECUTE format($f$
-      CREATE POLICY admin_all ON public.%I
+      CREATE POLICY cms_admin_access ON public.%I
         FOR ALL TO authenticated
         USING      (EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'))
         WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'))
@@ -132,7 +132,7 @@ CREATE POLICY portfolio_admin_delete ON storage.objects
 
 -- ---------- 6. Verification ----------
 -- After running, these should all succeed / return the expected rows:
---   SELECT policyname FROM pg_policies WHERE schemaname='public' AND policyname='admin_all';
+--   SELECT policyname FROM pg_policies WHERE schemaname='public' AND policyname='cms_admin_access';
 --   SELECT policyname FROM pg_policies WHERE schemaname='storage' AND policyname LIKE 'portfolio_%';
 --   SELECT u.email, r.role FROM auth.users u
 --     JOIN public.user_roles r ON r.user_id = u.id
