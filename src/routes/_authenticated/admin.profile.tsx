@@ -126,7 +126,50 @@ function ProfileEditor() {
           return (
             <div key={f.name as string} className={colSpan}>
               <label className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">{f.label}</label>
-              {f.type === "i18n" || f.type === "i18n-textarea" ? (
+              {f.type === "image" ? (
+                <div className="flex flex-col gap-3 rounded-md border border-border bg-background/40 p-3 sm:flex-row sm:items-center">
+                  {(data[f.name] as string) ? (
+                    <img
+                      src={(data[f.name] as string) ?? ""}
+                      alt="Profile preview"
+                      className="h-24 w-24 rounded-md border border-border object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-24 w-24 items-center justify-center rounded-md border border-dashed border-border text-xs text-muted-foreground">
+                      No image
+                    </div>
+                  )}
+                  <div className="flex-1 space-y-2">
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-input bg-background/60 px-3 py-2 text-sm hover:bg-accent">
+                      {uploadingPhoto ? (
+                        <>
+                          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" className="opacity-25" />
+                            <path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="4" className="opacity-75" />
+                          </svg>
+                          Uploading…
+                        </>
+                      ) : (
+                        <>Choose image…</>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                        disabled={uploadingPhoto}
+                        onChange={handlePhotoUpload}
+                        className="hidden"
+                      />
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="…or paste an image URL"
+                      value={(data[f.name] as string) ?? ""}
+                      onChange={(e) => setData({ ...data, [f.name]: e.target.value })}
+                      className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-xs outline-none focus:border-primary"
+                    />
+                  </div>
+                </div>
+              ) : f.type === "i18n" || f.type === "i18n-textarea" ? (
                 <I18nInput
                   value={i18n[f.name as string] ?? { hy: "", en: "", ru: "" }}
                   multiline={f.type === "i18n-textarea"}
