@@ -54,6 +54,7 @@ import { Route as AuthenticatedAdminCompaniesRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminCertificationsRouteImport } from './routes/_authenticated/admin.certifications'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin.blog'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
 const VideoCoursesRoute = VideoCoursesRouteImport.update({
   id: '/video-courses',
@@ -295,6 +296,11 @@ const AuthenticatedAdminAboutRoute = AuthenticatedAdminAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -320,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/courses/$slug': typeof CoursesSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/video-courses/$slug': typeof VideoCoursesSlugRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/certifications': typeof AuthenticatedAdminCertificationsRoute
@@ -366,6 +373,7 @@ export interface FileRoutesByTo {
   '/courses/$slug': typeof CoursesSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/video-courses/$slug': typeof VideoCoursesSlugRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/certifications': typeof AuthenticatedAdminCertificationsRoute
@@ -414,6 +422,7 @@ export interface FileRoutesById {
   '/courses/$slug': typeof CoursesSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/video-courses/$slug': typeof VideoCoursesSlugRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/_authenticated/admin/certifications': typeof AuthenticatedAdminCertificationsRoute
@@ -462,6 +471,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/projects/$slug'
     | '/video-courses/$slug'
+    | '/.lovable/oauth/consent'
     | '/admin/about'
     | '/admin/blog'
     | '/admin/certifications'
@@ -508,6 +518,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/projects/$slug'
     | '/video-courses/$slug'
+    | '/.lovable/oauth/consent'
     | '/admin/about'
     | '/admin/blog'
     | '/admin/certifications'
@@ -555,6 +566,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/projects/$slug'
     | '/video-courses/$slug'
+    | '/.lovable/oauth/consent'
     | '/_authenticated/admin/about'
     | '/_authenticated/admin/blog'
     | '/_authenticated/admin/certifications'
@@ -598,6 +610,7 @@ export interface RootRouteChildren {
   TimelineRoute: typeof TimelineRoute
   TransformRoute: typeof TransformRoute
   VideoCoursesRoute: typeof VideoCoursesRouteWithChildren
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -917,6 +930,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAboutRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1048,6 +1068,7 @@ const rootRouteChildren: RootRouteChildren = {
   TimelineRoute: TimelineRoute,
   TransformRoute: TransformRoute,
   VideoCoursesRoute: VideoCoursesRouteWithChildren,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
