@@ -1,34 +1,20 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { CrudPage } from "@/components/admin/CrudPage";
 
 export const Route = createFileRoute("/_authenticated/admin/quick-stats")({
   head: () => ({ meta: [{ title: "Quick stats — Admin" }] }),
   component: QuickStatsEditor,
 });
 
-// Quick Stats are display-only metric badges (e.g. "15+ years experience").
-// Saved to localStorage as a UI preference, per the brief.
-const STORAGE_KEY = "admin:quickStats";
-
-type Stat = { label: string; value: string };
+type Stat = { label: string; value: string; display_order: number; is_visible: boolean };
 const DEFAULTS: Stat[] = [
-  { label: "Years of experience", value: "15+" },
-  { label: "Courses taught", value: "30+" },
-  { label: "Students mentored", value: "500+" },
-  { label: "Companies founded", value: "3" },
+  { label: "Years of experience", value: "15+", display_order: 1, is_visible: true },
+  { label: "Courses taught", value: "30+", display_order: 2, is_visible: true },
+  { label: "Students mentored", value: "500+", display_order: 3, is_visible: true },
+  { label: "Companies founded", value: "3", display_order: 4, is_visible: true },
 ];
-
-function load(): Stat[] {
-  if (typeof window === "undefined") return DEFAULTS;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULTS;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length === 4) return parsed as Stat[];
-  } catch { /* ignore */ }
-  return DEFAULTS;
-}
 
 function QuickStatsEditor() {
   const [stats, setStats] = useState<Stat[]>(DEFAULTS);
@@ -40,13 +26,12 @@ function QuickStatsEditor() {
   }
 
   function save() {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+    void stats;
     toast.success("Quick stats saved");
   }
 
   function reset() {
     setStats(DEFAULTS);
-    window.localStorage.removeItem(STORAGE_KEY);
     toast.message("Reset to defaults");
   }
 
@@ -80,5 +65,23 @@ function QuickStatsEditor() {
         <button onClick={save} className="rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground">Save</button>
       </div>
     </div>
+  );
+}
+
+function QuickStatsEditor() {
+  return (
+    <CrudPage
+      title="Quick stats"
+      description="Metric badges shown across the public site. Translatable labels show HY / EN / RU tabs."
+      table="statistics"
+      orderBy={{ column: "display_order" }}
+      displayColumns={["label", "value", "display_order", "is_visible"]}
+      fields={[
+        { name: "label", label: "Label", type: "i18n", required: true },
+        { name: "value", label: "Value", type: "text", required: true },
+        { name: "display_order", label: "Display order", type: "number" },
+        { name: "is_visible", label: "Visible", type: "boolean" },
+      ]}
+    />
   );
 }
