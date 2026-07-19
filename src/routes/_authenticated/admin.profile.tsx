@@ -65,20 +65,10 @@ function ProfileEditor() {
       setData((d) => ({ ...(d ?? {}), photo_url: pub.publicUrl }));
       toast.success("Photo uploaded");
     } catch (err: any) {
-      const msg = String(err?.message ?? err ?? "");
-      if (/bucket not found/i.test(msg)) {
-        toast.error(
-          "Storage bucket 'portfolio-assets' is not available in this preview environment. Uploads will work on your production deployment. You can paste an image URL below as a fallback.",
-          { duration: 8000 },
-        );
-      } else if (/row-level security|not authorized|permission/i.test(msg)) {
-        toast.error("You don't have permission to upload. Please sign in as an admin.");
-      } else if (/exceeded|too large|payload/i.test(msg)) {
-        toast.error("Image is too large. Please choose a smaller file.");
-      } else {
-        toast.error(msg || "Upload failed. Please try again or paste an image URL.");
-      }
+      const msg = String(err?.message ?? err ?? "Upload failed");
+      toast.error(msg);
     } finally {
+
       setUploadingPhoto(false);
       e.target.value = "";
     }
