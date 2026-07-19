@@ -40,29 +40,83 @@ const LANG_TABS: { code: "hy" | "en" | "ru"; label: string }[] = [
   { code: "ru", label: "RU · Русский" },
 ];
 
+const BUCKET = "portfolio-assets";
+const EXPECTED_PROJECT_REF = (import.meta.env.VITE_EXPECTED_SUPABASE_PROJECT_REF as string | undefined) || undefined;
+
+function getProjectRef(): string | null {
+  const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?? "";
+  const m = url.match(/^https?:\/\/([^.]+)\.supabase\.co/i);
+  return m ? m[1] : null;
+}
+
+type Preflight = {
+  projectRef: string | null;
+  projectOk: boolean;
+  bucketOk: boolean;
+  checking: boolean;
+  error?: string;
+};
+
 function ProfileEditor() {
   const [data, setData] = useState<Partial<Profile> | null>(null);
   const [i18n, setI18n] = useState<Record<string, Tri>>({});
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [preflight, setPreflight] = useState<Preflight>({
+    projectRef: null,
+    projectOk: false,
+    bucketOk: false,
+    checking: true,
+  });
+
+  async function runPreflight(): Promise<Preflight> {
+    const projectRef = getProjectRef();
+    const projectOk = EXPECTED_PROJECT_REF ? projectRef === EXPECTED_PROJECT_REF : !!projectRef;
+    let bucketOk = false;
+    let error: string | undefined;
+    try {
+      const { data: buckets, error: listErr } = await supabase.storage.listBuckets();
+      if (listErr) {
+        error = listErr.message;
+      } else {
+        bucketOk = !!buckets?.some((b) => b.name === BUCKET);
+        if (!bucketOk) error = `Bucket "${BUCKET}" not found in project ${projectRef ?? "?"}.`;
+      }
+    } catch (e: any) {
+      error = String(e?.message ?? e);
+    }
+    const next = { projectRef, projectOk, bucketOk, checking: false, error };
+    setPreflight(next);
+    return next;
+  }
+
+  useEffect(() => {
+    runPreflight();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!/^image\/(jpe?g|png|webp|gif|avif)$/i.test(file.type)) {
       toast.error("Please choose a JPG, PNG, or WebP image.");
+      e.target.value = "";
       return;
     }
     setUploadingPhoto(true);
     try {
+      const pf = preflight.checking || !preflight.bucketOk ? await runPreflight() : preflight;
+      if (!pf.projectOk) throw new Error(`Wrong Supabase project (got "${pf.projectRef ?? "?"}"${EXPECTED_PROJECT_REF ? `, expected "${EXPECTED_PROJECT_REF}"` : ""}).`);
+      if (!pf.bucketOk) throw new Error(pf.error ?? `Bucket "${BUCKET}" is not available.`);
+
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
       const filePath = `profile/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const { error: upErr } = await supabase.storage
-        .from("portfolio-assets")
+        .from(BUCKET)
         .upload(filePath, file, { cacheControl: "3600", upsert: false, contentType: file.type });
       if (upErr) throw upErr;
 
-      const publicUrlResult = supabase.storage.from("portfolio-assets").getPublicUrl(filePath) as any;
+      const publicUrlResult = supabase.storage.from(BUCKET).getPublicUrl(filePath) as any;
       const publicUrl = publicUrlResult?.data?.publicUrl ?? publicUrlResult?.publicUrl;
       if (!publicUrl) throw new Error("Uploaded, but could not resolve public URL.");
 
@@ -76,6 +130,7 @@ function ProfileEditor() {
       e.target.value = "";
     }
   }
+
 
   useEffect(() => {
     supabase.from("profile").select("*").limit(1).maybeSingle().then(({ data, error }) => {
@@ -125,7 +180,9 @@ function ProfileEditor() {
     <div>
       <h1 className="font-display text-3xl font-bold">Profile</h1>
       <p className="mt-1 text-muted-foreground">This information appears across the public site. Fields with HY / EN / RU tabs are shown in the visitor's selected language.</p>
+      <PreflightBanner preflight={preflight} onRetry={runPreflight} />
       <form onSubmit={save} className="glass mt-6 grid gap-4 rounded-2xl p-6 sm:grid-cols-2">
+
         {fields.map((f) => {
           const colSpan = f.type === "textarea" || f.type === "i18n" || f.type === "i18n-textarea" || f.type === "image" ? "sm:col-span-2" : "";
           return (
@@ -247,6 +304,44 @@ function I18nInput({ value, onChange, multiline }: { value: Tri; onChange: (v: T
           className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
         />
       )}
+    </div>
+  );
+}
+
+function PreflightBanner({ preflight, onRetry }: { preflight: Preflight; onRetry: () => void }) {
+  const { checking, projectRef, projectOk, bucketOk, error } = preflight;
+  const ok = projectOk && bucketOk;
+  const tone = checking
+    ? "border-border bg-background/40 text-muted-foreground"
+    : ok
+      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+      : "border-destructive/50 bg-destructive/10 text-destructive";
+  return (
+    <div className={`mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm ${tone}`}>
+      <div className="space-y-0.5">
+        <div className="font-medium">
+          {checking
+            ? "Checking Supabase connection…"
+            : ok
+              ? `Connected to project "${projectRef}" · bucket "${BUCKET}" ready`
+              : "Storage preflight failed"}
+        </div>
+        {!checking && !ok && (
+          <div className="text-xs opacity-90">
+            Project: <code>{projectRef ?? "unknown"}</code>
+            {EXPECTED_PROJECT_REF ? <> · expected <code>{EXPECTED_PROJECT_REF}</code></> : null}
+            {" · "}Bucket "{BUCKET}": {bucketOk ? "ok" : "missing"}
+            {error ? <> · {error}</> : null}
+          </div>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="rounded-md border border-current/30 px-3 py-1 text-xs font-medium hover:bg-current/10"
+      >
+        Re-check
+      </button>
     </div>
   );
 }
