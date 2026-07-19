@@ -15,7 +15,7 @@ type Tri = { hy: string; en: string; ru: string };
 type FieldDef = {
   name: keyof Profile;
   label: string;
-  type?: "text" | "textarea" | "url" | "i18n" | "i18n-textarea";
+  type?: "text" | "textarea" | "url" | "i18n" | "i18n-textarea" | "image";
 };
 
 const fields: FieldDef[] = [
