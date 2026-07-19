@@ -55,20 +55,35 @@ function ProfileEditor() {
     }
     setUploadingPhoto(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
       const filePath = `profile/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("portfolio-assets")
         .upload(filePath, file, { cacheControl: "3600", upsert: false, contentType: file.type });
       if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("portfolio-assets").getPublicUrl(filePath);
-      setData((d) => ({ ...(d ?? {}), photo_url: pub.publicUrl }));
-      toast.success("Photo uploaded");
+
+      // Different supabase-js versions shape getPublicUrl slightly differently.
+      // Guard against both { data: { publicUrl } } and { publicUrl }, and fall
+      // back to composing the URL from VITE_SUPABASE_URL if the SDK returns nothing.
+      let publicUrl: string | undefined;
+      try {
+        const res: any = supabase.storage.from("portfolio-assets").getPublicUrl(filePath);
+        publicUrl = res?.data?.publicUrl ?? res?.publicUrl;
+      } catch {
+        publicUrl = undefined;
+      }
+      if (!publicUrl) {
+        const base = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.replace(/\/$/, "");
+        if (base) publicUrl = `${base}/storage/v1/object/public/portfolio-assets/${filePath}`;
+      }
+      if (!publicUrl) throw new Error("Uploaded, but could not resolve public URL.");
+
+      setData((d) => ({ ...(d ?? {}), photo_url: publicUrl! }));
+      toast.success("Photo uploaded — click Save profile to persist.");
     } catch (err: any) {
       const msg = String(err?.message ?? err ?? "Upload failed");
       toast.error(msg);
     } finally {
-
       setUploadingPhoto(false);
       e.target.value = "";
     }
