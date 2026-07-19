@@ -26,13 +26,21 @@ export function useAuth() {
       setIsAdmin(false);
       return;
     }
+    console.log("[useAuth] checking admin role", { userId: user.id, email: user.email });
     supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle()
-      .then(({ data }) => setIsAdmin(!!data));
+      .then(({ data, error }) => {
+        console.log("[useAuth] user_roles result", { data, error });
+        if (error) {
+          console.error("[useAuth] role query failed:", error.message);
+          setIsAdmin(false);
+          return;
+        }
+        const roles = (data ?? []).map((r: any) => r.role);
+        setIsAdmin(roles.includes("admin"));
+      });
   }, [user]);
 
   return { session, user, isAdmin, loading };
