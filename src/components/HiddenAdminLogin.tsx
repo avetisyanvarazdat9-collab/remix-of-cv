@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { X, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { resolveUsernameEmail } from "@/lib/admin-auth.functions";
+
 
 /**
  * Global hidden admin trigger.
