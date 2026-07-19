@@ -30,44 +30,46 @@ export function SiteHeader() {
             <>Dr. Varazdat Avetisyan<span className="text-primary">.</span></>
           )}
         </Link>
-        <nav className="hidden items-center gap-1 lg:flex">
-          {visible.map((item: any) => {
-            const isCta = item.path === "/contact";
-            if (isCta) {
+        {(visible.length > 0 || isAdmin) && (
+          <nav className="hidden items-center gap-1 lg:flex">
+            {visible.map((item: any) => {
+              const isCta = item.path === "/contact";
+              if (isCta) {
+                return (
+                  <Link
+                    key={item.id}
+                    to={item.path as any}
+                    className="hover-lift-sm ml-2 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground shadow-[0_0_24px_-6px_color-mix(in_oklab,var(--primary)_70%,transparent)] hover:brightness-110"
+                  >
+                    {labelFor(item)}
+                  </Link>
+                );
+              }
               return (
                 <Link
                   key={item.id}
                   to={item.path as any}
-                  className="hover-lift-sm ml-2 inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground shadow-[0_0_24px_-6px_color-mix(in_oklab,var(--primary)_70%,transparent)] hover:brightness-110"
+                  className="nav-link rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+                  activeProps={{ className: "nav-link rounded-md px-3 py-1.5 text-sm text-foreground bg-accent/60" }}
+                  activeOptions={{ exact: item.path === "/" }}
                 >
                   {labelFor(item)}
                 </Link>
               );
-            }
-            return (
-              <Link
-                key={item.id}
-                to={item.path as any}
-                className="nav-link rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
-                activeProps={{ className: "nav-link rounded-md px-3 py-1.5 text-sm text-foreground bg-accent/60" }}
-                activeOptions={{ exact: item.path === "/" }}
-              >
-                {labelFor(item)}
-              </Link>
-            );
-          })}
+            })}
 
-          {isAdmin && (
-            <Link
-              to="/admin"
-              className="hover-lift-sm ml-2 rounded-md border border-primary/40 px-3 py-1.5 text-sm text-primary hover:bg-primary/10"
-            >
-              {t("nav.admin")}
-            </Link>
-          )}
-          <LanguageSwitcher className="ml-2" />
-          <ThemeToggle className="ml-1" />
-        </nav>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="hover-lift-sm ml-2 rounded-md border border-primary/40 px-3 py-1.5 text-sm text-primary hover:bg-primary/10"
+              >
+                {t("nav.admin")}
+              </Link>
+            )}
+            <LanguageSwitcher className="ml-2" />
+            <ThemeToggle className="ml-1" />
+          </nav>
+        )}
         <div className="flex items-center gap-2 lg:hidden">
           <ThemeToggle />
           <LanguageSwitcher />

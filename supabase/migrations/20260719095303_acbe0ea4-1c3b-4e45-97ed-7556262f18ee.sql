@@ -1,0 +1,1 @@
+UPDATE public.profile SET photo_url = NULL WHERE photo_url LIKE '%fbcdn%' OR photo_url LIKE '%facebook%';
