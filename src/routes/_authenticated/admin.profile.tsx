@@ -122,7 +122,7 @@ function ProfileEditor() {
       <p className="mt-1 text-muted-foreground">This information appears across the public site. Fields with HY / EN / RU tabs are shown in the visitor's selected language.</p>
       <form onSubmit={save} className="glass mt-6 grid gap-4 rounded-2xl p-6 sm:grid-cols-2">
         {fields.map((f) => {
-          const colSpan = f.type === "textarea" || f.type === "i18n" || f.type === "i18n-textarea" ? "sm:col-span-2" : "";
+          const colSpan = f.type === "textarea" || f.type === "i18n" || f.type === "i18n-textarea" || f.type === "image" ? "sm:col-span-2" : "";
           return (
             <div key={f.name as string} className={colSpan}>
               <label className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">{f.label}</label>
