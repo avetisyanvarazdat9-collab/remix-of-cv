@@ -223,43 +223,48 @@ function Home() {
     <PublicLayout>
       {/* ================ SECTION 1 · HERO (full-bleed background) ================ */}
       <section className="relative overflow-hidden bg-background text-foreground">
-        {/* Portrait — feathers into the current --background so it works in any theme */}
-        {profile?.photo_url && (
-          <div className="hero-image pointer-events-none absolute right-0 top-0 h-[55%] w-full opacity-90 sm:opacity-100 md:bottom-0 md:top-auto md:h-[100%] md:w-[58%] lg:w-[52%]">
-            <img
-              src={profile.photo_url}
-              alt="Dr. Varazdat Avetisyan"
-              className="object-[center_12%] md:object-[center_8%]"
-              style={{
-                transform: "scale(1.12)",
-                transformOrigin: "center top",
-                WebkitMaskImage:
-                  "radial-gradient(ellipse 82% 88% at 62% 45%, #000 55%, rgba(0,0,0,0.9) 72%, rgba(0,0,0,0.5) 86%, transparent 98%)",
-                maskImage:
-                  "radial-gradient(ellipse 82% 88% at 62% 45%, #000 55%, rgba(0,0,0,0.9) 72%, rgba(0,0,0,0.5) 86%, transparent 98%)",
-                filter: "saturate(1.02) contrast(1.02)",
-              }}
-            />
-            {/* Feather edges into whatever the theme's background is */}
-            <div
-              aria-hidden
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(90deg, var(--background) 0%, color-mix(in oklab, var(--background) 85%, transparent) 14%, color-mix(in oklab, var(--background) 30%, transparent) 34%, transparent 55%), linear-gradient(180deg, transparent 65%, color-mix(in oklab, var(--background) 60%, transparent) 88%, var(--background) 100%), linear-gradient(0deg, var(--background) 0%, transparent 18%)",
-              }}
-            />
-          </div>
-        )}
-        {/* Mobile-only readability wash — uses the theme background */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 md:hidden"
-          style={{
-            background:
-              "linear-gradient(180deg, color-mix(in oklab, var(--background) 55%, transparent) 0%, color-mix(in oklab, var(--background) 90%, transparent) 55%, var(--background) 100%)",
-          }}
-        />
+        {/* Portrait — locally bundled hero asset (falls back gracefully; admins may override via profile.photo_url) */}
+        <div className="hero-image pointer-events-none absolute right-0 top-0 h-[55%] w-full opacity-90 sm:opacity-100 md:bottom-0 md:top-auto md:h-full md:w-[58%] lg:w-[52%]">
+          <img
+            src={profile?.photo_url || heroPortrait}
+            alt=""
+            width={1024}
+            height={1536}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            referrerPolicy="no-referrer"
+            className="object-[center_12%] md:object-[center_8%]"
+            style={{
+              transform: "scale(1.12)",
+              transformOrigin: "center top",
+              WebkitMaskImage:
+                "radial-gradient(ellipse 82% 88% at 62% 45%, #000 55%, rgba(0,0,0,0.9) 72%, rgba(0,0,0,0.5) 86%, transparent 98%)",
+              maskImage:
+                "radial-gradient(ellipse 82% 88% at 62% 45%, #000 55%, rgba(0,0,0,0.9) 72%, rgba(0,0,0,0.5) 86%, transparent 98%)",
+              filter: "saturate(1.02) contrast(1.02)",
+            }}
+          />
+          {/* Feathers portrait edges into whatever theme background is active */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 md:block hidden"
+            style={{
+              background:
+                "linear-gradient(90deg, var(--background) 0%, color-mix(in oklab, var(--background) 85%, transparent) 14%, color-mix(in oklab, var(--background) 30%, transparent) 34%, transparent 55%), linear-gradient(180deg, transparent 65%, color-mix(in oklab, var(--background) 60%, transparent) 88%, var(--background) 100%)",
+            }}
+          />
+          {/* Mobile readability wash */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 md:hidden"
+            style={{
+              background:
+                "linear-gradient(180deg, color-mix(in oklab, var(--background) 55%, transparent) 0%, color-mix(in oklab, var(--background) 90%, transparent) 55%, var(--background) 100%)",
+            }}
+          />
+        </div>
+
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-16 pt-20 sm:px-6 sm:py-28 lg:py-36">
           <div className="max-w-2xl">
