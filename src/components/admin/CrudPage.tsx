@@ -65,6 +65,8 @@ function applyTablePayloadDefaults(table: string, payload: Row) {
     const label = String(payload.label_en || payload.label_hy || payload.label_ru || payload.path || "Navigation item").trim();
     payload.label = label;
     payload.label_en = String(payload.label_en || label).trim();
+    payload.label_hy = String(payload.label_hy || label).trim();
+    payload.label_ru = String(payload.label_ru || label).trim();
     payload.path = String(payload.path || "/").trim();
     payload.order_index = Number(payload.order_index ?? 0);
     payload.is_visible = payload.is_visible ?? true;
