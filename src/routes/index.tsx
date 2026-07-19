@@ -25,6 +25,7 @@ import {
   Award,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import heroPortrait from "@/assets/hero-portrait.jpg";
 
 import {
   profileQuery,
