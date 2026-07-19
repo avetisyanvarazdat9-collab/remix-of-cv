@@ -807,49 +807,49 @@ ALTER TABLE ONLY public.user_roles
 -- Name: error_logs Admins can delete error logs; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "Admins can delete error logs" ON public.error_logs FOR DELETE TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins can delete error logs" ON public.error_logs FOR DELETE TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: navigation_menu Admins can delete nav; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "Admins can delete nav" ON public.navigation_menu FOR DELETE TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins can delete nav" ON public.navigation_menu FOR DELETE TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: navigation_menu Admins can insert nav; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "Admins can insert nav" ON public.navigation_menu FOR INSERT TO authenticated WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins can insert nav" ON public.navigation_menu FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: navigation_menu Admins can update nav; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "Admins can update nav" ON public.navigation_menu FOR UPDATE TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins can update nav" ON public.navigation_menu FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: error_logs Admins can view error logs; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "Admins can view error logs" ON public.error_logs FOR SELECT TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins can view error logs" ON public.error_logs FOR SELECT TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: certifications Admins manage certifications; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "Admins manage certifications" ON public.certifications TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins manage certifications" ON public.certifications TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: international_experience Admins manage international experience; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "Admins manage international experience" ON public.international_experience TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "Admins manage international experience" ON public.international_experience TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
@@ -863,7 +863,7 @@ CREATE POLICY "Anon view visible certifications" ON public.certifications FOR SE
 -- Name: certifications Authenticated view certifications; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "Authenticated view certifications" ON public.certifications FOR SELECT TO authenticated USING (((is_visible = true) OR private.has_role(auth.uid(), 'admin'::public.app_role)));
+CREATE POLICY "Authenticated view certifications" ON public.certifications FOR SELECT TO authenticated USING (((is_visible = true) OR EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)));
 
 
 --
@@ -891,140 +891,133 @@ CREATE POLICY "Public read visible international experience" ON public.internati
 -- Name: home_content admins can insert home_content; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins can insert home_content" ON public.home_content FOR INSERT TO authenticated WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins can insert home_content" ON public.home_content FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: site_settings admins can insert site_settings; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins can insert site_settings" ON public.site_settings FOR INSERT TO authenticated WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins can insert site_settings" ON public.site_settings FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: home_content admins can update home_content; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins can update home_content" ON public.home_content FOR UPDATE TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins can update home_content" ON public.home_content FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: site_settings admins can update site_settings; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins can update site_settings" ON public.site_settings FOR UPDATE TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins can update site_settings" ON public.site_settings FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: messages admins delete messages; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins delete messages" ON public.messages FOR DELETE TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins delete messages" ON public.messages FOR DELETE TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: companies admins manage companies; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage companies" ON public.companies TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage companies" ON public.companies TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: courses admins manage courses; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage courses" ON public.courses TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage courses" ON public.courses TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: education admins manage education; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage education" ON public.education TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage education" ON public.education TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: blog_posts admins manage posts; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage posts" ON public.blog_posts TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage posts" ON public.blog_posts TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: profile admins manage profile; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage profile" ON public.profile TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage profile" ON public.profile TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: projects admins manage projects; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage projects" ON public.projects TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage projects" ON public.projects TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: skills admins manage skills; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage skills" ON public.skills TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage skills" ON public.skills TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: statistics admins manage statistics; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage statistics" ON public.statistics TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage statistics" ON public.statistics TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: talks admins manage talks; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage talks" ON public.talks TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage talks" ON public.talks TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: testimonials admins manage testimonials; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage testimonials" ON public.testimonials TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
-
-
---
--- Name: user_roles admins manage user_roles; Type: POLICY; Schema: public; Owner: -
---
-
-CREATE POLICY "admins manage user_roles" ON public.user_roles TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage testimonials" ON public.testimonials TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: video_courses admins manage video_courses; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins manage video_courses" ON public.video_courses TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins manage video_courses" ON public.video_courses TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role)) WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: blog_posts admins read all posts; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins read all posts" ON public.blog_posts FOR SELECT TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins read all posts" ON public.blog_posts FOR SELECT TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: messages admins read messages; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins read messages" ON public.messages FOR SELECT TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins read messages" ON public.messages FOR SELECT TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
 -- Name: messages admins update messages; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY "admins update messages" ON public.messages FOR UPDATE TO authenticated USING (private.has_role(auth.uid(), 'admin'::public.app_role));
+CREATE POLICY "admins update messages" ON public.messages FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role = 'admin'::public.app_role));
 
 
 --
@@ -1262,15 +1255,6 @@ GRANT USAGE ON SCHEMA public TO postgres;
 GRANT USAGE ON SCHEMA public TO anon;
 GRANT USAGE ON SCHEMA public TO authenticated;
 GRANT USAGE ON SCHEMA public TO service_role;
-
-
---
--- Name: FUNCTION has_role(_user_id uuid, _role public.app_role); Type: ACL; Schema: private; Owner: -
---
-
-REVOKE ALL ON FUNCTION private.has_role(_user_id uuid, _role public.app_role) FROM PUBLIC;
-GRANT ALL ON FUNCTION private.has_role(_user_id uuid, _role public.app_role) TO authenticated;
-GRANT ALL ON FUNCTION private.has_role(_user_id uuid, _role public.app_role) TO service_role;
 
 
 --
