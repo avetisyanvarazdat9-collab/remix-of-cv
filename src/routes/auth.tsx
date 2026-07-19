@@ -43,7 +43,7 @@ function AuthPage() {
 
     setBusy(true);
     try {
-      const { email } = await resolveUsernameEmail({ data: { username } });
+      const email = username.includes("@") ? username : `${username}@admin.local`;
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       goNext();
