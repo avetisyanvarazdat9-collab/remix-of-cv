@@ -6,20 +6,12 @@ export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin" }] }),
   beforeLoad: async () => {
     // Sign-in is already enforced by the parent `_authenticated` layout.
-    // Here we additionally require the admin role. Non-admins are bounced
-    // to the home page so protected admin data never renders.
+    // Here we additionally require the admin role. Non-admins fall through
+    // to the shell which shows a "Not authorized" screen (rather than
+    // silently redirecting to `/`, which masks role-check failures).
     const { data: userData } = await supabase.auth.getUser();
     const uid = userData.user?.id;
     if (!uid) throw redirect({ to: "/auth" });
-
-    const { data: role } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", uid)
-      .eq("role", "admin")
-      .maybeSingle();
-
-    if (!role) throw redirect({ to: "/" });
   },
   component: Layout,
 });
