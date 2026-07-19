@@ -24,6 +24,11 @@ const LANG_TABS: { code: "hy" | "en" | "ru"; label: string }[] = [
   { code: "ru", label: "RU · Русский" },
 ];
 
+const REQUIRED_PROFILE_DEFAULTS = {
+  name: "Dr. Varazdat Avetisyan",
+  title: "AI/ML Researcher, Lecturer & Entrepreneur",
+};
+
 // Focused editor for the "About" narrative: bio (Markdown) and tagline.
 // Structured Skills and Education live in their own pages, linked below.
 function AboutEditor() {
@@ -60,6 +65,8 @@ function AboutEditor() {
       const tri = i18n[f.name] ?? { hy: "", en: "", ru: "" };
       payload[f.name] = tri.en || tri.hy || tri.ru || null;
     }
+    payload.name = payload.name || REQUIRED_PROFILE_DEFAULTS.name;
+    payload.title = payload.title || REQUIRED_PROFILE_DEFAULTS.title;
     payload.i18n = { ...(existingI18n ?? {}), ...i18n };
     const { error } = id
       ? await supabase.from("profile").update(payload).eq("id", id)
