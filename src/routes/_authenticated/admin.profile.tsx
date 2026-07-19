@@ -74,13 +74,21 @@ function ProfileEditor() {
     const projectOk = EXPECTED_PROJECT_REF ? projectRef === EXPECTED_PROJECT_REF : !!projectRef;
     let bucketOk = false;
     let error: string | undefined;
+    // Probe the bucket directly. `listBuckets()` needs elevated privileges and
+    // returns [] for normal authenticated users even when the bucket exists,
+    // which caused false "Storage preflight failed" errors in production.
     try {
-      const { data: buckets, error: listErr } = await supabase.storage.listBuckets();
-      if (listErr) {
-        error = listErr.message;
+      const { error: listErr } = await supabase.storage.from(BUCKET).list("", { limit: 1 });
+      if (!listErr) {
+        bucketOk = true;
       } else {
-        bucketOk = !!buckets?.some((b) => b.name === BUCKET);
-        if (!bucketOk) error = `Bucket "${BUCKET}" not found in project ${projectRef ?? "?"}.`;
+        const msg = listErr.message || "";
+        if (/not found|does not exist/i.test(msg)) {
+          error = `Bucket "${BUCKET}" not found in project ${projectRef ?? "?"}.`;
+        } else {
+          // RLS on storage.objects may deny listing; upload can still work.
+          bucketOk = true;
+        }
       }
     } catch (e: any) {
       error = String(e?.message ?? e);
