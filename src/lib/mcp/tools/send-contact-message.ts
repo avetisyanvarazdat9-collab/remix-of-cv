@@ -18,7 +18,7 @@ export default defineTool({
     const sb = supabaseForToken(ctx.getToken()!);
     const { data, error } = await sb
       .from("messages")
-      .insert({ name, email, subject, message })
+      .insert({ name, email, subject, body: message })
       .select()
       .maybeSingle();
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
