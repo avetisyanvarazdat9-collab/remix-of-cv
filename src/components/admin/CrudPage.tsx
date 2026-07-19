@@ -90,6 +90,16 @@ function applyTablePayloadDefaults(table: string, payload: Row) {
   if ("is_visible" in payload) payload.is_visible = payload.is_visible ?? true;
 }
 
+function canAutoDefaultRequiredField(table: string, fieldName: string) {
+  if ((table === "courses" || table === "video_courses" || table === "blog_posts" || table === "projects") && fieldName === "slug") {
+    return true;
+  }
+  if (table === "navigation_menu" && ["label_hy", "label_en", "label_ru", "label"].includes(fieldName)) {
+    return true;
+  }
+  return false;
+}
+
 export function CrudPage({ title, description, table, fields, orderBy, displayColumns, filter, defaults, hideHeader }: CrudPageProps) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
@@ -141,7 +151,7 @@ export function CrudPage({ title, description, table, fields, orderBy, displayCo
         payload[f.name] = tri.en || tri.hy || tri.ru || (f.required ? f.label : null);
         continue;
       }
-      if (f.required && isBlank(values[f.name])) {
+      if (f.required && isBlank(values[f.name]) && !canAutoDefaultRequiredField(table, f.name)) {
         toast.error(`${f.label} is required`);
         return;
       }
