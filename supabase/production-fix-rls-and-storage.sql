@@ -1,39 +1,42 @@
 -- =====================================================================
 -- Production fix: admin RLS on all CMS tables + storage bucket policies.
--- Run this ONCE in your external Supabase SQL editor (production project).
--- Safe to re-run: everything is idempotent.
+-- No function dependencies (no private.is_admin / private.has_role).
+-- Every policy inlines an EXISTS check against public.user_roles.
+-- Run in Supabase SQL editor. Idempotent; safe to re-run.
 -- =====================================================================
 
--- ---------- 1. Admin helper (SECURITY DEFINER; bypasses RLS on user_roles)
-CREATE SCHEMA IF NOT EXISTS private;
-
-CREATE OR REPLACE FUNCTION private.is_admin(_uid uuid)
-RETURNS boolean
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.user_roles
-    WHERE user_id = _uid AND role = 'admin'
-  );
-$$;
-
-REVOKE ALL ON FUNCTION private.is_admin(uuid) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION private.is_admin(uuid) TO authenticated, service_role;
-
--- Ensure user_roles is readable by its owner (needed by the frontend guard)
+-- ---------- 0. user_roles must be readable by its owner ----------
 GRANT SELECT ON public.user_roles TO authenticated;
 GRANT ALL    ON public.user_roles TO service_role;
 ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename='user_roles' AND policyname='ur_select_own') THEN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='user_roles' AND policyname='ur_select_own') THEN
     EXECUTE 'CREATE POLICY ur_select_own ON public.user_roles FOR SELECT TO authenticated USING (auth.uid() = user_id)';
   END IF;
 END $$;
 
--- ---------- 2. Apply admin-write RLS to every CMS table
+-- ---------- 1. Drop any policy that referenced the missing helpers ----------
+-- These policies were created by earlier migrations that assumed
+-- private.is_admin() or private.has_role() existed. Drop them so the fresh
+-- inline policies below can be created cleanly.
+DO $$
+DECLARE r record;
+BEGIN
+  FOR r IN
+    SELECT schemaname, tablename, policyname
+    FROM pg_policies
+    WHERE schemaname IN ('public','storage')
+      AND (
+        qual        LIKE '%private.is_admin%' OR with_check LIKE '%private.is_admin%'
+     OR qual        LIKE '%private.has_role%' OR with_check LIKE '%private.has_role%'
+     OR qual        LIKE '%public.has_role%'  OR with_check LIKE '%public.has_role%'
+      )
+  LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', r.policyname, r.schemaname, r.tablename);
+  END LOOP;
+END $$;
+
+-- ---------- 2. Apply admin-write RLS to every CMS table ----------
 DO $$
 DECLARE
   t text;
@@ -50,23 +53,21 @@ BEGIN
       RAISE NOTICE 'skip %, table missing', t; CONTINUE;
     END IF;
 
-    -- Grants (RLS still enforces per-row)
     EXECUTE format('GRANT SELECT, INSERT, UPDATE, DELETE ON public.%I TO authenticated', t);
     EXECUTE format('GRANT ALL ON public.%I TO service_role', t);
     EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', t);
 
-    -- Drop old admin policies (if any prior migration created them under other names, they stay)
     EXECUTE format('DROP POLICY IF EXISTS admin_all ON public.%I', t);
-    EXECUTE format(
-      'CREATE POLICY admin_all ON public.%I FOR ALL TO authenticated
-         USING (private.is_admin(auth.uid()))
-         WITH CHECK (private.is_admin(auth.uid()))',
-      t
-    );
+    EXECUTE format($f$
+      CREATE POLICY admin_all ON public.%I
+        FOR ALL TO authenticated
+        USING      (EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'))
+        WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'))
+    $f$, t);
   END LOOP;
 END $$;
 
--- ---------- 3. Public SELECT for visitor-facing tables
+-- ---------- 3. Public SELECT for visitor-facing tables ----------
 DO $$
 DECLARE
   t text;
@@ -85,7 +86,7 @@ BEGIN
   END LOOP;
 END $$;
 
--- ---------- 4. Contact messages: anyone may submit, only admin may read/manage
+-- ---------- 4. Contact messages: anyone may submit ----------
 DO $$ BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='messages') THEN
     EXECUTE 'GRANT INSERT ON public.messages TO anon, authenticated';
@@ -94,12 +95,11 @@ DO $$ BEGIN
   END IF;
 END $$;
 
--- ---------- 5. Storage bucket "portfolio-assets"
+-- ---------- 5. Storage bucket "portfolio-assets" ----------
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('portfolio-assets','portfolio-assets', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
 
--- storage.objects policies
 DROP POLICY IF EXISTS portfolio_public_read  ON storage.objects;
 DROP POLICY IF EXISTS portfolio_admin_insert ON storage.objects;
 DROP POLICY IF EXISTS portfolio_admin_update ON storage.objects;
@@ -111,17 +111,30 @@ CREATE POLICY portfolio_public_read ON storage.objects
 
 CREATE POLICY portfolio_admin_insert ON storage.objects
   FOR INSERT TO authenticated
-  WITH CHECK (bucket_id = 'portfolio-assets' AND private.is_admin(auth.uid()));
+  WITH CHECK (
+    bucket_id = 'portfolio-assets'
+    AND EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin')
+  );
 
 CREATE POLICY portfolio_admin_update ON storage.objects
   FOR UPDATE TO authenticated
-  USING (bucket_id = 'portfolio-assets' AND private.is_admin(auth.uid()))
-  WITH CHECK (bucket_id = 'portfolio-assets' AND private.is_admin(auth.uid()));
+  USING      (bucket_id = 'portfolio-assets'
+              AND EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'))
+  WITH CHECK (bucket_id = 'portfolio-assets'
+              AND EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'));
 
 CREATE POLICY portfolio_admin_delete ON storage.objects
   FOR DELETE TO authenticated
-  USING (bucket_id = 'portfolio-assets' AND private.is_admin(auth.uid()));
+  USING (
+    bucket_id = 'portfolio-assets'
+    AND EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin')
+  );
 
--- =====================================================================
--- Done. After running: hard-refresh /admin on production.
+-- ---------- 6. Verification ----------
+-- After running, these should all succeed / return the expected rows:
+--   SELECT policyname FROM pg_policies WHERE schemaname='public' AND policyname='admin_all';
+--   SELECT policyname FROM pg_policies WHERE schemaname='storage' AND policyname LIKE 'portfolio_%';
+--   SELECT u.email, r.role FROM auth.users u
+--     JOIN public.user_roles r ON r.user_id = u.id
+--     WHERE u.email IN ('avetisyanvarazdat9@gmail.com','admin@admin.local');
 -- =====================================================================
