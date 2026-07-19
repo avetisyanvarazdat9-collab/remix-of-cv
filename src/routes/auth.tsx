@@ -9,21 +9,31 @@ import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Sign in — Admin" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" ? s.next : undefined,
+  }),
   component: AuthPage,
 });
 
 function AuthPage() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const { next } = Route.useSearch();
   const [busy, setBusy] = useState(false);
   const t = useT();
 
-  // Default-admin auto-provisioning removed for security.
-
+  function goNext() {
+    if (next && next.startsWith("/") && !next.startsWith("//")) {
+      window.location.href = next;
+    } else {
+      navigate({ to: "/admin" });
+    }
+  }
 
   useEffect(() => {
-    if (user && !loading) navigate({ to: "/admin" });
-  }, [user, loading, navigate]);
+    if (user && !loading) goNext();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,7 +47,7 @@ function AuthPage() {
       const { email } = await resolveUsernameEmail({ data: { username } });
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      navigate({ to: "/admin" });
+      goNext();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("auth.invalid"));
     } finally {
