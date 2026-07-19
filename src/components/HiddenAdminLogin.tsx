@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { X, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { resolveUsernameEmail } from "@/lib/admin-auth.functions";
+
 
 /**
  * Global hidden admin trigger.
@@ -47,7 +47,7 @@ export function HiddenAdminLogin() {
     const password = String(fd.get("password") ?? "");
     setBusy(true);
     try {
-      const { email } = await resolveUsernameEmail({ data: { username } });
+      const email = username.includes("@") ? username : `${username}@admin.local`;
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       toast.success("Signed in");
