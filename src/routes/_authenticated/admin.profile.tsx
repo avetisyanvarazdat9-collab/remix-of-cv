@@ -44,6 +44,33 @@ function ProfileEditor() {
   const [data, setData] = useState<Partial<Profile> | null>(null);
   const [i18n, setI18n] = useState<Record<string, Tri>>({});
   const [saving, setSaving] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!/^image\/(jpe?g|png|webp|gif|avif)$/i.test(file.type)) {
+      toast.error("Please choose a JPG, PNG, or WebP image.");
+      return;
+    }
+    setUploadingPhoto(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const filePath = `profile/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("portfolio-assets")
+        .upload(filePath, file, { cacheControl: "3600", upsert: false, contentType: file.type });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("portfolio-assets").getPublicUrl(filePath);
+      setData((d) => ({ ...(d ?? {}), photo_url: pub.publicUrl }));
+      toast.success("Photo uploaded");
+    } catch (err: any) {
+      toast.error(err?.message ?? "Upload failed");
+    } finally {
+      setUploadingPhoto(false);
+      e.target.value = "";
+    }
+  }
 
   useEffect(() => {
     supabase.from("profile").select("*").limit(1).maybeSingle().then(({ data, error }) => {
