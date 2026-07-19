@@ -26,41 +26,70 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
   };
 }
 
+function sanitizeEnvValue(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function createPlaceholderClient(message: string): ReturnType<typeof createClient<Database>> {
+  return createClient<Database>('https://placeholder.supabase.co', 'placeholder-key', {
+    global: {
+      fetch: () => Promise.reject(new Error(message)),
+    },
+    auth: {
+      storage: typeof window !== 'undefined' ? localStorage : undefined,
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+}
 
 function createSupabaseClient() {
   // Strictly read from Vite env vars so the build is portable to any host
   // (e.g. Vercel). Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY
   // (VITE_SUPABASE_ANON_KEY is accepted as an alias).
-  const SUPABASE_URL =
-    import.meta.env.VITE_SUPABASE_URL ||
-    (typeof process !== 'undefined' ? process.env?.SUPABASE_URL : undefined);
-  const SUPABASE_PUBLISHABLE_KEY =
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-    import.meta.env.VITE_SUPABASE_ANON_KEY ||
-    (typeof process !== 'undefined'
-      ? process.env?.SUPABASE_PUBLISHABLE_KEY || process.env?.SUPABASE_ANON_KEY
-      : undefined);
+  const rawUrl =
+    sanitizeEnvValue(import.meta.env.VITE_SUPABASE_URL) ||
+    sanitizeEnvValue(typeof process !== 'undefined' ? process.env?.SUPABASE_URL : undefined);
+  const rawKey =
+    sanitizeEnvValue(import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) ||
+    sanitizeEnvValue(import.meta.env.VITE_SUPABASE_ANON_KEY) ||
+    sanitizeEnvValue(
+      typeof process !== 'undefined'
+        ? process.env?.SUPABASE_PUBLISHABLE_KEY || process.env?.SUPABASE_ANON_KEY
+        : undefined,
+    );
 
-  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-    const missing = [
-      ...(!SUPABASE_URL ? ['VITE_SUPABASE_URL'] : []),
-      ...(!SUPABASE_PUBLISHABLE_KEY ? ['VITE_SUPABASE_PUBLISHABLE_KEY (or VITE_SUPABASE_ANON_KEY)'] : []),
-    ];
+  const SUPABASE_URL = rawUrl ? rawUrl.replace(/\/+$/, '') : undefined;
+  const SUPABASE_PUBLISHABLE_KEY = rawKey;
+
+  const missing: string[] = [];
+  if (!SUPABASE_URL) missing.push('VITE_SUPABASE_URL');
+  if (!SUPABASE_PUBLISHABLE_KEY) missing.push('VITE_SUPABASE_PUBLISHABLE_KEY (or VITE_SUPABASE_ANON_KEY)');
+
+  if (missing.length > 0) {
     const message = `Missing Supabase environment variable(s): ${missing.join(', ')}.`;
     console.error(`[Supabase] ${message}`);
-    throw new Error(message);
+    return createPlaceholderClient(message);
   }
 
-  return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-    global: {
-      fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY),
-    },
-    auth: {
-      storage: typeof window !== 'undefined' ? localStorage : undefined,
-      persistSession: true,
-      autoRefreshToken: true,
-    }
-  });
+  try {
+    return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      global: {
+        fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY),
+      },
+      auth: {
+        storage: typeof window !== 'undefined' ? localStorage : undefined,
+        persistSession: true,
+        autoRefreshToken: true,
+      },
+    });
+  } catch (err) {
+    const message = `Failed to initialize Supabase client: ${err instanceof Error ? err.message : String(err)}`;
+    console.error(`[Supabase] ${message}`, err);
+    return createPlaceholderClient(message);
+  }
 }
 
 let _supabase: ReturnType<typeof createSupabaseClient> | undefined;
