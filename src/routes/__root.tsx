@@ -85,20 +85,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Varazdat Avetisyan — AI/ML Researcher, Lecturer, Entrepreneur" },
+      { title: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist" },
       {
         name: "description",
         content:
-          "AI/ML researcher, educator and technology entrepreneur with 15+ years in software, higher education and digital innovation.",
+          "Dr. Varazdat Avetisyan — AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies. AI Training Armenia, Generative AI, Machine Learning.",
       },
-      { property: "og:title", content: "Varazdat Avetisyan" },
+      { property: "og:title", content: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist" },
       {
         property: "og:description",
         content:
-          "AI/ML researcher and educator — projects, courses, talks, and writing.",
+          "Dr. Varazdat Avetisyan — AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies. AI Training Armenia, Generative AI, Machine Learning.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist" },
+      { name: "twitter:description", content: "Dr. Varazdat Avetisyan — AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies. AI Training Armenia, Generative AI, Machine Learning." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d0e767d5-d112-4ce3-ae79-0843fa5e0615/id-preview-67305ffb--191e9f79-a96f-417b-b1b9-1aa3a4a37262.lovable.app-1784456274077.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d0e767d5-d112-4ce3-ae79-0843fa5e0615/id-preview-67305ffb--191e9f79-a96f-417b-b1b9-1aa3a4a37262.lovable.app-1784456274077.png" },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
     scripts: [

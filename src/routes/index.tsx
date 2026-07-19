@@ -55,7 +55,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist" },
       {
         property: "og:description",
-        content: "Bridging research, education, and industry through intelligent technologies.",
+        content: "Dr. Varazdat Avetisyan — AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies. AI Training Armenia, Generative AI, Machine Learning.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
