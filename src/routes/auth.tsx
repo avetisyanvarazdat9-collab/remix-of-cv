@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { resolveUsernameEmail } from "@/lib/admin-auth.functions";
 import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth")({
