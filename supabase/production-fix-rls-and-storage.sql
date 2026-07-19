@@ -1,6 +1,6 @@
 -- =====================================================================
 -- Production fix: admin RLS on all CMS tables + storage bucket policies.
--- No function dependencies (no private.is_admin / private.has_role).
+-- No role-helper function dependencies.
 -- Every policy inlines an EXISTS check against public.user_roles.
 -- Run in Supabase SQL editor. Idempotent; safe to re-run.
 -- =====================================================================
@@ -15,10 +15,7 @@ DO $$ BEGIN
   END IF;
 END $$;
 
--- ---------- 1. Drop any policy that referenced the missing helpers ----------
--- These policies were created by earlier migrations that assumed
--- private.is_admin() or private.has_role() existed. Drop them so the fresh
--- inline policies below can be created cleanly.
+-- ---------- 1. Drop earlier generated admin policies ----------
 DO $$
 DECLARE r record;
 BEGIN
@@ -26,10 +23,13 @@ BEGIN
     SELECT schemaname, tablename, policyname
     FROM pg_policies
     WHERE schemaname IN ('public','storage')
-      AND (
-        qual        LIKE '%private.is_admin%' OR with_check LIKE '%private.is_admin%'
-     OR qual        LIKE '%private.has_role%' OR with_check LIKE '%private.has_role%'
-     OR qual        LIKE '%public.has_role%'  OR with_check LIKE '%public.has_role%'
+      AND policyname IN (
+        'admin_all',
+        'portfolio_assets_admin_all',
+        'portfolio_admin_insert',
+        'portfolio_admin_update',
+        'portfolio_admin_delete',
+        'admins manage user_roles'
       )
   LOOP
     EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', r.policyname, r.schemaname, r.tablename);
