@@ -15,6 +15,7 @@ import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as TalksRouteImport } from './routes/talks'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as CvRouteImport } from './routes/cv'
@@ -33,6 +34,8 @@ import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AuthenticatedAdminVideoCoursesRouteImport } from './routes/_authenticated/admin.video-courses'
 import { Route as AuthenticatedAdminThemeRouteImport } from './routes/_authenticated/admin.theme'
 import { Route as AuthenticatedAdminTalksEventsRouteImport } from './routes/_authenticated/admin.talks-events'
@@ -54,6 +57,7 @@ import { Route as AuthenticatedAdminCompaniesRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminCertificationsRouteImport } from './routes/_authenticated/admin.certifications'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin.blog'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
 const VideoCoursesRoute = VideoCoursesRouteImport.update({
@@ -84,6 +88,11 @@ const ProjectsRoute = ProjectsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -175,6 +184,18 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAdminVideoCoursesRoute =
   AuthenticatedAdminVideoCoursesRouteImport.update({
     id: '/video-courses',
@@ -296,6 +317,12 @@ const AuthenticatedAdminAboutRoute = AuthenticatedAdminAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   id: '/.lovable/oauth/consent',
   path: '/.lovable/oauth/consent',
@@ -315,18 +342,22 @@ export interface FileRoutesByFullPath {
   '/cv': typeof CvRoute
   '/impact': typeof ImpactRoute
   '/learn': typeof LearnRoute
+  '/mcp': typeof McpRoute
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
   '/timeline': typeof TimelineRoute
   '/transform': typeof TransformRoute
   '/video-courses': typeof VideoCoursesRouteWithChildren
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/video-courses/$slug': typeof VideoCoursesSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/certifications': typeof AuthenticatedAdminCertificationsRoute
@@ -362,18 +393,22 @@ export interface FileRoutesByTo {
   '/cv': typeof CvRoute
   '/impact': typeof ImpactRoute
   '/learn': typeof LearnRoute
+  '/mcp': typeof McpRoute
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
   '/timeline': typeof TimelineRoute
   '/transform': typeof TransformRoute
   '/video-courses': typeof VideoCoursesRouteWithChildren
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/video-courses/$slug': typeof VideoCoursesSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/certifications': typeof AuthenticatedAdminCertificationsRoute
@@ -411,18 +446,22 @@ export interface FileRoutesById {
   '/cv': typeof CvRoute
   '/impact': typeof ImpactRoute
   '/learn': typeof LearnRoute
+  '/mcp': typeof McpRoute
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/talks': typeof TalksRoute
   '/timeline': typeof TimelineRoute
   '/transform': typeof TransformRoute
   '/video-courses': typeof VideoCoursesRouteWithChildren
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/video-courses/$slug': typeof VideoCoursesSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/_authenticated/admin/certifications': typeof AuthenticatedAdminCertificationsRoute
@@ -460,18 +499,22 @@ export interface FileRouteTypes {
     | '/cv'
     | '/impact'
     | '/learn'
+    | '/mcp'
     | '/privacy'
     | '/projects'
     | '/talks'
     | '/timeline'
     | '/transform'
     | '/video-courses'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/blog/$slug'
     | '/courses/$slug'
     | '/projects/$slug'
     | '/video-courses/$slug'
     | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/admin/about'
     | '/admin/blog'
     | '/admin/certifications'
@@ -507,18 +550,22 @@ export interface FileRouteTypes {
     | '/cv'
     | '/impact'
     | '/learn'
+    | '/mcp'
     | '/privacy'
     | '/projects'
     | '/talks'
     | '/timeline'
     | '/transform'
     | '/video-courses'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/blog/$slug'
     | '/courses/$slug'
     | '/projects/$slug'
     | '/video-courses/$slug'
     | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/admin/about'
     | '/admin/blog'
     | '/admin/certifications'
@@ -555,18 +602,22 @@ export interface FileRouteTypes {
     | '/cv'
     | '/impact'
     | '/learn'
+    | '/mcp'
     | '/privacy'
     | '/projects'
     | '/talks'
     | '/timeline'
     | '/transform'
     | '/video-courses'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/blog/$slug'
     | '/courses/$slug'
     | '/projects/$slug'
     | '/video-courses/$slug'
     | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/about'
     | '/_authenticated/admin/blog'
     | '/_authenticated/admin/certifications'
@@ -604,13 +655,17 @@ export interface RootRouteChildren {
   CvRoute: typeof CvRoute
   ImpactRoute: typeof ImpactRoute
   LearnRoute: typeof LearnRoute
+  McpRoute: typeof McpRoute
   PrivacyRoute: typeof PrivacyRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
   TalksRoute: typeof TalksRoute
   TimelineRoute: typeof TimelineRoute
   TransformRoute: typeof TransformRoute
   VideoCoursesRoute: typeof VideoCoursesRouteWithChildren
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -655,6 +710,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -782,6 +844,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/video-courses': {
       id: '/_authenticated/admin/video-courses'
@@ -930,6 +1006,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAboutRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.lovable/oauth/consent': {
       id: '/.lovable/oauth/consent'
       path: '/.lovable/oauth/consent'
@@ -1062,13 +1145,18 @@ const rootRouteChildren: RootRouteChildren = {
   CvRoute: CvRoute,
   ImpactRoute: ImpactRoute,
   LearnRoute: LearnRoute,
+  McpRoute: McpRoute,
   PrivacyRoute: PrivacyRoute,
   ProjectsRoute: ProjectsRouteWithChildren,
   TalksRoute: TalksRoute,
   TimelineRoute: TimelineRoute,
   TransformRoute: TransformRoute,
   VideoCoursesRoute: VideoCoursesRouteWithChildren,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
