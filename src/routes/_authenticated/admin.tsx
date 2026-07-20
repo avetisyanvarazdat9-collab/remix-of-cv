@@ -36,6 +36,8 @@ function Layout() {
 
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { checkCmsHealth } from "@/lib/cms-health";
+import { InitializeCms } from "@/components/InitializeCms";
 
 
 const tables = [
@@ -61,8 +63,18 @@ const STAT_DEFAULTS: Stat[] = [
 function Dashboard() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [stats, setStats] = useState<Stat[]>(STAT_DEFAULTS);
+  const [needsInit, setNeedsInit] = useState<boolean | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+    void checkCmsHealth().then((h) => {
+      if (!cancelled) setNeedsInit(!h.healthy);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (needsInit !== false) return;
     Promise.all(
       tables.map(async (t) => {
         const { count } = await supabase.from(t).select("*", { count: "exact", head: true });
@@ -79,10 +91,18 @@ function Dashboard() {
     } catch { /* ignore */ }
   }, []);
 
+  if (needsInit === null) {
+    return <div className="p-8 text-muted-foreground">Checking CMS status…</div>;
+  }
+  if (needsInit) {
+    return <InitializeCms onReady={() => setNeedsInit(false)} />;
+  }
+
   return (
     <div>
       <h1 className="font-display text-3xl font-bold">Dashboard</h1>
       <p className="mt-1 text-muted-foreground">Welcome back. Manage every section of your CV site.</p>
+
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s, i) => (
