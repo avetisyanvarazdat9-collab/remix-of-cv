@@ -907,7 +907,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_save_profile: {
+        Args: { p_profile: Json; p_profile_id: string }
+        Returns: {
+          bio: string | null
+          created_at: string
+          cv_url: string | null
+          email: string | null
+          github_url: string | null
+          i18n: Json
+          id: string
+          linkedin_url: string | null
+          location: string | null
+          name: string
+          phone: string | null
+          photo_url: string | null
+          tagline: string | null
+          title: string
+          twitter_url: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profile"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       app_role: "admin" | "user"
