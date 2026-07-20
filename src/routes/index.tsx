@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Mail,
@@ -38,6 +37,7 @@ import {
   internationalExperienceQuery,
 } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
+import { useCountUp } from "@/hooks/useCountUp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -98,35 +98,10 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-// -- Counters ---------------------------------------------------------------
-function useCounter(target: string) {
-  const match = target.match(/(\d+)/);
-  const num = match ? parseInt(match[1], 10) : 0;
-  const suffix = match ? target.slice(match.index! + match[1].length) : target;
-  const prefix = match ? target.slice(0, match.index!) : "";
-  // Initialize to the final value so no "0" or "0+" ever renders on SSR / first paint.
-  const [n, setN] = useState(num);
-  useEffect(() => {
-    if (!num) return;
-    setN(0);
-    const start = performance.now();
-    const dur = 1200;
-    let raf = 0;
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / dur);
-      setN(Math.round(num * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [num]);
-  return num ? `${prefix}${n}${suffix}` : target;
-}
-
 function StatBlock({ value, label }: { value: string; label: string }) {
-  const display = useCounter(value);
+  const { ref, display } = useCountUp(value);
   return (
-    <div className="premium-card group relative overflow-hidden p-7 text-center">
+    <div ref={ref} className="premium-card group relative overflow-hidden p-7 text-center">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
