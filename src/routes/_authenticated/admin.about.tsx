@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { Wrench, GraduationCap, User as UserIcon } from "lucide-react";
 import { saveAdminProfile } from "@/lib/profile-save";
+import { profileQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/_authenticated/admin/about")({
   head: () => ({ meta: [{ title: "About — Admin" }] }),
@@ -33,12 +35,13 @@ const REQUIRED_PROFILE_DEFAULTS = {
 // Focused editor for the "About" narrative: bio (Markdown) and tagline.
 // Structured Skills and Education live in their own pages, linked below.
 function AboutEditor() {
+  const queryClient = useQueryClient();
   const [profile, setProfile] = useState<Partial<Profile> | null>(null);
   const [i18n, setI18n] = useState<Record<string, Tri>>({});
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    supabase.from("profile").select("*").limit(1).maybeSingle().then(({ data, error }) => {
+    supabase.from("profile").select("*").order("created_at", { ascending: true }).limit(1).maybeSingle().then(({ data, error }) => {
       if (error) toast.error(error.message);
       const row = data ?? {};
       setProfile(row);
@@ -72,7 +75,11 @@ function AboutEditor() {
     const { data: savedProfile, error } = await saveAdminProfile(id, payload);
     setSaving(false);
     if (error) return toast.error(error.message);
-    if (savedProfile) setProfile(savedProfile);
+    if (savedProfile) {
+      setProfile(savedProfile);
+      queryClient.setQueryData(profileQuery.queryKey, savedProfile);
+    }
+    await queryClient.invalidateQueries({ queryKey: profileQuery.queryKey });
     toast.success("About saved");
   }
 

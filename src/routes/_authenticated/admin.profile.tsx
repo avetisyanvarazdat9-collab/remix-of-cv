@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { PreviewPanel } from "@/components/admin/PreviewPanel";
 import { saveAdminProfile } from "@/lib/profile-save";
+import { profileQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/_authenticated/admin/profile")({
   component: ProfileEditor,
@@ -63,6 +65,7 @@ type Preflight = {
 };
 
 function ProfileEditor() {
+  const queryClient = useQueryClient();
   const [data, setData] = useState<Partial<Profile> | null>(null);
   const [i18n, setI18n] = useState<Record<string, Tri>>({});
   const [saving, setSaving] = useState(false);
@@ -146,7 +149,7 @@ function ProfileEditor() {
 
 
   useEffect(() => {
-    supabase.from("profile").select("*").limit(1).maybeSingle().then(({ data, error }) => {
+    supabase.from("profile").select("*").order("created_at", { ascending: true }).limit(1).maybeSingle().then(({ data, error }) => {
       if (error) toast.error(error.message);
       const row = data ?? {};
       setData(row);
@@ -184,7 +187,11 @@ function ProfileEditor() {
     const { data: savedProfile, error } = await saveAdminProfile(id, payload);
     setSaving(false);
     if (error) return toast.error(error.message);
-    if (savedProfile) setData(savedProfile);
+    if (savedProfile) {
+      setData(savedProfile);
+      queryClient.setQueryData(profileQuery.queryKey, savedProfile);
+    }
+    await queryClient.invalidateQueries({ queryKey: profileQuery.queryKey });
     toast.success("Profile saved");
   }
 

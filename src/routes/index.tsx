@@ -331,8 +331,7 @@ function Home() {
               The person behind the expertise
             </h2>
             <p className="mt-6 line-clamp-6 whitespace-pre-line text-base leading-[1.75] text-muted-foreground">
-              {(loc(profile, "bio") as string) ||
-                "Dr. Varazdat Avetisyan is an AI Educator, Data Scientist, Computer Science Professor, and CTO with over 10 years of experience across artificial intelligence, machine learning, software engineering, and higher education."}
+              {loc(profile, "bio")}
             </p>
             <Link
               to="/about"

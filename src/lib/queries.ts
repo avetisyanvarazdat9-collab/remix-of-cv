@@ -22,6 +22,7 @@ export const profileQuery = queryOptions({
     const { data, error } = await supabase
       .from("profile")
       .select(PUBLIC_PROFILE_COLUMNS)
+      .order("created_at", { ascending: true })
       .limit(1)
       .maybeSingle();
     if (error) throw error;

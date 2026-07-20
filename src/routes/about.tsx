@@ -65,6 +65,9 @@ function AboutPage() {
             Download CV
           </Link>
         </div>
+        {loc(profile, "tagline") && (
+          <p className="mt-3 text-lg font-medium text-foreground/90">{loc(profile, "tagline")}</p>
+        )}
         <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-muted-foreground">
           {loc(profile, "bio")}
         </p>
