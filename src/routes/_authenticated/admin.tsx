@@ -61,8 +61,18 @@ const STAT_DEFAULTS: Stat[] = [
 function Dashboard() {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [stats, setStats] = useState<Stat[]>(STAT_DEFAULTS);
+  const [needsInit, setNeedsInit] = useState<boolean | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+    void checkCmsHealth().then((h) => {
+      if (!cancelled) setNeedsInit(!h.healthy);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (needsInit !== false) return;
     Promise.all(
       tables.map(async (t) => {
         const { count } = await supabase.from(t).select("*", { count: "exact", head: true });
