@@ -493,12 +493,12 @@ export type Database = {
           created_at?: string
           id?: string
           is_visible?: boolean
-          label: string
-          label_en: string
+          label?: string
+          label_en?: string
           label_hy?: string
           label_ru?: string
           order_index?: number
-          path: string
+          path?: string
           updated_at?: string
         }
         Update: {
@@ -545,11 +545,11 @@ export type Database = {
           id?: string
           linkedin_url?: string | null
           location?: string | null
-          name: string
+          name?: string
           phone?: string | null
           photo_url?: string | null
           tagline?: string | null
-          title: string
+          title?: string
           twitter_url?: string | null
           updated_at?: string
           website_url?: string | null
