@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +7,11 @@ import type { Tables } from "@/integrations/supabase/types";
 import { Wrench, GraduationCap, User as UserIcon } from "lucide-react";
 import { saveAdminProfile } from "@/lib/profile-save";
 import { profileQuery } from "@/lib/queries";
+import {
+  hydrateProfileI18nFields,
+  mergeProfileI18nPayload,
+  type ProfileI18nTri,
+} from "@/lib/profile-i18n";
 
 export const Route = createFileRoute("/_authenticated/admin/about")({
   head: () => ({ meta: [{ title: "About — Admin" }] }),
@@ -14,9 +19,9 @@ export const Route = createFileRoute("/_authenticated/admin/about")({
 });
 
 type Profile = Tables<"profile">;
-type Tri = { hy: string; en: string; ru: string };
 
-const I18N_FIELDS: { name: "tagline" | "bio"; label: string; multiline: boolean }[] = [
+const I18N_FIELD_NAMES = ["tagline", "bio"] as const;
+const I18N_FIELDS: { name: (typeof I18N_FIELD_NAMES)[number]; label: string; multiline: boolean }[] = [
   { name: "tagline", label: "Tagline", multiline: false },
   { name: "bio", label: "Bio (Markdown)", multiline: true },
 ];
@@ -37,49 +42,67 @@ const REQUIRED_PROFILE_DEFAULTS = {
 function AboutEditor() {
   const queryClient = useQueryClient();
   const [profile, setProfile] = useState<Partial<Profile> | null>(null);
-  const [i18n, setI18n] = useState<Record<string, Tri>>({});
+  const [i18n, setI18n] = useState<Record<string, ProfileI18nTri>>({});
   const [saving, setSaving] = useState(false);
+  const i18nRef = useRef(i18n);
+  i18nRef.current = i18n;
 
   useEffect(() => {
-    supabase.from("profile").select("*").order("created_at", { ascending: true }).limit(1).maybeSingle().then(({ data, error }) => {
-      if (error) toast.error(error.message);
-      const row = data ?? {};
-      setProfile(row);
-      const existing = ((row as any).i18n ?? {}) as Record<string, Partial<Tri>>;
-      const bag: Record<string, Tri> = {};
-      for (const f of I18N_FIELDS) {
-        const plain = ((row as any)[f.name] ?? "") as string;
-        bag[f.name] = {
-          hy: existing[f.name]?.hy ?? plain ?? "",
-          en: existing[f.name]?.en ?? plain ?? "",
-          ru: existing[f.name]?.ru ?? plain ?? "",
-        };
-      }
-      setI18n(bag);
-    });
+    let cancelled = false;
+
+    supabase
+      .from("profile")
+      .select("*")
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) toast.error(error.message);
+        const row = data ?? {};
+        setProfile(row);
+        setI18n(hydrateProfileI18nFields(row, I18N_FIELD_NAMES));
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!profile) return;
     setSaving(true);
-    const { id, i18n: existingI18n, ...rest } = profile as any;
-    const payload: any = { ...rest };
+
+    const currentI18n = i18nRef.current;
+    const { id, i18n: existingI18n, ...rest } = profile as Profile & { i18n?: unknown };
+    const payload: Record<string, unknown> = { ...rest };
+
     for (const f of I18N_FIELDS) {
-      const tri = i18n[f.name] ?? { hy: "", en: "", ru: "" };
+      const tri = currentI18n[f.name] ?? { hy: "", en: "", ru: "" };
       payload[f.name] = tri.en || tri.hy || tri.ru || null;
     }
+
     payload.name = payload.name || REQUIRED_PROFILE_DEFAULTS.name;
     payload.title = payload.title || REQUIRED_PROFILE_DEFAULTS.title;
-    payload.i18n = { ...(existingI18n ?? {}), ...i18n };
-    const { data: savedProfile, error } = await saveAdminProfile(id, payload);
+    payload.i18n = mergeProfileI18nPayload(existingI18n, currentI18n);
+
+    const { data: savedProfile, error } = await saveAdminProfile(id, payload as Partial<Profile>);
     setSaving(false);
     if (error) return toast.error(error.message);
+
+    const nextI18n = mergeProfileI18nPayload(existingI18n, currentI18n);
+    setI18n(nextI18n);
+
     if (savedProfile) {
       setProfile(savedProfile);
       queryClient.setQueryData(profileQuery.queryKey, savedProfile);
+    } else {
+      queryClient.setQueryData(profileQuery.queryKey, (prev: Profile | null | undefined) =>
+        prev ? { ...prev, ...payload, i18n: nextI18n } as Profile : prev,
+      );
     }
-    await queryClient.invalidateQueries({ queryKey: profileQuery.queryKey });
+
     toast.success("About saved");
   }
 
@@ -97,7 +120,7 @@ function AboutEditor() {
             <I18nInput
               value={i18n[f.name] ?? { hy: "", en: "", ru: "" }}
               multiline={f.multiline}
-              onChange={(v) => setI18n({ ...i18n, [f.name]: v })}
+              onChange={(v) => setI18n((prev) => ({ ...prev, [f.name]: v }))}
             />
           </div>
         ))}
@@ -129,7 +152,7 @@ function AboutEditor() {
   );
 }
 
-function I18nInput({ value, onChange, multiline }: { value: Tri; onChange: (v: Tri) => void; multiline?: boolean }) {
+function I18nInput({ value, onChange, multiline }: { value: ProfileI18nTri; onChange: (v: ProfileI18nTri) => void; multiline?: boolean }) {
   const [active, setActive] = useState<"hy" | "en" | "ru">("en");
   return (
     <div className="rounded-md border border-border bg-background/40 p-2">

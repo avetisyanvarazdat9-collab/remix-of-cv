@@ -191,7 +191,6 @@ function ProfileEditor() {
       setData(savedProfile);
       queryClient.setQueryData(profileQuery.queryKey, savedProfile);
     }
-    await queryClient.invalidateQueries({ queryKey: profileQuery.queryKey });
     toast.success("Profile saved");
   }
 
