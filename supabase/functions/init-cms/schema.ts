@@ -204,11 +204,13 @@ CREATE TABLE IF NOT EXISTS public.companies (
   is_current boolean NOT NULL DEFAULT false,
   display_order int NOT NULL DEFAULT 0,
   is_visible boolean NOT NULL DEFAULT true,
+  i18n jsonb NOT NULL DEFAULT '{}'::jsonb,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 ALTER TABLE public.companies ALTER COLUMN name DROP NOT NULL;
 ALTER TABLE public.companies ALTER COLUMN role DROP NOT NULL;
+ALTER TABLE public.companies ADD COLUMN IF NOT EXISTS i18n jsonb NOT NULL DEFAULT '{}'::jsonb;
 
 -- education -----------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.education (
@@ -217,11 +219,13 @@ CREATE TABLE IF NOT EXISTS public.education (
   start_year int, end_year int,
   display_order int NOT NULL DEFAULT 0,
   is_visible boolean NOT NULL DEFAULT true,
+  i18n jsonb NOT NULL DEFAULT '{}'::jsonb,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 ALTER TABLE public.education ALTER COLUMN institution DROP NOT NULL;
 ALTER TABLE public.education ALTER COLUMN degree DROP NOT NULL;
+ALTER TABLE public.education ADD COLUMN IF NOT EXISTS i18n jsonb NOT NULL DEFAULT '{}'::jsonb;
 
 -- certifications ------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.certifications (
