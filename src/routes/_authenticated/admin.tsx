@@ -91,10 +91,18 @@ function Dashboard() {
     } catch { /* ignore */ }
   }, []);
 
+  if (needsInit === null) {
+    return <div className="p-8 text-muted-foreground">Checking CMS status…</div>;
+  }
+  if (needsInit) {
+    return <InitializeCms onReady={() => setNeedsInit(false)} />;
+  }
+
   return (
     <div>
       <h1 className="font-display text-3xl font-bold">Dashboard</h1>
       <p className="mt-1 text-muted-foreground">Welcome back. Manage every section of your CV site.</p>
+
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s, i) => (
