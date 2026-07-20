@@ -23,9 +23,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/50 bg-background/75 shadow-[0_1px_0_0_color-mix(in_oklab,var(--border)_40%,transparent)] backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center font-display text-base font-semibold tracking-tight transition-opacity hover:opacity-80" aria-label="Home">
+        <Link to="/" className="flex min-w-0 shrink items-center font-display text-base font-semibold tracking-tight transition-opacity hover:opacity-80" aria-label="Home">
           {logoUrl ? (
-            <img src={logoUrl} alt="Site logo" className="h-10 max-h-10 w-auto object-contain" />
+            <img src={logoUrl} alt="Site logo" className="h-10 max-h-10 w-auto max-w-[11rem] object-contain sm:max-w-[12rem]" />
           ) : (
             <>Dr. Varazdat Avetisyan<span className="text-primary">.</span></>
           )}
@@ -70,7 +70,7 @@ export function SiteHeader() {
             <ThemeToggle className="ml-1" />
           </nav>
         )}
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex shrink-0 items-center gap-2 lg:hidden">
           <ThemeToggle />
           <LanguageSwitcher />
           <button

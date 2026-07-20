@@ -369,11 +369,12 @@ function Home() {
 
       {/* ================ SECTION 3 · WHAT SETS HIM APART ================ */}
       <section className="relative overflow-hidden bg-background py-24 sm:py-28">
-        <div
-          aria-hidden
-          className="ambient-orb -right-24 top-0 size-[420px] bg-primary/8"
-          style={{ animationDelay: "-4s" }}
-        />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div
+            className="ambient-orb right-0 top-0 size-[420px] translate-x-1/4 bg-primary/8"
+            style={{ animationDelay: "-4s" }}
+          />
+        </div>
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
           <RevealOnScroll className="mx-auto max-w-2xl text-center">
             <p className="section-eyebrow">What sets him apart</p>
@@ -386,7 +387,7 @@ function Home() {
           </RevealOnScroll>
           <div className="mt-14 grid gap-6 md:grid-cols-2">
             {PILLARS.map((p, i) => (
-              <RevealOnScroll key={p.title} delay={i * 80} className="h-full">
+              <RevealOnScroll key={p.title} delay={i * 80} className="h-full min-w-0">
                 <div className="premium-card group flex h-full flex-col p-7">
                   <div className="flex items-center gap-3.5">
                     <div className="icon-badge size-11 group-hover:bg-primary group-hover:text-primary-foreground">
@@ -447,7 +448,7 @@ function Home() {
           </RevealOnScroll>
           <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {EXPERTISE.map((e, i) => (
-              <RevealOnScroll key={e.label} delay={i * 50} className="h-full">
+              <RevealOnScroll key={e.label} delay={i * 50} className="h-full min-w-0">
                 <Link
                   to={e.to as any}
                   className="premium-card group flex h-full flex-col items-start gap-3.5 p-5"
@@ -455,7 +456,7 @@ function Home() {
                   <div className="icon-badge size-10 group-hover:scale-105 group-hover:bg-primary group-hover:text-primary-foreground">
                     <e.icon className="size-4" />
                   </div>
-                  <span className="text-sm font-medium leading-snug text-foreground">{e.label}</span>
+                  <span className="text-sm font-medium leading-snug break-words text-foreground">{e.label}</span>
                 </Link>
               </RevealOnScroll>
             ))}
@@ -465,11 +466,12 @@ function Home() {
 
       {/* ================ SECTION 5 · TRUST & CREDIBILITY ================ */}
       <section className="relative overflow-hidden bg-background py-24 sm:py-28">
-        <div
-          aria-hidden
-          className="ambient-orb -left-32 bottom-0 size-[360px] bg-accent/10"
-          style={{ animationDelay: "-8s" }}
-        />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div
+            className="ambient-orb left-0 bottom-0 size-[360px] -translate-x-1/4 bg-accent/10"
+            style={{ animationDelay: "-8s" }}
+          />
+        </div>
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
           <RevealOnScroll className="mx-auto max-w-2xl text-center">
             <p className="section-eyebrow">Impact in action</p>
@@ -504,7 +506,7 @@ function Home() {
                 </div>
                 <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {visiblePartners.map((p: any, i: number) => (
-                    <RevealOnScroll key={p.id} delay={i * 60} className="h-full">
+                    <RevealOnScroll key={p.id} delay={i * 60} className="h-full min-w-0">
                       <a
                         href={p.website_url || undefined}
                         target={p.website_url ? "_blank" : undefined}
@@ -544,7 +546,7 @@ function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {(testimonials ?? []).slice(0, 3).map((tm: any, i: number) => (
-                <RevealOnScroll key={tm.id} delay={i * 80} className="h-full">
+                <RevealOnScroll key={tm.id} delay={i * 80} className="h-full min-w-0">
                   <figure className="premium-card flex h-full flex-col p-7">
                     <Quote className="size-5 text-primary/50" />
                     <blockquote className="mt-4 flex-1 text-sm leading-[1.75] text-foreground">
@@ -577,7 +579,7 @@ function Home() {
       {featuredCourses.length > 0 && (
         <section className="section-divider bg-background pb-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <RevealOnScroll className="mb-10 flex items-end justify-between gap-4">
+            <RevealOnScroll className="mb-10 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
               <div>
                 <p className="section-eyebrow">Featured courses</p>
                 <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
@@ -591,7 +593,7 @@ function Home() {
             </RevealOnScroll>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {featuredCourses.slice(0, 3).map((c: any, i: number) => (
-                <RevealOnScroll key={c.id} delay={i * 80} className="h-full">
+                <RevealOnScroll key={c.id} delay={i * 80} className="h-full min-w-0">
                   <article className="premium-card group flex h-full flex-col overflow-hidden">
                     <div className="relative overflow-hidden">
                       {c.image_url ? (
@@ -634,11 +636,12 @@ function Home() {
               "radial-gradient(55% 50% at 50% 0%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 72%)",
           }}
         />
-        <div
-          aria-hidden
-          className="ambient-orb right-1/4 top-1/3 size-[320px] bg-accent/12"
-          style={{ animationDelay: "-12s" }}
-        />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div
+            className="ambient-orb right-1/4 top-1/3 size-[320px] bg-accent/12"
+            style={{ animationDelay: "-12s" }}
+          />
+        </div>
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
           <RevealOnScroll className="mx-auto max-w-2xl text-center">
             <p className="section-eyebrow">Choose your journey</p>
@@ -648,7 +651,7 @@ function Home() {
           </RevealOnScroll>
           <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {JOURNEYS.map((j, i) => (
-              <RevealOnScroll key={j.eyebrow} delay={i * 70} className="h-full">
+              <RevealOnScroll key={j.eyebrow} delay={i * 70} className="h-full min-w-0">
                 <Link
                   to={j.to as any}
                   className="premium-card group flex h-full flex-col p-7"
