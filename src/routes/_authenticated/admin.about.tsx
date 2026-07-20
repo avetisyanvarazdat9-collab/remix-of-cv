@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { Wrench, GraduationCap, User as UserIcon } from "lucide-react";
+import { saveAdminProfile } from "@/lib/profile-save";
 
 export const Route = createFileRoute("/_authenticated/admin/about")({
   head: () => ({ meta: [{ title: "About — Admin" }] }),
@@ -68,11 +69,10 @@ function AboutEditor() {
     payload.name = payload.name || REQUIRED_PROFILE_DEFAULTS.name;
     payload.title = payload.title || REQUIRED_PROFILE_DEFAULTS.title;
     payload.i18n = { ...(existingI18n ?? {}), ...i18n };
-    const { error } = id
-      ? await supabase.from("profile").update(payload).eq("id", id)
-      : await supabase.from("profile").insert(payload);
+    const { data: savedProfile, error } = await saveAdminProfile(id, payload);
     setSaving(false);
     if (error) return toast.error(error.message);
+    if (savedProfile) setProfile(savedProfile);
     toast.success("About saved");
   }
 

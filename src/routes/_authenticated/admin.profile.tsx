@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { PreviewPanel } from "@/components/admin/PreviewPanel";
+import { saveAdminProfile } from "@/lib/profile-save";
 
 export const Route = createFileRoute("/_authenticated/admin/profile")({
   component: ProfileEditor,
@@ -180,11 +181,10 @@ function ProfileEditor() {
     payload.name = payload.name || REQUIRED_PROFILE_DEFAULTS.name;
     payload.title = payload.title || REQUIRED_PROFILE_DEFAULTS.title;
     payload.i18n = i18n;
-    const { error } = id
-      ? await supabase.from("profile").update(payload).eq("id", id)
-      : await supabase.from("profile").insert(payload);
+    const { data: savedProfile, error } = await saveAdminProfile(id, payload);
     setSaving(false);
     if (error) return toast.error(error.message);
+    if (savedProfile) setData(savedProfile);
     toast.success("Profile saved");
   }
 
