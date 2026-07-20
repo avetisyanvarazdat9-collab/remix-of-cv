@@ -36,6 +36,8 @@ function Layout() {
 
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { checkCmsHealth } from "@/lib/cms-health";
+import { InitializeCms } from "@/components/InitializeCms";
 
 
 const tables = [
