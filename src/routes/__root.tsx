@@ -118,10 +118,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 const THEME_PREHYDRATE = `(function(){try{var r=document.documentElement;var m=localStorage.getItem('lovable.darkMode.v1');if(m==='dark'){r.classList.add('dark');r.style.colorScheme='dark';}else{if(m==='light'){r.classList.remove('dark');r.style.colorScheme='light';}var s=localStorage.getItem('lovable.theme.v1');if(s){var d=JSON.parse(s);if(d&&d.vars){for(var k in d.vars){r.style.setProperty(k,d.vars[k]);}if(d.colorScheme){r.style.colorScheme=d.colorScheme;}}}}}catch(e){}})();`;
 
+const FONT_RESOURCE_PRELUDE = `(function(){try{function fix(n){if(!n||String(n.tagName).toLowerCase()!=='link')return n;var h=n.getAttribute('href')||'';if(h.indexOf('fonts.googleapis.com/css2?family=inter:')!==-1){n.setAttribute('href',h.replace('family=inter:','family=Inter:'));}return n;}var ap=HTMLHeadElement.prototype.appendChild;HTMLHeadElement.prototype.appendChild=function(n){return ap.call(this,fix(n));};var ib=HTMLHeadElement.prototype.insertBefore;HTMLHeadElement.prototype.insertBefore=function(n,r){return ib.call(this,fix(n),r);};}catch(e){}})();`;
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: FONT_RESOURCE_PRELUDE }} />
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: THEME_PREHYDRATE }} />
       </head>
