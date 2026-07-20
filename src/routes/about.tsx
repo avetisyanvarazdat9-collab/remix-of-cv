@@ -7,7 +7,7 @@ import {
   skillsQuery,
   educationQuery,
   certificationsQuery,
-  companiesQuery,
+  professionalExperienceQuery,
   internationalExperienceQuery,
 } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/about")({
     context.queryClient.ensureQueryData(skillsQuery);
     context.queryClient.ensureQueryData(educationQuery);
     context.queryClient.ensureQueryData(certificationsQuery);
-    context.queryClient.ensureQueryData(companiesQuery);
+    context.queryClient.ensureQueryData(professionalExperienceQuery);
     context.queryClient.ensureQueryData(internationalExperienceQuery());
   },
   component: AboutPage,
@@ -36,7 +36,7 @@ function AboutPage() {
   const { data: skills } = useSuspenseQuery(skillsQuery);
   const { data: education } = useSuspenseQuery(educationQuery);
   const { data: certifications } = useSuspenseQuery(certificationsQuery);
-  const { data: companies } = useSuspenseQuery(companiesQuery);
+  const { data: professionalExperience } = useSuspenseQuery(professionalExperienceQuery);
   const { data: developmentRows } = useSuspenseQuery(internationalExperienceQuery());
   const loc = useLocalized();
   const t = useT();
@@ -160,25 +160,33 @@ function AboutPage() {
           </div>
         )}
 
-        {(companies ?? []).filter((c) => c.is_visible !== false).length > 0 && (
+        {(professionalExperience ?? []).filter((e) => e.is_visible !== false).length > 0 && (
           <div className="mt-8 glass rounded-2xl p-6">
             <h2 className="font-display text-xl font-semibold">Professional Experience</h2>
             <ol className="mt-5 relative border-l border-primary/30 pl-6 space-y-5">
-              {(companies ?? [])
-                .filter((c) => c.is_visible !== false)
-                .sort((a, b) => (b.start_year ?? 0) - (a.start_year ?? 0))
-                .map((c) => {
-                  const role = loc(c, "role") || c.role;
+              {(professionalExperience ?? [])
+                .filter((e) => e.is_visible !== false)
+                .map((e) => {
+                  const jobTitle = loc(e, "job_title") || e.job_title;
+                  const organization = loc(e, "organization") || e.organization;
+                  const location = loc(e, "location") || e.location;
+                  const employmentType = loc(e, "employment_type") || e.employment_type;
                   return (
-                    <li key={c.id} className="relative">
+                    <li key={e.id} className="relative">
                       <span className="absolute -left-[31px] top-1.5 size-3 rounded-full bg-primary ring-4 ring-background" />
                       <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <p className="font-medium">{c.name}</p>
+                        <p className="font-medium">{jobTitle}</p>
                         <p className="text-xs text-muted-foreground">
-                          {c.start_year}{c.is_current ? " — Present" : c.end_year ? `–${c.end_year}` : ""}
+                          {e.start_year}
+                          {e.is_current ? " — Present" : e.end_year ? `–${e.end_year}` : ""}
                         </p>
                       </div>
-                      {role && <p className="text-sm text-primary">{role}</p>}
+                      {organization && <p className="text-sm text-primary">{organization}</p>}
+                      {(location || employmentType) && (
+                        <p className="text-sm text-muted-foreground">
+                          {[location, employmentType].filter(Boolean).join(" · ")}
+                        </p>
+                      )}
                     </li>
                   );
                 })}

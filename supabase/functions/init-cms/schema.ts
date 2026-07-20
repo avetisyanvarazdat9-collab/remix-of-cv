@@ -227,6 +227,19 @@ ALTER TABLE public.education ALTER COLUMN institution DROP NOT NULL;
 ALTER TABLE public.education ALTER COLUMN degree DROP NOT NULL;
 ALTER TABLE public.education ADD COLUMN IF NOT EXISTS i18n jsonb NOT NULL DEFAULT '{}'::jsonb;
 
+-- professional_experience ---------------------------------------------
+CREATE TABLE IF NOT EXISTS public.professional_experience (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  job_title text, organization text, location text, employment_type text, description text,
+  start_year int, end_year int,
+  is_current boolean NOT NULL DEFAULT false,
+  display_order int NOT NULL DEFAULT 0,
+  is_visible boolean NOT NULL DEFAULT true,
+  i18n jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
 -- certifications ------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.certifications (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -375,7 +388,7 @@ DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','certifications','skills',
+    'projects','companies','education','professional_experience','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings'
   ] LOOP
@@ -407,7 +420,7 @@ DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','certifications','skills',
+    'projects','companies','education','professional_experience','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings','messages','error_logs','user_roles'
   ] LOOP
@@ -418,7 +431,7 @@ BEGIN
   -- Public read (anon) on visitor-facing tables
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','certifications','skills',
+    'projects','companies','education','professional_experience','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings'
   ] LOOP
@@ -438,7 +451,7 @@ DECLARE t text; p record;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','certifications','skills',
+    'projects','companies','education','professional_experience','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings','messages','error_logs','user_roles'
   ] LOOP
@@ -462,7 +475,7 @@ DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','certifications','skills',
+    'projects','companies','education','professional_experience','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings'
   ] LOOP

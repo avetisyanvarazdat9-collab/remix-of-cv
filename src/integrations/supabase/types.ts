@@ -446,6 +446,57 @@ export type Database = {
         }
         Relationships: []
       }
+      professional_experience: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          employment_type: string | null
+          end_year: number | null
+          i18n: Json
+          id: string
+          is_current: boolean
+          is_visible: boolean
+          job_title: string | null
+          location: string | null
+          organization: string | null
+          start_year: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          employment_type?: string | null
+          end_year?: number | null
+          i18n?: Json
+          id?: string
+          is_current?: boolean
+          is_visible?: boolean
+          job_title?: string | null
+          location?: string | null
+          organization?: string | null
+          start_year?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          employment_type?: string | null
+          end_year?: number | null
+          i18n?: Json
+          id?: string
+          is_current?: boolean
+          is_visible?: boolean
+          job_title?: string | null
+          location?: string | null
+          organization?: string | null
+          start_year?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           body: string

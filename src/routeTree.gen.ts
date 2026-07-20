@@ -45,6 +45,7 @@ import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminQuickStatsRouteImport } from './routes/_authenticated/admin.quick-stats'
 import { Route as AuthenticatedAdminProjectsRouteImport } from './routes/_authenticated/admin.projects'
 import { Route as AuthenticatedAdminProfileRouteImport } from './routes/_authenticated/admin.profile'
+import { Route as AuthenticatedAdminProfessionalExperienceRouteImport } from './routes/_authenticated/admin.professional-experience'
 import { Route as AuthenticatedAdminPartnersRouteImport } from './routes/_authenticated/admin.partners'
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
 import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
@@ -248,6 +249,12 @@ const AuthenticatedAdminProfileRoute =
     path: '/profile',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminProfessionalExperienceRoute =
+  AuthenticatedAdminProfessionalExperienceRouteImport.update({
+    id: '/professional-experience',
+    path: '/professional-experience',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminPartnersRoute =
   AuthenticatedAdminPartnersRouteImport.update({
     id: '/partners',
@@ -370,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
+  '/admin/professional-experience': typeof AuthenticatedAdminProfessionalExperienceRoute
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/projects': typeof AuthenticatedAdminProjectsRoute
   '/admin/quick-stats': typeof AuthenticatedAdminQuickStatsRoute
@@ -421,6 +429,7 @@ export interface FileRoutesByTo {
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
+  '/admin/professional-experience': typeof AuthenticatedAdminProfessionalExperienceRoute
   '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/projects': typeof AuthenticatedAdminProjectsRoute
   '/admin/quick-stats': typeof AuthenticatedAdminQuickStatsRoute
@@ -474,6 +483,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/_authenticated/admin/partners': typeof AuthenticatedAdminPartnersRoute
+  '/_authenticated/admin/professional-experience': typeof AuthenticatedAdminProfessionalExperienceRoute
   '/_authenticated/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/_authenticated/admin/projects': typeof AuthenticatedAdminProjectsRoute
   '/_authenticated/admin/quick-stats': typeof AuthenticatedAdminQuickStatsRoute
@@ -527,6 +537,7 @@ export interface FileRouteTypes {
     | '/admin/messages'
     | '/admin/navigation'
     | '/admin/partners'
+    | '/admin/professional-experience'
     | '/admin/profile'
     | '/admin/projects'
     | '/admin/quick-stats'
@@ -578,6 +589,7 @@ export interface FileRouteTypes {
     | '/admin/messages'
     | '/admin/navigation'
     | '/admin/partners'
+    | '/admin/professional-experience'
     | '/admin/profile'
     | '/admin/projects'
     | '/admin/quick-stats'
@@ -630,6 +642,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/messages'
     | '/_authenticated/admin/navigation'
     | '/_authenticated/admin/partners'
+    | '/_authenticated/admin/professional-experience'
     | '/_authenticated/admin/profile'
     | '/_authenticated/admin/projects'
     | '/_authenticated/admin/quick-stats'
@@ -922,6 +935,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProfileRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/professional-experience': {
+      id: '/_authenticated/admin/professional-experience'
+      path: '/professional-experience'
+      fullPath: '/admin/professional-experience'
+      preLoaderRoute: typeof AuthenticatedAdminProfessionalExperienceRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/partners': {
       id: '/_authenticated/admin/partners'
       path: '/partners'
@@ -1036,6 +1056,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
   AuthenticatedAdminPartnersRoute: typeof AuthenticatedAdminPartnersRoute
+  AuthenticatedAdminProfessionalExperienceRoute: typeof AuthenticatedAdminProfessionalExperienceRoute
   AuthenticatedAdminProfileRoute: typeof AuthenticatedAdminProfileRoute
   AuthenticatedAdminProjectsRoute: typeof AuthenticatedAdminProjectsRoute
   AuthenticatedAdminQuickStatsRoute: typeof AuthenticatedAdminQuickStatsRoute
@@ -1061,6 +1082,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
   AuthenticatedAdminPartnersRoute: AuthenticatedAdminPartnersRoute,
+  AuthenticatedAdminProfessionalExperienceRoute:
+    AuthenticatedAdminProfessionalExperienceRoute,
   AuthenticatedAdminProfileRoute: AuthenticatedAdminProfileRoute,
   AuthenticatedAdminProjectsRoute: AuthenticatedAdminProjectsRoute,
   AuthenticatedAdminQuickStatsRoute: AuthenticatedAdminQuickStatsRoute,

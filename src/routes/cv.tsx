@@ -6,7 +6,7 @@ import {
   skillsQuery,
   educationQuery,
   certificationsQuery,
-  companiesQuery,
+  professionalExperienceQuery,
   coursesQuery,
   videoCoursesQuery,
   talksQuery,
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/cv")({
     context.queryClient.ensureQueryData(skillsQuery);
     context.queryClient.ensureQueryData(educationQuery);
     context.queryClient.ensureQueryData(certificationsQuery);
-    context.queryClient.ensureQueryData(companiesQuery);
+    context.queryClient.ensureQueryData(professionalExperienceQuery);
     context.queryClient.ensureQueryData(coursesQuery);
     context.queryClient.ensureQueryData(videoCoursesQuery);
     context.queryClient.ensureQueryData(talksQuery);
@@ -48,7 +48,7 @@ function CVPage() {
   const { data: skills } = useSuspenseQuery(skillsQuery);
   const { data: education } = useSuspenseQuery(educationQuery);
   const { data: certifications } = useSuspenseQuery(certificationsQuery);
-  const { data: companies } = useSuspenseQuery(companiesQuery);
+  const { data: professionalExperience } = useSuspenseQuery(professionalExperienceQuery);
   const { data: courses } = useSuspenseQuery(coursesQuery);
   const { data: videoCourses } = useSuspenseQuery(videoCoursesQuery);
   const { data: talks } = useSuspenseQuery(talksQuery);
@@ -140,27 +140,34 @@ function CVPage() {
           </Section>
         )}
 
-        {companies && companies.filter((c: any) => c.is_visible !== false).length > 0 && (
+        {professionalExperience &&
+          professionalExperience.filter((e: any) => e.is_visible !== false).length > 0 && (
           <Section title="Professional Experience">
             <ul className="space-y-3">
-              {companies
-                .filter((c: any) => c.is_visible !== false)
-                .sort((a: any, b: any) => (b.start_year ?? 0) - (a.start_year ?? 0))
-                .map((c: any) => (
-                  <li key={c.id} className="break-inside-avoid">
+              {professionalExperience
+                .filter((e: any) => e.is_visible !== false)
+                .map((e: any) => (
+                  <li key={e.id} className="break-inside-avoid">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <p className="font-semibold">{c.name}</p>
+                      <p className="font-semibold">{loc(e, "job_title") || e.job_title}</p>
                       <p className="text-[9.5pt] text-slate-600">
-                        {c.start_year}
-                        {c.is_current ? " — Present" : c.end_year ? `–${c.end_year}` : ""}
+                        {e.start_year}
+                        {e.is_current ? " — Present" : e.end_year ? `–${e.end_year}` : ""}
                       </p>
                     </div>
-                    {(loc(c, "role") || c.role) && (
-                      <p className="italic text-slate-700">{loc(c, "role") || c.role}</p>
+                    {(loc(e, "organization") || e.organization) && (
+                      <p className="italic text-slate-700">{loc(e, "organization") || e.organization}</p>
                     )}
-                    {(loc(c, "description") || c.description) && (
+                    {((loc(e, "location") || e.location) || (loc(e, "employment_type") || e.employment_type)) && (
+                      <p className="text-[9.5pt] text-slate-600">
+                        {[loc(e, "location") || e.location, loc(e, "employment_type") || e.employment_type]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
+                    )}
+                    {(loc(e, "description") || e.description) && (
                       <p className="mt-0.5 whitespace-pre-line text-slate-700">
-                        {loc(c, "description") || c.description}
+                        {loc(e, "description") || e.description}
                       </p>
                     )}
                   </li>

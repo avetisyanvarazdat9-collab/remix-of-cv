@@ -53,6 +53,12 @@ export const educationQuery = queryOptions({
   queryFn: () => run(supabase.from("education").select("*").order("display_order")),
 });
 
+export const professionalExperienceQuery = queryOptions({
+  queryKey: ["professional_experience"],
+  queryFn: () =>
+    run(supabase.from("professional_experience").select("*").order("display_order")),
+});
+
 export const certificationsQuery = queryOptions({
   queryKey: ["certifications"],
   queryFn: () => run(supabase.from("certifications").select("*").order("display_order")),
