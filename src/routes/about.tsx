@@ -8,20 +8,9 @@ import {
   educationQuery,
   certificationsQuery,
   companiesQuery,
+  internationalExperienceQuery,
 } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
-
-const TRAININGS: { year: string; title: string; location: string }[] = [
-  { year: "2013", title: "EU Tempus HEN-GEAR training", location: "Bologna, Italy" },
-  { year: "2014", title: "EU Tempus Veritas workshop", location: "Heidelberg, Germany" },
-  { year: "2015", title: "EU Tempus Ararat workshop", location: "Graz, Austria" },
-  { year: "2015", title: "EU Tempus HEN-GEAR workshop", location: "Las Palmas, Spain" },
-  { year: "2015", title: "EU Tempus Veritas trainings & workshops", location: "KTH (Sweden), Girona (Spain), Bath Spa (UK), Heidelberg (Germany)" },
-  { year: "2017", title: "Lectures & experience exchange — Angel Kanchev University of Ruse", location: "Ruse, Bulgaria" },
-  { year: "2017", title: "Training — Technical University of Sofia", location: "Sofia, Bulgaria" },
-  { year: "2017", title: "Training — Polytechnic University of Turin", location: "Turin, Italy" },
-  { year: "—", title: "Various national & international conferences, seminars, and forums", location: "" },
-];
 
 export const Route = createFileRoute("/about")({
   head: () => ({ meta: [{ title: "About — Varazdat Avetisyan" }] }),
@@ -31,9 +20,16 @@ export const Route = createFileRoute("/about")({
     context.queryClient.ensureQueryData(educationQuery);
     context.queryClient.ensureQueryData(certificationsQuery);
     context.queryClient.ensureQueryData(companiesQuery);
+    context.queryClient.ensureQueryData(internationalExperienceQuery());
   },
   component: AboutPage,
 });
+
+function formatDevelopmentYear(eventDate: string | null | undefined) {
+  if (!eventDate) return "—";
+  const year = new Date(eventDate).getFullYear();
+  return Number.isFinite(year) ? String(year) : "—";
+}
 
 function AboutPage() {
   const { data: profile } = useSuspenseQuery(profileQuery);
@@ -41,8 +37,16 @@ function AboutPage() {
   const { data: education } = useSuspenseQuery(educationQuery);
   const { data: certifications } = useSuspenseQuery(certificationsQuery);
   const { data: companies } = useSuspenseQuery(companiesQuery);
+  const { data: developmentRows } = useSuspenseQuery(internationalExperienceQuery());
   const loc = useLocalized();
   const t = useT();
+
+  const professionalDevelopment = [...(developmentRows ?? [])].sort((a, b) => {
+    if (!a.event_date && !b.event_date) return 0;
+    if (!a.event_date) return 1;
+    if (!b.event_date) return -1;
+    return new Date(a.event_date).getTime() - new Date(b.event_date).getTime();
+  });
 
   const grouped = (skills ?? []).reduce<Record<string, typeof skills>>((acc, s) => {
     const cat = loc(s, "category") || s.category;
@@ -188,16 +192,21 @@ function AboutPage() {
             International trainings, workshops, and exchange programs.
           </p>
           <ol className="mt-5 relative border-l border-primary/30 pl-6 space-y-5">
-            {TRAININGS.map((tr, i) => (
-              <li key={i} className="relative">
-                <span className="absolute -left-[31px] top-1.5 size-3 rounded-full bg-primary ring-4 ring-background" />
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="font-medium">{tr.title}</p>
-                  <p className="text-xs text-muted-foreground">{tr.year}</p>
-                </div>
-                {tr.location && <p className="text-sm text-muted-foreground">{tr.location}</p>}
-              </li>
-            ))}
+            {professionalDevelopment.map((entry) => {
+              const title = (loc(entry, "title") as string) || entry.title || "";
+              const year = formatDevelopmentYear(entry.event_date);
+              const location = entry.location || entry.organization || "";
+              return (
+                <li key={entry.id} className="relative">
+                  <span className="absolute -left-[31px] top-1.5 size-3 rounded-full bg-primary ring-4 ring-background" />
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <p className="font-medium">{title}</p>
+                    <p className="text-xs text-muted-foreground">{year}</p>
+                  </div>
+                  {location && <p className="text-sm text-muted-foreground">{location}</p>}
+                </li>
+              );
+            })}
           </ol>
         </div>
       </section>

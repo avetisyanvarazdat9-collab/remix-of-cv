@@ -5,7 +5,7 @@ export const Route = createFileRoute("/_authenticated/admin/international-experi
   component: () => (
     <CrudPage
       title="International Experience"
-      description="Trainings, workshops, conferences, and academic exchanges. Shown on the homepage World Map & Timeline. Include latitude/longitude to place a pin on the map."
+      description="Trainings, workshops, conferences, and academic exchanges. Shown on the About page (Professional Development), homepage World Map, and Timeline. Include latitude/longitude to place a pin on the map."
       table="international_experience"
       orderBy={{ column: "event_date", ascending: false }}
       displayColumns={["title", "organization", "location", "category", "event_date"]}
