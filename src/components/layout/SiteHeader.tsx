@@ -21,9 +21,9 @@ export function SiteHeader() {
     (item[`label_${lang}`] as string | null) || item.label_en || item.label || "";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center font-display text-base font-semibold tracking-tight" aria-label="Home">
+    <header className="sticky top-0 z-40 border-b border-border/50 bg-background/75 shadow-[0_1px_0_0_color-mix(in_oklab,var(--border)_40%,transparent)] backdrop-blur-xl backdrop-saturate-150">
+      <div className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between px-4 sm:px-6">
+        <Link to="/" className="flex items-center font-display text-base font-semibold tracking-tight transition-opacity hover:opacity-80" aria-label="Home">
           {logoUrl ? (
             <img src={logoUrl} alt="Site logo" className="h-10 max-h-10 w-auto object-contain" />
           ) : (

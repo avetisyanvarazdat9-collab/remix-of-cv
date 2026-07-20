@@ -25,6 +25,7 @@ import {
   Award,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import heroPortrait from "@/assets/hero-portrait.jpg";
 
 import {
@@ -125,9 +126,13 @@ function useCounter(target: string) {
 function StatBlock({ value, label }: { value: string; label: string }) {
   const display = useCounter(value);
   return (
-    <div className="rounded-2xl border border-border bg-card p-6 text-center">
-      <div className="font-display text-4xl font-bold text-primary sm:text-5xl">{display}</div>
-      <div className="mt-2 text-sm text-muted-foreground">{label}</div>
+    <div className="premium-card group relative overflow-hidden p-7 text-center">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      />
+      <div className="font-display text-4xl font-bold tracking-tight text-primary sm:text-5xl">{display}</div>
+      <div className="mt-2.5 text-sm font-medium text-muted-foreground">{label}</div>
     </div>
   );
 }
@@ -343,138 +348,165 @@ function Home() {
 
 
       {/* ================ SECTION 2 · MEET DR. VARAZDAT ================ */}
-      <section className="bg-background py-20">
-        <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-5 lg:items-center">
-          <div className="lg:col-span-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Meet Dr. Varazdat</p>
-            <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
+      <section className="section-divider section-surface py-24 sm:py-28">
+        <div className="mx-auto grid max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-5 lg:items-center lg:gap-16">
+          <RevealOnScroll className="lg:col-span-3">
+            <p className="section-eyebrow">Meet Dr. Varazdat</p>
+            <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
               The person behind the expertise
             </h2>
-            <p className="mt-5 line-clamp-6 whitespace-pre-line text-base leading-relaxed text-muted-foreground">
+            <p className="mt-6 line-clamp-6 whitespace-pre-line text-base leading-[1.75] text-muted-foreground">
               {(loc(profile, "bio") as string) ||
                 "Dr. Varazdat Avetisyan is an AI Educator, Data Scientist, Computer Science Professor, and CTO with over 10 years of experience across artificial intelligence, machine learning, software engineering, and higher education."}
             </p>
             <Link
               to="/about"
-              className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+              className="hover-lift mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--primary)_55%,transparent)]"
             >
-              Learn More <ArrowRight className="size-4" />
+              Learn More <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
-          </div>
-          <div className="lg:col-span-2">
-            <div className="rounded-2xl border border-border bg-card p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">In brief</p>
-              <ul className="mt-4 space-y-3 text-sm text-foreground">
-                <li className="flex items-start gap-3"><GraduationCap className="mt-0.5 size-4 text-primary" /> PhD in Computer Engineering</li>
-                <li className="flex items-start gap-3"><Briefcase className="mt-0.5 size-4 text-primary" /> CTO & Co-Founder, Luseen Mobile</li>
-                <li className="flex items-start gap-3"><BookOpen className="mt-0.5 size-4 text-primary" /> Professor at UFAR, NPUA, GSU</li>
-                <li className="flex items-start gap-3"><Globe2 className="mt-0.5 size-4 text-primary" /> International speaker & trainer</li>
+          </RevealOnScroll>
+          <RevealOnScroll className="lg:col-span-2" delay={120}>
+            <div className="premium-card glass p-8 sm:p-9">
+              <p className="section-eyebrow">In brief</p>
+              <ul className="mt-5 space-y-4 text-sm text-foreground">
+                <li className="flex items-start gap-3">
+                  <span className="icon-badge mt-0.5 size-8 shrink-0"><GraduationCap className="size-4" /></span>
+                  PhD in Computer Engineering
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="icon-badge mt-0.5 size-8 shrink-0"><Briefcase className="size-4" /></span>
+                  CTO & Co-Founder, Luseen Mobile
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="icon-badge mt-0.5 size-8 shrink-0"><BookOpen className="size-4" /></span>
+                  Professor at UFAR, NPUA, GSU
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="icon-badge mt-0.5 size-8 shrink-0"><Globe2 className="size-4" /></span>
+                  International speaker & trainer
+                </li>
               </ul>
             </div>
-          </div>
+          </RevealOnScroll>
         </div>
       </section>
 
       {/* ================ SECTION 3 · WHAT SETS HIM APART ================ */}
-      <section className="bg-background py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">What sets him apart</p>
-            <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+      <section className="relative overflow-hidden bg-background py-24 sm:py-28">
+        <div
+          aria-hidden
+          className="ambient-orb -right-24 top-0 size-[420px] bg-primary/8"
+          style={{ animationDelay: "-4s" }}
+        />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+          <RevealOnScroll className="mx-auto max-w-2xl text-center">
+            <p className="section-eyebrow">What sets him apart</p>
+            <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
               Four worlds. One practitioner.
             </h2>
-            <p className="mt-3 text-muted-foreground">
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
               Academic depth, industry execution, real teaching, and international perspective — combined in one person.
             </p>
-          </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
-            {PILLARS.map((p) => (
-              <div key={p.title} className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_20px_40px_-20px_color-mix(in_oklab,var(--primary)_35%,transparent)]">
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <p.icon className="size-5" />
+          </RevealOnScroll>
+          <div className="mt-14 grid gap-6 md:grid-cols-2">
+            {PILLARS.map((p, i) => (
+              <RevealOnScroll key={p.title} delay={i * 80} className="h-full">
+                <div className="premium-card group flex h-full flex-col p-7">
+                  <div className="flex items-center gap-3.5">
+                    <div className="icon-badge size-11 group-hover:bg-primary group-hover:text-primary-foreground">
+                      <p.icon className="size-5" />
+                    </div>
+                    <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">{p.title}</h3>
                   </div>
-                  <h3 className="font-display text-lg font-semibold text-foreground">{p.title}</h3>
+                  <ul className="mt-5 space-y-2 text-sm leading-relaxed text-muted-foreground">
+                    {p.bullets.map((b) => (
+                      <li key={b} className="flex items-start gap-2.5">
+                        <span className="mt-2 size-1 shrink-0 rounded-full bg-primary/50" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {(p as any).isTimeline ? (
+                    <div className="mt-6 flex flex-wrap items-center gap-3">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-xs font-medium text-primary">
+                        <Globe2 className="size-3.5" />
+                        {countryCount > 0 ? `${countryCount} countries` : "Global reach"}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/80 px-3 py-1 text-xs font-medium text-muted-foreground">
+                        {timelineEntries.length}+ engagements
+                      </span>
+                      <Link
+                        to="/timeline"
+                        className="hover-lift-sm ml-auto inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                      >
+                        View Timeline <ArrowRight className="size-4" />
+                      </Link>
+                    </div>
+                  ) : (
+                    p.to && (
+                      <Link
+                        to={p.to as any}
+                        className="group/link mt-6 inline-flex items-center gap-1.5 self-start text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                      >
+                        Learn More
+                        <ArrowRight className="size-4 transition-transform duration-200 group-hover/link:translate-x-0.5" />
+                      </Link>
+                    )
+                  )}
                 </div>
-                <ul className="mt-4 space-y-1.5 text-sm text-muted-foreground">
-                  {p.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-2">
-                      <span className="mt-1.5 size-1 shrink-0 rounded-full bg-primary/60" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-                {(p as any).isTimeline ? (
-                  <div className="mt-6 flex flex-wrap items-center gap-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                      <Globe2 className="size-3.5" />
-                      {countryCount > 0 ? `${countryCount} countries` : "Global reach"}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                      {timelineEntries.length}+ engagements
-                    </span>
-                    <Link
-                      to="/timeline"
-                      className="hover-lift-sm ml-auto inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:brightness-110"
-                    >
-                      View Timeline <ArrowRight className="size-4" />
-                    </Link>
-                  </div>
-                ) : (
-                  p.to && (
-                    <Link
-                      to={p.to as any}
-                      className="mt-6 inline-flex items-center gap-1.5 self-start text-sm font-medium text-primary hover:underline"
-                    >
-                      Learn More <ArrowRight className="size-4" />
-                    </Link>
-                  )
-                )}
-
-              </div>
+              </RevealOnScroll>
             ))}
           </div>
         </div>
       </section>
 
       {/* ================ SECTION 4 · AREAS OF EXPERTISE ================ */}
-      <section className="bg-background py-20">
+      <section className="section-divider section-surface py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Areas of expertise</p>
-            <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+          <RevealOnScroll className="mx-auto max-w-2xl text-center">
+            <p className="section-eyebrow">Areas of expertise</p>
+            <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
               Where I can help
             </h2>
-          </div>
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {EXPERTISE.map((e) => (
-              <Link
-                key={e.label}
-                to={e.to as any}
-                className="group flex flex-col items-start gap-3 rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/40"
-              >
-                <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <e.icon className="size-4" />
-                </div>
-                <span className="text-sm font-medium text-foreground">{e.label}</span>
-              </Link>
+          </RevealOnScroll>
+          <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            {EXPERTISE.map((e, i) => (
+              <RevealOnScroll key={e.label} delay={i * 50} className="h-full">
+                <Link
+                  to={e.to as any}
+                  className="premium-card group flex h-full flex-col items-start gap-3.5 p-5"
+                >
+                  <div className="icon-badge size-10 group-hover:scale-105 group-hover:bg-primary group-hover:text-primary-foreground">
+                    <e.icon className="size-4" />
+                  </div>
+                  <span className="text-sm font-medium leading-snug text-foreground">{e.label}</span>
+                </Link>
+              </RevealOnScroll>
             ))}
           </div>
         </div>
       </section>
 
       {/* ================ SECTION 5 · TRUST & CREDIBILITY ================ */}
-      <section className="bg-background py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Impact in action</p>
-            <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+      <section className="relative overflow-hidden bg-background py-24 sm:py-28">
+        <div
+          aria-hidden
+          className="ambient-orb -left-32 bottom-0 size-[360px] bg-accent/10"
+          style={{ animationDelay: "-8s" }}
+        />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+          <RevealOnScroll className="mx-auto max-w-2xl text-center">
+            <p className="section-eyebrow">Impact in action</p>
+            <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
               A decade of measurable results
             </h2>
-          </div>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {shownStats.map((s) => (
-              <StatBlock key={s.label} value={s.value} label={s.label} />
+          </RevealOnScroll>
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {shownStats.map((s, i) => (
+              <RevealOnScroll key={s.label} delay={i * 70}>
+                <StatBlock value={s.value} label={s.label} />
+              </RevealOnScroll>
             ))}
           </div>
         </div>
@@ -482,79 +514,84 @@ function Home() {
 
       {/* ================ SECTION 6 · TRUSTED BY ================ */}
       {visiblePartners.length > 0 && (
-        <section className="bg-background py-24 sm:py-28 lg:py-32">
+        <section className="section-divider bg-background py-24 sm:py-28 lg:py-32">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="rounded-3xl border-t border-border/50 bg-[#F8FAFC] p-8 dark:bg-muted/30 sm:p-12 lg:p-16">
-              <div className="mx-auto max-w-2xl text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Trusted by</p>
-                <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
-                  Universities, Companies & Training Centers
-                </h2>
-                <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-                  Organizations that I have worked with, taught at, collaborated with, or conducted research for.
-                </p>
-              </div>
-              <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {visiblePartners.map((p: any) => (
-                  <a
-                    key={p.id}
-                    href={p.website_url || undefined}
-                    target={p.website_url ? "_blank" : undefined}
-                    rel={p.website_url ? "noopener noreferrer" : undefined}
-                    className="group flex h-full flex-col items-center rounded-[20px] border border-border bg-white p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-[3px] hover:border-primary hover:shadow-md dark:bg-card"
-                  >
-                    <div className="flex h-16 w-full items-center justify-center">
-                      {p.logo_url ? (
-                        <img
-                          src={p.logo_url}
-                          alt=""
-                          className="max-h-12 w-auto object-contain grayscale transition-all duration-300 group-hover:grayscale-0"
-                        />
-                      ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-lg font-bold text-primary">
-                          {p.name?.slice(0, 1)}
+            <RevealOnScroll>
+              <div className="rounded-3xl border border-border/60 bg-[var(--surface-muted)] p-8 shadow-[var(--shadow-card)] sm:p-12 lg:p-16">
+                <div className="mx-auto max-w-2xl text-center">
+                  <p className="section-eyebrow">Trusted by</p>
+                  <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
+                    Universities, Companies & Training Centers
+                  </h2>
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    Organizations that I have worked with, taught at, collaborated with, or conducted research for.
+                  </p>
+                </div>
+                <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {visiblePartners.map((p: any, i: number) => (
+                    <RevealOnScroll key={p.id} delay={i * 60} className="h-full">
+                      <a
+                        href={p.website_url || undefined}
+                        target={p.website_url ? "_blank" : undefined}
+                        rel={p.website_url ? "noopener noreferrer" : undefined}
+                        className="premium-card group flex h-full flex-col items-center p-8 text-center"
+                      >
+                        <div className="flex h-16 w-full items-center justify-center">
+                          {p.logo_url ? (
+                            <img
+                              src={p.logo_url}
+                              alt=""
+                              className="max-h-12 w-auto object-contain opacity-75 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+                            />
+                          ) : (
+                            <div className="icon-badge size-12 text-lg font-bold">
+                              {p.name?.slice(0, 1)}
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <h3 className="mt-4 font-display text-base font-semibold text-foreground">{p.name}</h3>
-                    <span className="mt-2 inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                      {p.category || "Partner"}
-                    </span>
-                  </a>
-                ))}
+                        <h3 className="mt-4 font-display text-base font-semibold tracking-tight text-foreground">{p.name}</h3>
+                        <span className="mt-2.5 inline-flex items-center rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-xs font-medium text-primary">
+                          {p.category || "Partner"}
+                        </span>
+                      </a>
+                    </RevealOnScroll>
+                  ))}
+                </div>
               </div>
-            </div>
+            </RevealOnScroll>
           </div>
         </section>
       )}
 
       {/* Optional testimonials strip (keeps admin's testimonial data in front of visitors) */}
       {(testimonials?.length ?? 0) > 0 && (
-        <section className="bg-background pb-20">
+        <section className="section-surface pb-24 pt-4">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {(testimonials ?? []).slice(0, 3).map((tm: any) => (
-                <figure key={tm.id} className="rounded-2xl border border-border bg-card p-6">
-                  <Quote className="size-5 text-primary/60" />
-                  <blockquote className="mt-4 text-sm leading-relaxed text-foreground">
-                    {(loc(tm, "quote") as string) || tm.quote}
-                  </blockquote>
-                  <figcaption className="mt-5 flex items-center gap-3">
-                    {tm.avatar_url ? (
-                      <img src={tm.avatar_url} alt="" className="size-10 rounded-full object-cover" />
-                    ) : (
-                      <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                        {tm.author_name?.slice(0, 1)}
+              {(testimonials ?? []).slice(0, 3).map((tm: any, i: number) => (
+                <RevealOnScroll key={tm.id} delay={i * 80} className="h-full">
+                  <figure className="premium-card flex h-full flex-col p-7">
+                    <Quote className="size-5 text-primary/50" />
+                    <blockquote className="mt-4 flex-1 text-sm leading-[1.75] text-foreground">
+                      {(loc(tm, "quote") as string) || tm.quote}
+                    </blockquote>
+                    <figcaption className="mt-6 flex items-center gap-3 border-t border-border/60 pt-5">
+                      {tm.avatar_url ? (
+                        <img src={tm.avatar_url} alt="" className="size-10 rounded-full object-cover ring-2 ring-primary/10" />
+                      ) : (
+                        <div className="icon-badge size-10 text-sm font-semibold">
+                          {tm.author_name?.slice(0, 1)}
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-foreground">{tm.author_name}</p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {[tm.role, tm.organization].filter(Boolean).join(" · ")}
+                        </p>
                       </div>
-                    )}
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-foreground">{tm.author_name}</p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {[tm.role, tm.organization].filter(Boolean).join(" · ")}
-                      </p>
-                    </div>
-                  </figcaption>
-                </figure>
+                    </figcaption>
+                  </figure>
+                </RevealOnScroll>
               ))}
             </div>
           </div>
@@ -563,36 +600,49 @@ function Home() {
 
       {/* Featured courses — quick preview so home isn't just navigation */}
       {featuredCourses.length > 0 && (
-        <section className="bg-background pb-20">
+        <section className="section-divider bg-background pb-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="mb-8 flex items-end justify-between">
+            <RevealOnScroll className="mb-10 flex items-end justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Featured courses</p>
-                <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
+                <p className="section-eyebrow">Featured courses</p>
+                <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
                   Popular programs
                 </h2>
               </div>
-              <Link to="/learn" className="text-sm text-primary hover:underline">View all →</Link>
-            </div>
+              <Link to="/learn" className="group inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80">
+                View all
+                <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </Link>
+            </RevealOnScroll>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {featuredCourses.slice(0, 3).map((c: any) => (
-                <article
-                  key={c.id}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/40"
-                >
-                  {c.image_url ? (
-                    <img src={c.image_url} alt={loc(c, "title")} className="h-40 w-full object-cover" />
-                  ) : (
-                    <div className="h-40 w-full" style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--primary) 30%, transparent), color-mix(in oklab, var(--accent) 30%, transparent))" }} />
-                  )}
-                  <div className="flex flex-1 flex-col p-5">
-                    <h3 className="font-display text-base font-semibold text-foreground">{loc(c, "title")}</h3>
-                    <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{loc(c, "description")}</p>
-                    <Link to="/learn" className="mt-auto pt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
-                      Learn more <ArrowRight className="size-4" />
-                    </Link>
-                  </div>
-                </article>
+              {featuredCourses.slice(0, 3).map((c: any, i: number) => (
+                <RevealOnScroll key={c.id} delay={i * 80} className="h-full">
+                  <article className="premium-card group flex h-full flex-col overflow-hidden">
+                    <div className="relative overflow-hidden">
+                      {c.image_url ? (
+                        <img
+                          src={c.image_url}
+                          alt={loc(c, "title")}
+                          className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
+                      ) : (
+                        <div
+                          className="h-44 w-full"
+                          style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--primary) 30%, transparent), color-mix(in oklab, var(--accent) 30%, transparent))" }}
+                        />
+                      )}
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    </div>
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="font-display text-base font-semibold tracking-tight text-foreground">{loc(c, "title")}</h3>
+                      <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-muted-foreground">{loc(c, "description")}</p>
+                      <Link to="/learn" className="group/link mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-primary transition-colors hover:text-primary/80">
+                        Learn more
+                        <ArrowRight className="size-4 transition-transform duration-200 group-hover/link:translate-x-0.5" />
+                      </Link>
+                    </div>
+                  </article>
+                </RevealOnScroll>
               ))}
             </div>
           </div>
@@ -600,39 +650,46 @@ function Home() {
       )}
 
       {/* ================ SECTION 6 · CHOOSE YOUR JOURNEY ================ */}
-      <section className="relative overflow-hidden bg-background py-24">
+      <section className="relative overflow-hidden bg-background py-28 sm:py-32">
         <div
           aria-hidden
-          className="absolute inset-0 opacity-40"
+          className="absolute inset-0 opacity-50"
           style={{
             background:
-              "radial-gradient(50% 60% at 50% 0%, color-mix(in oklab, var(--primary) 20%, transparent), transparent 70%)",
+              "radial-gradient(55% 50% at 50% 0%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 72%)",
           }}
         />
+        <div
+          aria-hidden
+          className="ambient-orb right-1/4 top-1/3 size-[320px] bg-accent/12"
+          style={{ animationDelay: "-12s" }}
+        />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Choose your journey</p>
-            <h2 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">
+          <RevealOnScroll className="mx-auto max-w-2xl text-center">
+            <p className="section-eyebrow">Choose your journey</p>
+            <h2 className="section-heading mt-3 text-4xl sm:text-5xl">
               Where would you like to go next?
             </h2>
-          </div>
-          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {JOURNEYS.map((j) => (
-              <Link
-                key={j.eyebrow}
-                to={j.to as any}
-                className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/40"
-              >
-                <div className="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <j.icon className="size-5" />
-                </div>
-                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-primary">{j.eyebrow}</p>
-                <h3 className="mt-1 font-display text-lg font-semibold text-foreground">{j.title}</h3>
-                <p className="mt-2 flex-1 text-sm text-muted-foreground">{j.text}</p>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary group-hover:underline">
-                  {j.cta}
-                </span>
-              </Link>
+          </RevealOnScroll>
+          <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {JOURNEYS.map((j, i) => (
+              <RevealOnScroll key={j.eyebrow} delay={i * 70} className="h-full">
+                <Link
+                  to={j.to as any}
+                  className="premium-card group flex h-full flex-col p-7"
+                >
+                  <div className="icon-badge size-11 group-hover:bg-primary group-hover:text-primary-foreground">
+                    <j.icon className="size-5" />
+                  </div>
+                  <p className="section-eyebrow mt-6">{j.eyebrow}</p>
+                  <h3 className="mt-1.5 font-display text-lg font-semibold tracking-tight text-foreground">{j.title}</h3>
+                  <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted-foreground">{j.text}</p>
+                  <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors group-hover:text-primary/80">
+                    {j.cta}
+                    <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
+              </RevealOnScroll>
             ))}
           </div>
         </div>

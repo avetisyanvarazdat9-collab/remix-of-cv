@@ -5,12 +5,12 @@ import { useT } from "@/lib/i18n";
 export function SiteFooter() {
   const t = useT();
   return (
-    <footer className="mt-24 border-t border-border/60">
-      <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 px-4 py-10 text-sm text-muted-foreground sm:flex-row sm:items-center sm:px-6">
-        <p>© {new Date().getFullYear()} Dr. Varazdat Avetisyan · All rights reserved.</p>
-        <div className="flex items-center gap-5">
-          <Link to="/contact" className="hover:text-foreground">{t("footer.contact")}</Link>
-          <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+    <footer className="section-divider mt-8 bg-[var(--surface-muted)]">
+      <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-12 text-sm text-muted-foreground sm:flex-row sm:items-center sm:px-6">
+        <p className="font-medium tracking-tight">© {new Date().getFullYear()} Dr. Varazdat Avetisyan · All rights reserved.</p>
+        <div className="flex items-center gap-6">
+          <Link to="/contact" className="transition-colors duration-200 hover:text-foreground">{t("footer.contact")}</Link>
+          <Link to="/privacy" className="transition-colors duration-200 hover:text-foreground">Privacy Policy</Link>
           <LanguageSwitcher />
         </div>
       </div>
