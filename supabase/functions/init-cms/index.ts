@@ -85,6 +85,35 @@ Deno.serve(async (req) => {
     //    INSERT ... ON CONFLICT DO NOTHING; nothing more needed here).
     push("singletons", true);
 
+    // 5) Bootstrap: if there is no admin yet, promote the caller (via JWT sub).
+    const admins = await sql`SELECT 1 FROM public.user_roles WHERE role='admin' LIMIT 1`;
+    if (admins.length === 0) {
+      const authz = req.headers.get("authorization") || "";
+      const token = authz.replace(/^Bearer\s+/i, "");
+      let sub: string | null = null;
+      try {
+        const parts = token.split(".");
+        if (parts.length === 3) {
+          const payload = JSON.parse(
+            atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")),
+          );
+          sub = payload?.sub ?? null;
+        }
+      } catch { /* ignore */ }
+      if (sub) {
+        await sql`
+          INSERT INTO public.user_roles (user_id, role)
+          VALUES (${sub}::uuid, 'admin')
+          ON CONFLICT (user_id, role) DO NOTHING
+        `;
+        push("bootstrap_admin", true, sub);
+      } else {
+        push("bootstrap_admin", false, "no caller JWT — sign in and re-run");
+      }
+    } else {
+      push("bootstrap_admin", true, "admin already exists");
+    }
+
     return new Response(
       JSON.stringify({ ok: true, steps }),
       { headers: { ...CORS, "Content-Type": "application/json" } },
