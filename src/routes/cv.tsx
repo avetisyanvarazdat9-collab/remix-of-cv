@@ -14,9 +14,16 @@ import {
   internationalExperienceQuery,
 } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/cv")({
-  head: () => ({ meta: [{ title: "CV — Dr. Varazdat Avetisyan" }] }),
+  head: () =>
+    buildPageHead({
+      title: "CV — Dr. Varazdat Avetisyan",
+      description:
+        "Curriculum vitae of Dr. Varazdat Avetisyan — professional experience, education, skills, certifications, and publications.",
+      path: "/cv",
+    }),
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(profileQuery);
     context.queryClient.ensureQueryData(skillsQuery);

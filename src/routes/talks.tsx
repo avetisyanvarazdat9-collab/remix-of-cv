@@ -5,9 +5,16 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { talksQuery } from "@/lib/queries";
 import { formatDate } from "@/lib/format-date";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/talks")({
-  head: () => ({ meta: [{ title: "Talks & Events — Varazdat Avetisyan" }] }),
+  head: () =>
+    buildPageHead({
+      title: "Talks & Events — Dr. Varazdat Avetisyan",
+      description:
+        "Speaking engagements, conferences, workshops, and public events featuring Dr. Varazdat Avetisyan.",
+      path: "/talks",
+    }),
   loader: ({ context }) => context.queryClient.ensureQueryData(talksQuery),
   component: TalksPage,
 });

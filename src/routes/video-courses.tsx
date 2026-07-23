@@ -4,9 +4,16 @@ import { PlayCircle } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { videoCoursesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/video-courses")({
-  head: () => ({ meta: [{ title: "Video Courses — Varazdat Avetisyan" }] }),
+  head: () =>
+    buildPageHead({
+      title: "Video Courses — Dr. Varazdat Avetisyan",
+      description:
+        "On-demand video lessons on AI, machine learning, and data science from Dr. Varazdat Avetisyan.",
+      path: "/video-courses",
+    }),
   loader: ({ context }) => context.queryClient.ensureQueryData(videoCoursesQuery),
   component: VideoCoursesLayout,
 });

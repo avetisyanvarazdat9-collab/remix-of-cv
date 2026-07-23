@@ -3,9 +3,16 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { coursesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/courses")({
-  head: () => ({ meta: [{ title: "Courses — Varazdat Avetisyan" }] }),
+  head: () =>
+    buildPageHead({
+      title: "Courses — Dr. Varazdat Avetisyan",
+      description:
+        "Structured in-person courses on AI, generative AI, machine learning, and data science taught by Dr. Varazdat Avetisyan.",
+      path: "/courses",
+    }),
   loader: ({ context }) => context.queryClient.ensureQueryData(coursesQuery),
   component: CoursesLayout,
 });

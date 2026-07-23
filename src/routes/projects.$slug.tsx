@@ -3,9 +3,33 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { projectsQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead, localizedField, truncateDescription } from "@/lib/seo";
 
 export const Route = createFileRoute("/projects/$slug")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(projectsQuery),
+  loader: async ({ context, params }) => {
+    const projects = await context.queryClient.ensureQueryData(projectsQuery);
+    const project = (projects ?? []).find((p) => p.slug === params.slug) ?? null;
+    return { project };
+  },
+  head: ({ loaderData, params }) => {
+    const project = loaderData?.project;
+    if (!project) {
+      return buildPageHead({
+        title: "Project — Dr. Varazdat Avetisyan",
+        path: `/projects/${params.slug}`,
+      });
+    }
+    const title = localizedField(project, "title") || project.title;
+    const description = truncateDescription(
+      localizedField(project, "summary") || localizedField(project, "description") || title,
+    );
+    return buildPageHead({
+      title: `${title} — Dr. Varazdat Avetisyan`,
+      description,
+      path: `/projects/${project.slug}`,
+      ogImage: project.image_url,
+    });
+  },
   component: ProjectDetail,
   notFoundComponent: () => <ProjectNotFound />,
   errorComponent: ({ error }) => <ProjectError message={error.message} />,

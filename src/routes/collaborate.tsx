@@ -5,17 +5,17 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { projectsQuery, talksQuery, companiesQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/collaborate")({
-  head: () => ({
-    meta: [
-      { title: "Collaborate — Research, Talks & Partnerships | Dr. Varazdat Avetisyan" },
-      { name: "description", content: "Research collaborations, speaking engagements, academic partnerships, and applied AI projects with Dr. Varazdat Avetisyan." },
-      { name: "keywords", content: "AI Speaker Armenia, Research collaboration, Academic partnership, AI keynote speaker" },
-      { property: "og:title", content: "Collaborate with Dr. Varazdat Avetisyan" },
-      { property: "og:description", content: "Research, talks, and partnerships in Artificial Intelligence and Data Science." },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      title: "Collaborate — Research, Talks & Partnerships | Dr. Varazdat Avetisyan",
+      description:
+        "Research collaborations, speaking engagements, academic partnerships, and applied AI projects with Dr. Varazdat Avetisyan.",
+      path: "/collaborate",
+      keywords: "AI Speaker Armenia, Research collaboration, Academic partnership, AI keynote speaker",
+    }),
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(projectsQuery);
     context.queryClient.ensureQueryData(talksQuery);

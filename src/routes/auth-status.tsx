@@ -3,14 +3,16 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, XCircle, Loader2, ClipboardCopy, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/auth-status")({
-  head: () => ({
-    meta: [
-      { title: "Auth status — Admin diagnostics" },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      title: "Auth status — Admin diagnostics",
+      description: "Internal authentication diagnostics for administrators.",
+      path: "/auth-status",
+      robots: "noindex, nofollow",
+    }),
   component: AuthStatusPage,
 });
 

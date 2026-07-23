@@ -4,24 +4,16 @@ import { ArrowLeft, Globe2 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { internationalExperienceQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/timeline")({
-  head: () => ({
-    meta: [
-      { title: "International Experience Timeline — Dr. Varazdat Avetisyan" },
-      {
-        name: "description",
-        content:
-          "Trainings, workshops, conferences, and academic exchanges across the globe — a chronological timeline of international engagements.",
-      },
-      { property: "og:title", content: "International Experience Timeline" },
-      {
-        property: "og:description",
-        content:
-          "A chronological timeline of trainings, workshops, and international academic engagements.",
-      },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      title: "International Experience Timeline — Dr. Varazdat Avetisyan",
+      description:
+        "Trainings, workshops, conferences, and academic exchanges across the globe — a chronological timeline of international engagements.",
+      path: "/timeline",
+    }),
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(internationalExperienceQuery());
   },

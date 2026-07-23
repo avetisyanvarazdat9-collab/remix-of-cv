@@ -8,9 +8,16 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { profileQuery } from "@/lib/queries";
 import { supabase } from "@/integrations/supabase/client";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({ meta: [{ title: "Contact — Varazdat Avetisyan" }] }),
+  head: () =>
+    buildPageHead({
+      title: "Contact — Dr. Varazdat Avetisyan",
+      description:
+        "Get in touch with Dr. Varazdat Avetisyan for speaking, consulting, courses, research collaboration, and partnership inquiries.",
+      path: "/contact",
+    }),
   loader: ({ context }) => context.queryClient.ensureQueryData(profileQuery),
   component: ContactPage,
 });

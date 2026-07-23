@@ -2,17 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BrainCircuit, Building2, Users, Rocket, Sparkles, MessageSquare } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/transform")({
-  head: () => ({
-    meta: [
-      { title: "Transform — AI Consulting & Corporate Training | Dr. Varazdat Avetisyan" },
-      { name: "description", content: "AI consulting, corporate training, and digital transformation services for organizations adopting Generative AI, Machine Learning, and Data Science." },
-      { name: "keywords", content: "AI Consultant Armenia, AI adoption, Digital transformation, Corporate AI training, Generative AI consulting" },
-      { property: "og:title", content: "Transform — AI Consulting with Dr. Varazdat Avetisyan" },
-      { property: "og:description", content: "Consulting, corporate training, and AI adoption services." },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      title: "Transform — AI Consulting & Corporate Training | Dr. Varazdat Avetisyan",
+      description:
+        "AI consulting, corporate training, and digital transformation services for organizations adopting Generative AI, Machine Learning, and Data Science.",
+      path: "/transform",
+      keywords:
+        "AI Consultant Armenia, AI adoption, Digital transformation, Corporate AI training, Generative AI consulting",
+    }),
   component: TransformHub,
 });
 

@@ -3,9 +3,16 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { projectsQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/projects")({
-  head: () => ({ meta: [{ title: "Projects — Varazdat Avetisyan" }] }),
+  head: () =>
+    buildPageHead({
+      title: "Projects — Dr. Varazdat Avetisyan",
+      description:
+        "Research and engineering projects in artificial intelligence, machine learning, and data science by Dr. Varazdat Avetisyan.",
+      path: "/projects",
+    }),
   loader: ({ context }) => context.queryClient.ensureQueryData(projectsQuery),
   component: ProjectsLayout,
 });

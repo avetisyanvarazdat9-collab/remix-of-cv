@@ -38,62 +38,34 @@ import {
 } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import { useCountUp } from "@/hooks/useCountUp";
+import { buildPageHead, buildPersonJsonLd } from "@/lib/seo";
+import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist" },
-      {
-        name: "description",
-        content:
-          "Dr. Varazdat Avetisyan — AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies. AI Training Armenia, Generative AI, Machine Learning.",
-      },
-      {
-        name: "keywords",
-        content:
-          "AI Training Armenia, Generative AI Armenia, Machine Learning Instructor Armenia, Data Science Training Armenia, Prompt Engineering Armenia, AI Consultant Armenia, AI Speaker Armenia, Computer Science Professor Armenia",
-      },
-      { property: "og:title", content: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist" },
-      {
-        property: "og:description",
-        content: "Dr. Varazdat Avetisyan — AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies. AI Training Armenia, Generative AI, Machine Learning.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Person",
-          name: "Dr. Varazdat Avetisyan",
-          jobTitle: "AI Educator, Data Scientist, CTO, University Professor",
-          nationality: "Armenian",
-          worksFor: { "@type": "Organization", name: "Luseen Mobile" },
-          knowsAbout: [
-            "Artificial Intelligence",
-            "Generative AI",
-            "Machine Learning",
-            "Deep Learning",
-            "Data Science",
-            "Prompt Engineering",
-            "AI Agents",
-            "Computer Science Education",
-          ],
-          address: { "@type": "PostalAddress", addressCountry: "AM" },
-        }),
-      },
-    ],
-  }),
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(profileQuery);
-    context.queryClient.ensureQueryData(coursesQuery);
-    context.queryClient.ensureQueryData(companiesQuery);
-    context.queryClient.ensureQueryData(homeContentQuery);
-    context.queryClient.ensureQueryData(testimonialsQuery);
-    context.queryClient.ensureQueryData(statisticsQuery);
-    context.queryClient.ensureQueryData(internationalExperienceQuery());
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(profileQuery),
+      context.queryClient.ensureQueryData(coursesQuery),
+      context.queryClient.ensureQueryData(companiesQuery),
+      context.queryClient.ensureQueryData(homeContentQuery),
+      context.queryClient.ensureQueryData(testimonialsQuery),
+      context.queryClient.ensureQueryData(statisticsQuery),
+      context.queryClient.ensureQueryData(internationalExperienceQuery()),
+    ]);
+    const profile = await context.queryClient.ensureQueryData(profileQuery);
+    return { profile };
+  },
+  head: ({ loaderData }) => {
+    const profile = (loaderData as { profile?: Tables<"profile"> | null } | undefined)?.profile;
+    return buildPageHead({
+      title: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist",
+      description:
+        "Dr. Varazdat Avetisyan — AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies.",
+      path: "/",
+      keywords:
+        "AI Training Armenia, Generative AI Armenia, Machine Learning Instructor Armenia, Data Science Training Armenia, Prompt Engineering Armenia, AI Consultant Armenia",
+      jsonLd: buildPersonJsonLd(profile),
+    });
   },
   component: Home,
 });

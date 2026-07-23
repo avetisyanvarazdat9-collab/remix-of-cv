@@ -5,9 +5,34 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { blogQuery } from "@/lib/queries";
 import { formatDate } from "@/lib/format-date";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead, localizedField, truncateDescription } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(blogQuery),
+  loader: async ({ context, params }) => {
+    const posts = await context.queryClient.ensureQueryData(blogQuery);
+    const post = (posts ?? []).find((p) => p.slug === params.slug && p.is_published) ?? null;
+    return { post };
+  },
+  head: ({ loaderData, params }) => {
+    const post = loaderData?.post;
+    if (!post) {
+      return buildPageHead({
+        title: "Article — Dr. Varazdat Avetisyan",
+        path: `/blog/${params.slug}`,
+      });
+    }
+    const title = localizedField(post, "title") || post.title;
+    const description = truncateDescription(
+      localizedField(post, "excerpt") || localizedField(post, "content") || title,
+    );
+    return buildPageHead({
+      title: `${title} — Dr. Varazdat Avetisyan`,
+      description,
+      path: `/blog/${post.slug}`,
+      ogType: "article",
+      ogImage: post.cover_image_url,
+    });
+  },
   component: BlogPost,
   notFoundComponent: () => <PostNotFound />,
   errorComponent: ({ error }) => <PostError message={error.message} />,

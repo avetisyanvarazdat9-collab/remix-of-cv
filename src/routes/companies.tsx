@@ -3,9 +3,16 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { companiesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/companies")({
-  head: () => ({ meta: [{ title: "Companies — Varazdat Avetisyan" }] }),
+  head: () =>
+    buildPageHead({
+      title: "Partners — Dr. Varazdat Avetisyan",
+      description:
+        "Companies, universities, and organizations that collaborate with Dr. Varazdat Avetisyan.",
+      path: "/companies",
+    }),
   loader: ({ context }) => context.queryClient.ensureQueryData(companiesQuery),
   component: CompaniesPage,
 });

@@ -3,13 +3,34 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { coursesQuery, profileQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead, localizedField, truncateDescription } from "@/lib/seo";
 
 export const Route = createFileRoute("/courses/$slug")({
-  loader: ({ context }) =>
-    Promise.all([
+  loader: async ({ context, params }) => {
+    const [courses] = await Promise.all([
       context.queryClient.ensureQueryData(coursesQuery),
       context.queryClient.ensureQueryData(profileQuery),
-    ]),
+    ]);
+    const course = (courses ?? []).find((c) => c.slug === params.slug) ?? null;
+    return { course };
+  },
+  head: ({ loaderData, params }) => {
+    const course = loaderData?.course;
+    if (!course) {
+      return buildPageHead({
+        title: "Course — Dr. Varazdat Avetisyan",
+        path: `/courses/${params.slug}`,
+      });
+    }
+    const title = localizedField(course, "title") || course.title;
+    const description = truncateDescription(localizedField(course, "description") || title);
+    return buildPageHead({
+      title: `${title} — Dr. Varazdat Avetisyan`,
+      description,
+      path: `/courses/${course.slug}`,
+      ogImage: course.image_url,
+    });
+  },
   component: CourseDetail,
   notFoundComponent: () => <CourseNotFound />,
   errorComponent: ({ error }) => (

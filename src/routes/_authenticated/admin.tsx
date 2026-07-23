@@ -1,9 +1,16 @@
 import { createFileRoute, Outlet, redirect, useMatches } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { supabase } from "@/integrations/supabase/client";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin" }] }),
+  head: () =>
+    buildPageHead({
+      title: "Admin",
+      description: "Administration area.",
+      path: "/admin",
+      robots: "noindex, nofollow",
+    }),
   beforeLoad: async () => {
     // Sign-in is already enforced by the parent `_authenticated` layout.
     // Here we additionally require the admin role. Non-admins fall through

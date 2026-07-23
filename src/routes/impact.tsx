@@ -5,17 +5,17 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { statisticsQuery, testimonialsQuery, companiesQuery, talksQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/impact")({
-  head: () => ({
-    meta: [
-      { title: "Impact — Achievements, Talks & Recognition | Dr. Varazdat Avetisyan" },
-      { name: "description", content: "Measurable impact of Dr. Varazdat Avetisyan's work in AI education, research, and industry — students trained, workshops delivered, partnerships built." },
-      { name: "keywords", content: "Computer Science Professor Armenia, AI Educator Armenia, AI Speaker Armenia" },
-      { property: "og:title", content: "Impact — Dr. Varazdat Avetisyan" },
-      { property: "og:description", content: "Stats, testimonials, recognitions, and measurable outcomes." },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      title: "Impact — Achievements, Talks & Recognition | Dr. Varazdat Avetisyan",
+      description:
+        "Measurable impact of Dr. Varazdat Avetisyan's work in AI education, research, and industry — students trained, workshops delivered, partnerships built.",
+      path: "/impact",
+      keywords: "Computer Science Professor Armenia, AI Educator Armenia, AI Speaker Armenia",
+    }),
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(statisticsQuery);
     context.queryClient.ensureQueryData(testimonialsQuery);

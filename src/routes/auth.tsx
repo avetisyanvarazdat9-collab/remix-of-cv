@@ -5,9 +5,16 @@ import { Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useT } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign in — Admin" }] }),
+  head: () =>
+    buildPageHead({
+      title: "Sign in — Admin",
+      description: "Admin sign-in for Dr. Varazdat Avetisyan website management.",
+      path: "/auth",
+      robots: "noindex, nofollow",
+    }),
   validateSearch: (s: Record<string, unknown>) => ({
     next: typeof s.next === "string" ? s.next : undefined,
   }),

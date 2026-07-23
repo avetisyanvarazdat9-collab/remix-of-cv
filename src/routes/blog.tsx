@@ -4,9 +4,16 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { blogQuery } from "@/lib/queries";
 import { formatDate } from "@/lib/format-date";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog")({
-  head: () => ({ meta: [{ title: "Blog — Varazdat Avetisyan" }] }),
+  head: () =>
+    buildPageHead({
+      title: "Blog — Dr. Varazdat Avetisyan",
+      description:
+        "Articles and insights on artificial intelligence, machine learning, generative AI, and data science by Dr. Varazdat Avetisyan.",
+      path: "/blog",
+    }),
   loader: ({ context }) => context.queryClient.ensureQueryData(blogQuery),
   component: BlogLayout,
 });

@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/privacy")({
-  head: () => ({
-    meta: [
-      { title: "Privacy Policy — Dr. Varazdat Avetisyan" },
-      { name: "description", content: "Privacy policy for varazdat.com — what data we collect and how we use it." },
-      { name: "robots", content: "index,follow" },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      title: "Privacy Policy — Dr. Varazdat Avetisyan",
+      description: "Privacy policy for avetisyan.vercel.app — what data we collect and how we use it.",
+      path: "/privacy",
+    }),
   component: PrivacyPage,
 });
 

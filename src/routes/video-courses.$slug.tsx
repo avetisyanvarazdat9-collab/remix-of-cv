@@ -3,9 +3,31 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { videoCoursesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
+import { buildPageHead, localizedField, truncateDescription } from "@/lib/seo";
 
 export const Route = createFileRoute("/video-courses/$slug")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(videoCoursesQuery),
+  loader: async ({ context, params }) => {
+    const videos = await context.queryClient.ensureQueryData(videoCoursesQuery);
+    const video = (videos ?? []).find((v) => v.slug === params.slug) ?? null;
+    return { video };
+  },
+  head: ({ loaderData, params }) => {
+    const video = loaderData?.video;
+    if (!video) {
+      return buildPageHead({
+        title: "Video Course — Dr. Varazdat Avetisyan",
+        path: `/video-courses/${params.slug}`,
+      });
+    }
+    const title = localizedField(video, "title") || video.title;
+    const description = truncateDescription(localizedField(video, "description") || title);
+    return buildPageHead({
+      title: `${title} — Dr. Varazdat Avetisyan`,
+      description,
+      path: `/video-courses/${video.slug}`,
+      ogImage: video.thumbnail_url,
+    });
+  },
   component: VideoCourseDetail,
   notFoundComponent: () => (
     <PublicLayout>

@@ -5,17 +5,18 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { coursesQuery, videoCoursesQuery, blogQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
+import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/learn")({
-  head: () => ({
-    meta: [
-      { title: "Learn — AI Courses, Video Lessons & Articles | Dr. Varazdat Avetisyan" },
-      { name: "description", content: "Develop AI, Data Science and Software Engineering skills through in-person courses, on-demand video lessons and long-form articles taught by Dr. Varazdat Avetisyan." },
-      { name: "keywords", content: "AI Training Armenia, Generative AI Armenia, Machine Learning Instructor Armenia, Data Science Training Armenia, Prompt Engineering Armenia" },
-      { property: "og:title", content: "Learn — AI & Data Science with Dr. Varazdat Avetisyan" },
-      { property: "og:description", content: "Courses, video lessons and articles on AI, Generative AI, Machine Learning, and Data Science." },
-    ],
-  }),
+  head: () =>
+    buildPageHead({
+      title: "Learn — AI Courses, Video Lessons & Articles | Dr. Varazdat Avetisyan",
+      description:
+        "Develop AI, Data Science and Software Engineering skills through in-person courses, on-demand video lessons and long-form articles taught by Dr. Varazdat Avetisyan.",
+      path: "/learn",
+      keywords:
+        "AI Training Armenia, Generative AI Armenia, Machine Learning Instructor Armenia, Data Science Training Armenia, Prompt Engineering Armenia",
+    }),
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(coursesQuery);
     context.queryClient.ensureQueryData(videoCoursesQuery);
