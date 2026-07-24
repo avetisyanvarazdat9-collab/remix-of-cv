@@ -6,7 +6,6 @@ import {
   Linkedin,
   GraduationCap,
   Briefcase,
-  Users2,
   Globe2,
   BrainCircuit,
   Sparkles,
@@ -25,6 +24,7 @@ import {
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
+import { FourDimensionsSection } from "@/components/home/FourDimensionsSection";
 import heroPortrait from "@/assets/hero-portrait.jpg";
 
 import {
@@ -86,35 +86,6 @@ function StatBlock({ value, label }: { value: string; label: string }) {
 }
 
 // -- Constants for cards ----------------------------------------------------
-const PILLARS = [
-  {
-    icon: GraduationCap,
-    title: "Academic Leadership",
-    bullets: ["PhD in Computer Engineering", "University Professor", "AI & Computer Science Educator", "Research & Curriculum Development", "International Academic Collaborations"],
-    to: "/collaborate",
-  },
-  {
-    icon: Briefcase,
-    title: "Industry Leadership",
-    bullets: ["CTO & Co-Founder, Luseen Mobile", "AI Consultant", "Technology Strategy", "Software Engineering", "Digital Transformation"],
-    to: "/transform",
-  },
-  {
-    icon: Users2,
-    title: "Education & Training",
-    bullets: ["AI Course Development", "University Teaching", "Corporate Training", "Workshops & Professional Development", "Student Mentorship"],
-    to: "/learn",
-  },
-  {
-    icon: Globe2,
-    title: "International Experience",
-    bullets: ["Trainings & workshops across Europe", "Academic exchange programs", "Conference speaking", "Cross-institutional research", "Global professional network"],
-    to: null as string | null,
-    isTimeline: true,
-  },
-
-];
-
 const EXPERTISE = [
   { icon: BrainCircuit, label: "Artificial Intelligence", to: "/courses" },
   { icon: Sparkles, label: "Generative AI", to: "/courses" },
@@ -339,75 +310,7 @@ function Home() {
         </div>
       </section>
 
-      {/* ================ SECTION 3 · WHAT SETS HIM APART ================ */}
-      <section className="relative overflow-hidden bg-background py-24 sm:py-28">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-          <div
-            className="ambient-orb right-0 top-0 size-[420px] translate-x-1/4 bg-primary/8"
-            style={{ animationDelay: "-4s" }}
-          />
-        </div>
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
-          <RevealOnScroll className="mx-auto max-w-2xl text-center">
-            <p className="section-eyebrow">What sets him apart</p>
-            <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-              Four worlds. One practitioner.
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Academic depth, industry execution, real teaching, and international perspective — combined in one person.
-            </p>
-          </RevealOnScroll>
-          <div className="mt-14 grid gap-6 md:grid-cols-2">
-            {PILLARS.map((p, i) => (
-              <RevealOnScroll key={p.title} delay={i * 80} className="h-full min-w-0">
-                <div className="premium-card group flex h-full flex-col p-7">
-                  <div className="flex items-center gap-3.5">
-                    <div className="icon-badge size-11 group-hover:bg-primary group-hover:text-primary-foreground">
-                      <p.icon className="size-5" />
-                    </div>
-                    <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">{p.title}</h3>
-                  </div>
-                  <ul className="mt-5 space-y-2 text-sm leading-relaxed text-muted-foreground">
-                    {p.bullets.map((b) => (
-                      <li key={b} className="flex items-start gap-2.5">
-                        <span className="mt-2 size-1 shrink-0 rounded-full bg-primary/50" />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {(p as any).isTimeline ? (
-                    <div className="mt-6 flex flex-wrap items-center gap-3">
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-xs font-medium text-primary">
-                        <Globe2 className="size-3.5" />
-                        {countryCount > 0 ? `${countryCount} countries` : "Global reach"}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/80 px-3 py-1 text-xs font-medium text-muted-foreground">
-                        {timelineEntries.length}+ engagements
-                      </span>
-                      <Link
-                        to="/timeline"
-                        className="hover-lift-sm ml-auto inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-                      >
-                        View Timeline <ArrowRight className="size-4" />
-                      </Link>
-                    </div>
-                  ) : (
-                    p.to && (
-                      <Link
-                        to={p.to as any}
-                        className="group/link mt-6 inline-flex items-center gap-1.5 self-start text-sm font-medium text-primary transition-colors hover:text-primary/80"
-                      >
-                        Learn More
-                        <ArrowRight className="size-4 transition-transform duration-200 group-hover/link:translate-x-0.5" />
-                      </Link>
-                    )
-                  )}
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FourDimensionsSection countryCount={countryCount} engagementCount={timelineEntries.length} />
 
       {/* ================ SECTION 4 · AREAS OF EXPERTISE ================ */}
       <section className="section-divider section-surface py-24 sm:py-28">
