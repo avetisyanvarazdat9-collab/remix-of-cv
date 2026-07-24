@@ -120,6 +120,23 @@ export const statisticsQuery = queryOptions({
     run(supabase.from("statistics").select("*").eq("is_visible", true).order("display_order")),
 });
 
+export const fourDimensionsQuery = queryOptions({
+  queryKey: ["four_dimensions"],
+  queryFn: () =>
+    run(
+      supabase
+        .from("four_dimensions")
+        .select("*")
+        .eq("is_visible", true)
+        .order("display_order"),
+    ),
+});
+
+export const fourDimensionsAdminQuery = queryOptions({
+  queryKey: ["four_dimensions", "admin"],
+  queryFn: () => run(supabase.from("four_dimensions").select("*").order("display_order")),
+});
+
 export const internationalExperienceQuery = (filters: IntlFilters = {}) =>
   queryOptions({
     queryKey: [

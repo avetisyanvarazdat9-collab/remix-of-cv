@@ -317,6 +317,72 @@ export type Database = {
         }
         Relationships: []
       }
+      four_dimensions: {
+        Row: {
+          badge_text: string | null
+          bullet_points: Json
+          created_at: string
+          cta_button_text: string | null
+          cta_button_url: string | null
+          description: string | null
+          dimension_number: number
+          display_order: number
+          engagement_text: string | null
+          id: string
+          image_alt: string | null
+          image_url: string | null
+          is_visible: boolean
+          show_timeline_footer: boolean
+          subtitle: string | null
+          timeline_button_text: string | null
+          timeline_button_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          badge_text?: string | null
+          bullet_points?: Json
+          created_at?: string
+          cta_button_text?: string | null
+          cta_button_url?: string | null
+          description?: string | null
+          dimension_number: number
+          display_order?: number
+          engagement_text?: string | null
+          id?: string
+          image_alt?: string | null
+          image_url?: string | null
+          is_visible?: boolean
+          show_timeline_footer?: boolean
+          subtitle?: string | null
+          timeline_button_text?: string | null
+          timeline_button_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          badge_text?: string | null
+          bullet_points?: Json
+          created_at?: string
+          cta_button_text?: string | null
+          cta_button_url?: string | null
+          description?: string | null
+          dimension_number?: number
+          display_order?: number
+          engagement_text?: string | null
+          id?: string
+          image_alt?: string | null
+          image_url?: string | null
+          is_visible?: boolean
+          show_timeline_footer?: boolean
+          subtitle?: string | null
+          timeline_button_text?: string | null
+          timeline_button_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       home_content: {
         Row: {
           about_btn_label: string

@@ -2,81 +2,65 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Globe2 } from "lucide-react";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import heroPortrait from "@/assets/hero-portrait.jpg";
+import type { Tables } from "@/integrations/supabase/types";
+
+type FourDimension = Tables<"four_dimensions">;
 
 type Pillar = {
   title: string;
+  lead: string;
   bullets: string[];
   to: string | null;
+  ctaLabel: string;
   isTimeline?: boolean;
   image: string;
   imageAlt: string;
+  dimensionLabel: string;
   variant: "featured" | "stacked" | "overlay" | "horizontal";
+  badgeText: string | null;
+  engagementText: string | null;
+  timelineButtonText: string | null;
+  timelineButtonUrl: string | null;
 };
 
-const PILLARS: Pillar[] = [
-  {
-    title: "Academic Leadership",
-    bullets: [
-      "PhD in Computer Engineering",
-      "University Professor",
-      "AI & Computer Science Educator",
-      "Research & Curriculum Development",
-      "International Academic Collaborations",
-    ],
-    to: "/collaborate",
-    image: heroPortrait,
-    imageAlt: "Portrait of Varazdat Avetisyan in academic setting",
-    variant: "featured",
-  },
-  {
-    title: "Industry Leadership",
-    bullets: [
-      "CTO & Co-Founder, Luseen Mobile",
-      "AI Consultant",
-      "Technology Strategy",
-      "Software Engineering",
-      "Digital Transformation",
-    ],
-    to: "/transform",
-    image:
-      "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Technology leadership team collaborating in a modern workspace",
-    variant: "stacked",
-  },
-  {
-    title: "Education & Training",
-    bullets: [
-      "AI Course Development",
-      "University Teaching",
-      "Corporate Training",
-      "Workshops & Professional Development",
-      "Student Mentorship",
-    ],
-    to: "/learn",
-    image:
-      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "Educator leading a professional training workshop",
-    variant: "overlay",
-  },
-  {
-    title: "International Experience",
-    bullets: [
-      "Trainings & workshops across Europe",
-      "Academic exchange programs",
-      "Conference speaking",
-      "Cross-institutional research",
-      "Global professional network",
-    ],
-    to: null,
-    isTimeline: true,
-    image:
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: "International travel and global professional collaboration",
-    variant: "horizontal",
-  },
-];
+const ROMAN = ["", "I", "II", "III", "IV"] as const;
+const VARIANT_BY_NUMBER: Record<number, Pillar["variant"]> = {
+  1: "featured",
+  2: "stacked",
+  3: "overlay",
+  4: "horizontal",
+};
+
+function parseBullets(value: unknown): string[] {
+  if (Array.isArray(value)) return value.map(String).filter(Boolean);
+  return [];
+}
+
+function toPillar(row: FourDimension): Pillar {
+  const bullets = parseBullets(row.bullet_points);
+  const lead = row.description?.trim() || bullets[0] || "";
+  const listBullets = row.description?.trim() ? bullets : bullets.slice(1);
+
+  return {
+    title: row.title,
+    lead,
+    bullets: listBullets,
+    to: row.cta_button_url?.trim() || null,
+    ctaLabel: row.cta_button_text?.trim() || "Learn More",
+    isTimeline: row.show_timeline_footer,
+    image: row.image_url?.trim() || heroPortrait,
+    imageAlt: row.image_alt?.trim() || row.title,
+    dimensionLabel: row.subtitle?.trim() || `Dimension ${ROMAN[row.dimension_number] ?? row.dimension_number}`,
+    variant: VARIANT_BY_NUMBER[row.dimension_number] ?? "stacked",
+    badgeText: row.badge_text,
+    engagementText: row.engagement_text,
+    timelineButtonText: row.timeline_button_text,
+    timelineButtonUrl: row.timeline_button_url,
+  };
+}
 
 function PillarBullets({ bullets }: { bullets: string[] }) {
+  if (bullets.length === 0) return null;
   return (
     <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-muted-foreground">
       {bullets.map((b) => (
@@ -89,7 +73,7 @@ function PillarBullets({ bullets }: { bullets: string[] }) {
   );
 }
 
-function PillarLink({ to, label = "Learn More" }: { to: string; label?: string }) {
+function PillarLink({ to, label }: { to: string; label: string }) {
   return (
     <Link
       to={to as never}
@@ -101,27 +85,46 @@ function PillarLink({ to, label = "Learn More" }: { to: string; label?: string }
   );
 }
 
+function formatBadgeText(template: string | null, countryCount: number) {
+  if (template?.trim()) {
+    return template.replace(/\{count\}/g, String(countryCount));
+  }
+  return countryCount > 0 ? `${countryCount} countries` : "Global reach";
+}
+
+function formatEngagementText(template: string | null, engagementCount: number) {
+  if (template?.trim()) {
+    return template.replace(/\{count\}/g, String(engagementCount));
+  }
+  return `${engagementCount}+ engagements`;
+}
+
 function TimelineFooter({
+  pillar,
   countryCount,
   engagementCount,
 }: {
+  pillar: Pillar;
   countryCount: number;
   engagementCount: number;
 }) {
+  const buttonText = pillar.timelineButtonText?.trim() || "View Timeline";
+  const buttonUrl = pillar.timelineButtonUrl?.trim() || "/timeline";
+
   return (
     <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border/60 pt-5">
       <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-xs font-medium text-primary">
         <Globe2 className="size-3.5" />
-        {countryCount > 0 ? `${countryCount} countries` : "Global reach"}
+        {formatBadgeText(pillar.badgeText, countryCount)}
       </span>
       <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/80 px-3 py-1 text-xs font-medium text-muted-foreground">
-        {engagementCount}+ engagements
+        {formatEngagementText(pillar.engagementText, engagementCount)}
       </span>
       <Link
-        to="/timeline"
+        to={buttonUrl as never}
         className="hover-lift-sm ml-auto inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
       >
-        View Timeline <ArrowRight className="size-4" />
+        {buttonText} <ArrowRight className="size-4" />
       </Link>
     </div>
   );
@@ -139,13 +142,13 @@ function FeaturedCard({ pillar }: { pillar: Pillar }) {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/20" />
       <div className="relative flex h-full min-h-[26rem] flex-col justify-end p-6 sm:p-8 lg:min-h-0">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">Dimension I</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">{pillar.dimensionLabel}</p>
         <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {pillar.title}
         </h3>
-        <p className="mt-2 max-w-lg text-sm leading-relaxed text-foreground/85">{pillar.bullets[0]}</p>
-        {pillar.bullets.length > 1 && <PillarBullets bullets={pillar.bullets.slice(1)} />}
-        {pillar.to && <PillarLink to={pillar.to} />}
+        {pillar.lead && <p className="mt-2 max-w-lg text-sm leading-relaxed text-foreground/85">{pillar.lead}</p>}
+        <PillarBullets bullets={pillar.bullets} />
+        {pillar.to && <PillarLink to={pillar.to} label={pillar.ctaLabel} />}
       </div>
     </article>
   );
@@ -165,11 +168,11 @@ function StackedCard({ pillar }: { pillar: Pillar }) {
         <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
       </div>
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">Dimension II</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">{pillar.dimensionLabel}</p>
         <h3 className="mt-2 font-display text-xl font-semibold tracking-tight text-foreground">{pillar.title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-foreground/85">{pillar.bullets[0]}</p>
-        {pillar.bullets.length > 1 && <PillarBullets bullets={pillar.bullets.slice(1)} />}
-        {pillar.to && <PillarLink to={pillar.to} />}
+        {pillar.lead && <p className="mt-2 text-sm leading-relaxed text-foreground/85">{pillar.lead}</p>}
+        <PillarBullets bullets={pillar.bullets} />
+        {pillar.to && <PillarLink to={pillar.to} label={pillar.ctaLabel} />}
       </div>
     </article>
   );
@@ -187,13 +190,13 @@ function OverlayCard({ pillar }: { pillar: Pillar }) {
       />
       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/92 to-background/35 sm:via-background/88 sm:to-transparent" />
       <div className="relative flex h-full min-h-[22rem] max-w-lg flex-col justify-end p-6 sm:min-h-[24rem] sm:justify-center sm:p-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">Dimension III</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">{pillar.dimensionLabel}</p>
         <h3 className="mt-2 font-display text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
           {pillar.title}
         </h3>
-        <p className="mt-2 text-sm leading-relaxed text-foreground/85">{pillar.bullets[0]}</p>
-        {pillar.bullets.length > 1 && <PillarBullets bullets={pillar.bullets.slice(1)} />}
-        {pillar.to && <PillarLink to={pillar.to} />}
+        {pillar.lead && <p className="mt-2 text-sm leading-relaxed text-foreground/85">{pillar.lead}</p>}
+        <PillarBullets bullets={pillar.bullets} />
+        {pillar.to && <PillarLink to={pillar.to} label={pillar.ctaLabel} />}
       </div>
     </article>
   );
@@ -222,14 +225,14 @@ function HorizontalCard({
           <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent md:bg-gradient-to-r md:from-transparent md:to-background/10" />
         </div>
         <div className="flex flex-col justify-center p-6 sm:p-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">Dimension IV</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">{pillar.dimensionLabel}</p>
           <h3 className="mt-2 font-display text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
             {pillar.title}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-foreground/85">{pillar.bullets[0]}</p>
-          {pillar.bullets.length > 1 && <PillarBullets bullets={pillar.bullets.slice(1)} />}
+          {pillar.lead && <p className="mt-2 text-sm leading-relaxed text-foreground/85">{pillar.lead}</p>}
+          <PillarBullets bullets={pillar.bullets} />
           {pillar.isTimeline && (
-            <TimelineFooter countryCount={countryCount} engagementCount={engagementCount} />
+            <TimelineFooter pillar={pillar} countryCount={countryCount} engagementCount={engagementCount} />
           )}
         </div>
       </div>
@@ -237,14 +240,63 @@ function HorizontalCard({
   );
 }
 
+function renderCard(
+  pillar: Pillar,
+  countryCount: number,
+  engagementCount: number,
+) {
+  switch (pillar.variant) {
+    case "featured":
+      return <FeaturedCard pillar={pillar} />;
+    case "stacked":
+      return <StackedCard pillar={pillar} />;
+    case "overlay":
+      return <OverlayCard pillar={pillar} />;
+    case "horizontal":
+      return <HorizontalCard pillar={pillar} countryCount={countryCount} engagementCount={engagementCount} />;
+  }
+}
+
+function gridClassForVariant(variant: Pillar["variant"]) {
+  switch (variant) {
+    case "featured":
+      return "min-w-0 lg:col-span-7 lg:row-span-2";
+    case "stacked":
+    case "overlay":
+      return "min-w-0 lg:col-span-5";
+    case "horizontal":
+      return "min-w-0 lg:col-span-12";
+  }
+}
+
+function delayForVariant(variant: Pillar["variant"]) {
+  switch (variant) {
+    case "featured":
+      return 0;
+    case "stacked":
+      return 80;
+    case "overlay":
+      return 160;
+    case "horizontal":
+      return 240;
+  }
+}
+
 export function FourDimensionsSection({
+  dimensions,
   countryCount,
   engagementCount,
 }: {
+  dimensions: FourDimension[];
   countryCount: number;
   engagementCount: number;
 }) {
-  const [featured, stacked, overlay, horizontal] = PILLARS;
+  const pillars = dimensions
+    .slice()
+    .sort((a, b) => a.display_order - b.display_order || a.dimension_number - b.dimension_number)
+    .map(toPillar);
+
+  if (pillars.length === 0) return null;
 
   return (
     <section className="relative overflow-hidden bg-background py-24 sm:py-28">
@@ -265,22 +317,15 @@ export function FourDimensionsSection({
         </RevealOnScroll>
 
         <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-12 lg:gap-6">
-          <RevealOnScroll className="min-w-0 lg:col-span-7 lg:row-span-2">
-            <FeaturedCard pillar={featured} />
-          </RevealOnScroll>
-          <RevealOnScroll delay={80} className="min-w-0 lg:col-span-5">
-            <StackedCard pillar={stacked} />
-          </RevealOnScroll>
-          <RevealOnScroll delay={160} className="min-w-0 lg:col-span-5">
-            <OverlayCard pillar={overlay} />
-          </RevealOnScroll>
-          <RevealOnScroll delay={240} className="min-w-0 lg:col-span-12">
-            <HorizontalCard
-              pillar={horizontal}
-              countryCount={countryCount}
-              engagementCount={engagementCount}
-            />
-          </RevealOnScroll>
+          {pillars.map((pillar) => (
+            <RevealOnScroll
+              key={pillar.dimensionLabel + pillar.title}
+              delay={delayForVariant(pillar.variant)}
+              className={gridClassForVariant(pillar.variant)}
+            >
+              {renderCard(pillar, countryCount, engagementCount)}
+            </RevealOnScroll>
+          ))}
         </div>
       </div>
     </section>

@@ -240,6 +240,31 @@ CREATE TABLE IF NOT EXISTS public.professional_experience (
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 
+-- four_dimensions -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.four_dimensions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  dimension_number integer NOT NULL,
+  title text NOT NULL,
+  subtitle text,
+  description text,
+  bullet_points jsonb NOT NULL DEFAULT '[]'::jsonb,
+  image_url text,
+  image_alt text,
+  badge_text text,
+  engagement_text text,
+  cta_button_text text,
+  cta_button_url text,
+  timeline_button_text text,
+  timeline_button_url text,
+  show_timeline_footer boolean NOT NULL DEFAULT false,
+  is_visible boolean NOT NULL DEFAULT true,
+  display_order integer NOT NULL DEFAULT 0,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT four_dimensions_number_unique UNIQUE (dimension_number),
+  CONSTRAINT four_dimensions_number_range CHECK (dimension_number BETWEEN 1 AND 4)
+);
+
 -- certifications ------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.certifications (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -388,7 +413,7 @@ DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','professional_experience','certifications','skills',
+    'projects','companies','education','professional_experience','four_dimensions','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings'
   ] LOOP
@@ -420,7 +445,7 @@ DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','professional_experience','certifications','skills',
+    'projects','companies','education','professional_experience','four_dimensions','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings','messages','error_logs','user_roles'
   ] LOOP
@@ -431,7 +456,7 @@ BEGIN
   -- Public read (anon) on visitor-facing tables
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','professional_experience','certifications','skills',
+    'projects','companies','education','professional_experience','four_dimensions','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings'
   ] LOOP
@@ -451,7 +476,7 @@ DECLARE t text; p record;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','professional_experience','certifications','skills',
+    'projects','companies','education','professional_experience','four_dimensions','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings','messages','error_logs','user_roles'
   ] LOOP
@@ -487,6 +512,13 @@ BEGIN
     $f$, t, t);
   END LOOP;
 END $$;
+
+-- four_dimensions: public read visible rows only
+CREATE POLICY "public read visible four_dimensions" ON public.four_dimensions FOR SELECT
+  USING (is_visible = true);
+CREATE POLICY "admin all four_dimensions" ON public.four_dimensions FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'));
 
 -- messages: anyone can insert; only admins read/delete
 CREATE POLICY "anyone insert message" ON public.messages FOR INSERT WITH CHECK (true);
@@ -532,6 +564,46 @@ CREATE POLICY "portfolio admin update" ON storage.objects FOR UPDATE TO authenti
 CREATE POLICY "portfolio admin delete" ON storage.objects FOR DELETE TO authenticated
   USING (bucket_id = 'portfolio-assets'
     AND EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'));
+
+-- four-dimensions storage bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('four-dimensions', 'four-dimensions', true)
+ON CONFLICT (id) DO UPDATE SET public = EXCLUDED.public;
+
+CREATE POLICY "four-dimensions public read" ON storage.objects FOR SELECT
+  USING (bucket_id = 'four-dimensions');
+CREATE POLICY "four-dimensions admin all" ON storage.objects FOR ALL TO authenticated
+  USING (
+    bucket_id = 'four-dimensions'
+    AND EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin')
+  )
+  WITH CHECK (
+    bucket_id = 'four-dimensions'
+    AND EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin')
+  );
+
+-- Seed four dimensions (idempotent)
+INSERT INTO public.four_dimensions (
+  id, dimension_number, title, description, bullet_points, image_url, image_alt,
+  cta_button_text, cta_button_url, timeline_button_text, timeline_button_url,
+  show_timeline_footer, is_visible, display_order
+) VALUES
+  ('a1b2c3d4-1111-4111-8111-111111111101', 1, 'Academic Leadership', 'PhD in Computer Engineering',
+   '["University Professor","AI & Computer Science Educator","Research & Curriculum Development","International Academic Collaborations"]'::jsonb,
+   NULL, 'Portrait of Varazdat Avetisyan in academic setting', 'Learn More', '/collaborate', NULL, NULL, false, true, 1),
+  ('a1b2c3d4-1111-4111-8111-111111111102', 2, 'Industry Leadership', 'CTO & Co-Founder, Luseen Mobile',
+   '["AI Consultant","Technology Strategy","Software Engineering","Digital Transformation"]'::jsonb,
+   'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1200&q=80',
+   'Technology leadership team collaborating in a modern workspace', 'Learn More', '/transform', NULL, NULL, false, true, 2),
+  ('a1b2c3d4-1111-4111-8111-111111111103', 3, 'Education & Training', 'AI Course Development',
+   '["University Teaching","Corporate Training","Workshops & Professional Development","Student Mentorship"]'::jsonb,
+   'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80',
+   'Educator leading a professional training workshop', 'Learn More', '/learn', NULL, NULL, false, true, 3),
+  ('a1b2c3d4-1111-4111-8111-111111111104', 4, 'International Experience', 'Trainings & workshops across Europe',
+   '["Academic exchange programs","Conference speaking","Cross-institutional research","Global professional network"]'::jsonb,
+   'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80',
+   'International travel and global professional collaboration', NULL, NULL, 'View Timeline', '/timeline', true, true, 4)
+ON CONFLICT (id) DO NOTHING;
 
 -- =====================================================================
 -- DROP obsolete helpers if present (safe if missing)

@@ -35,6 +35,7 @@ import {
   testimonialsQuery,
   statisticsQuery,
   internationalExperienceQuery,
+  fourDimensionsQuery,
 } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import { useCountUp } from "@/hooks/useCountUp";
@@ -52,6 +53,7 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(testimonialsQuery),
       context.queryClient.ensureQueryData(statisticsQuery),
       context.queryClient.ensureQueryData(internationalExperienceQuery()),
+      context.queryClient.ensureQueryData(fourDimensionsQuery),
     ]);
     const profile = await context.queryClient.ensureQueryData(profileQuery);
     return { profile };
@@ -114,6 +116,7 @@ function Home() {
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const { data: statsRows } = useSuspenseQuery(statisticsQuery);
   const { data: intlRows } = useSuspenseQuery(internationalExperienceQuery());
+  const { data: fourDimensions } = useSuspenseQuery(fourDimensionsQuery);
   const loc = useLocalized();
   
 
@@ -310,7 +313,11 @@ function Home() {
         </div>
       </section>
 
-      <FourDimensionsSection countryCount={countryCount} engagementCount={timelineEntries.length} />
+      <FourDimensionsSection
+        dimensions={fourDimensions ?? []}
+        countryCount={countryCount}
+        engagementCount={timelineEntries.length}
+      />
 
       {/* ================ SECTION 4 · AREAS OF EXPERTISE ================ */}
       <section className="section-divider section-surface py-24 sm:py-28">

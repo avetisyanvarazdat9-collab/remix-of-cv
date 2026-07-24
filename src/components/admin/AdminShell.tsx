@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History } from "lucide-react";
+import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History, Layers } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
@@ -8,6 +8,7 @@ type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?
 const items: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/home", label: "Homepage", icon: Home },
+  { to: "/admin/four-dimensions", label: "Four Dimensions", icon: Layers },
   { to: "/admin/profile", label: "Profile", icon: User },
   { to: "/admin/about", label: "About", icon: BookText },
   { to: "/admin/quick-stats", label: "Quick stats", icon: BarChart3 },
