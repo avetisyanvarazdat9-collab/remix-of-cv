@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Download } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
+import heroPortrait from "@/assets/hero-portrait.jpg";
 import {
   profileQuery,
   skillsQuery,
@@ -80,9 +81,22 @@ function AboutPage() {
         {loc(profile, "tagline") && (
           <p className="mt-3 text-lg font-medium text-foreground/90">{loc(profile, "tagline")}</p>
         )}
-        <p className="mt-6 whitespace-pre-line text-lg leading-relaxed text-muted-foreground">
-          {loc(profile, "bio")}
-        </p>
+        <div className="mt-8 flex flex-col-reverse items-center gap-8 md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+          <p className="w-full whitespace-pre-line text-lg leading-relaxed text-muted-foreground">
+            {loc(profile, "bio")}
+          </p>
+          <figure className="w-full max-w-xs shrink-0 sm:max-w-sm md:max-w-[17.5rem]">
+            <img
+              src={profile?.photo_url || heroPortrait}
+              alt=""
+              width={1024}
+              height={1536}
+              loading="lazy"
+              decoding="async"
+              className="aspect-[2/3] w-full rounded-2xl border border-border object-cover object-[center_12%] shadow-[var(--shadow-card)]"
+            />
+          </figure>
+        </div>
 
         <div className="mt-12 grid gap-8 md:grid-cols-2">
           <div className="glass rounded-2xl p-6">
