@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Download } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import {
   profileQuery,
   skillsQuery,
@@ -168,32 +169,52 @@ function AboutPage() {
         )}
 
         {(professionalExperience ?? []).filter((e) => e.is_visible !== false).length > 0 && (
-          <div className="mt-8 glass rounded-2xl p-6">
+          <div className="mt-8 glass rounded-2xl p-6 sm:p-8">
             <h2 className="font-display text-xl font-semibold">Professional Experience</h2>
-            <ol className="mt-5 relative border-l border-primary/30 pl-6 space-y-5">
+            <ol className="relative mt-8">
+              <div
+                aria-hidden
+                className="absolute bottom-6 left-[11px] top-2 w-px bg-gradient-to-b from-primary/50 via-border to-primary/20 sm:left-[15px]"
+              />
               {(professionalExperience ?? [])
                 .filter((e) => e.is_visible !== false)
-                .map((e) => {
+                .map((e, index) => {
                   const jobTitle = loc(e, "job_title") || e.job_title;
                   const organization = loc(e, "organization") || e.organization;
                   const location = loc(e, "location") || e.location;
                   const employmentType = loc(e, "employment_type") || e.employment_type;
+                  const description = loc(e, "description") || e.description;
+                  const period = `${e.start_year}${e.is_current ? " — Present" : e.end_year ? `–${e.end_year}` : ""}`;
                   return (
-                    <li key={e.id} className="relative">
-                      <span className="absolute -left-[31px] top-1.5 size-3 rounded-full bg-primary ring-4 ring-background" />
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <p className="font-medium">{jobTitle}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {e.start_year}
-                          {e.is_current ? " — Present" : e.end_year ? `–${e.end_year}` : ""}
-                        </p>
-                      </div>
-                      {organization && <p className="text-sm text-primary">{organization}</p>}
-                      {(location || employmentType) && (
-                        <p className="text-sm text-muted-foreground">
-                          {[location, employmentType].filter(Boolean).join(" · ")}
-                        </p>
-                      )}
+                    <li key={e.id} className="relative pb-8 last:pb-0">
+                      <span className="absolute left-0 top-6 z-10 flex size-[22px] items-center justify-center sm:top-7">
+                        <span className="size-3 rounded-full bg-primary ring-4 ring-background shadow-[0_0_0_1px_color-mix(in_oklab,var(--primary)_35%,transparent)]" />
+                      </span>
+                      <RevealOnScroll delay={index * 60} className="pl-10 sm:pl-12">
+                        <article className="premium-card p-5 sm:p-6">
+                          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                            <h3 className="font-display text-base font-semibold leading-snug text-foreground sm:text-lg">
+                              {jobTitle}
+                            </h3>
+                            <p className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-primary">
+                              {period}
+                            </p>
+                          </div>
+                          {organization && (
+                            <p className="mt-2 text-sm font-medium text-primary">{organization}</p>
+                          )}
+                          {(location || employmentType) && (
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {[location, employmentType].filter(Boolean).join(" · ")}
+                            </p>
+                          )}
+                          {description && (
+                            <p className="mt-3 border-t border-border/60 pt-3 text-sm leading-relaxed text-muted-foreground">
+                              {description}
+                            </p>
+                          )}
+                        </article>
+                      </RevealOnScroll>
                     </li>
                   );
                 })}
