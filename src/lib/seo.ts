@@ -1,7 +1,9 @@
 /** Global SEO defaults and head helpers for TanStack Router `head()`. */
 
+import { SITE_BRAND_NAME } from "@/lib/brand";
+
 export const SITE_URL = "https://avetisyan.vercel.app";
-export const SITE_NAME = "Dr. Varazdat Avetisyan";
+export const SITE_NAME = SITE_BRAND_NAME;
 export const DEFAULT_DESCRIPTION =
   "AI education, research, consulting, digital transformation, and professional collaboration by Dr. Varazdat Avetisyan.";
 

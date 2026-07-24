@@ -8,6 +8,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useT, useLang } from "@/lib/i18n";
 import { navigationMenuQuery } from "@/lib/queries";
+import { SITE_BRAND_NAME } from "@/lib/brand";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -27,7 +28,7 @@ export function SiteHeader() {
           {logoUrl ? (
             <img src={logoUrl} alt="Site logo" className="h-10 max-h-10 w-auto max-w-[11rem] object-contain sm:max-w-[12rem]" />
           ) : (
-            <>Dr. Varazdat Avetisyan<span className="text-primary">.</span></>
+            <>{SITE_BRAND_NAME}<span className="text-primary">.</span></>
           )}
         </Link>
         {(visible.length > 0 || isAdmin) && (

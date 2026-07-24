@@ -39,6 +39,7 @@ import {
 import { useLocalized } from "@/lib/i18n";
 import { useCountUp } from "@/hooks/useCountUp";
 import { buildPageHead, buildPersonJsonLd } from "@/lib/seo";
+import { SITE_BRAND_NAME } from "@/lib/brand";
 import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/")({
@@ -224,7 +225,7 @@ function Home() {
               className="animate-fade-in-up text-sm font-medium tracking-wide text-muted-foreground"
               style={{ animationDelay: "20ms" }}
             >
-              Dr. Varazdat Avetisyan.
+              {SITE_BRAND_NAME}.
             </p>
             <span
               className="animate-fade-in-up mt-4 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-medium text-primary sm:text-xs"
