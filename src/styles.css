@@ -297,6 +297,13 @@
   transform: translateY(0);
 }
 
+.about-intro-image.reveal-on-scroll {
+  transform: translateY(16px) scale(0.98);
+}
+.about-intro-image.reveal-visible {
+  transform: translateY(0) scale(1);
+}
+
 /* --- Premium section & card utilities ------------------------------------- */
 
 @utility section-eyebrow {

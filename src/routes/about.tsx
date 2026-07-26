@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Download } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { CareerTimeline } from "@/components/about/CareerTimeline";
+import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import heroPortrait from "@/assets/hero-portrait.jpg";
 import {
   profileQuery,
@@ -65,39 +66,51 @@ function AboutPage() {
 
   return (
     <PublicLayout>
-      <section className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <h1 className="font-display text-4xl font-bold sm:text-5xl">{t("about.heading")}</h1>
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <RevealOnScroll className="flex flex-wrap items-start justify-between gap-4">
+          <h1 className="font-display text-4xl font-bold transition-colors duration-300 hover:text-primary/90 sm:text-5xl">
+            {t("about.heading")}
+          </h1>
           <Link
             to="/cv"
             target="_blank"
             rel="noopener"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90"
+            className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_28px_-10px_color-mix(in_oklab,var(--primary)_55%,transparent)]"
           >
-            <Download className="h-4 w-4" />
+            <Download className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
             Download CV
           </Link>
-        </div>
+        </RevealOnScroll>
         {loc(profile, "tagline") && (
-          <p className="mt-3 text-lg font-medium text-foreground/90">{loc(profile, "tagline")}</p>
+          <RevealOnScroll delay={80}>
+            <p className="mt-3 text-lg font-medium text-foreground/90 transition-opacity duration-300 hover:opacity-100">
+              {loc(profile, "tagline")}
+            </p>
+          </RevealOnScroll>
         )}
-        <div className="mt-8 flex flex-col-reverse items-center gap-8 md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-          <p className="w-full whitespace-pre-line text-lg leading-relaxed text-muted-foreground">
-            {loc(profile, "bio")}
-          </p>
-          <figure className="w-full max-w-xs shrink-0 sm:max-w-sm md:max-w-[17.5rem]">
-            <img
-              src={profile?.photo_url || heroPortrait}
-              alt=""
-              width={1024}
-              height={1536}
-              loading="lazy"
-              decoding="async"
-              className="aspect-[2/3] w-full rounded-2xl border border-border object-cover object-[center_12%] shadow-[var(--shadow-card)]"
-            />
-          </figure>
+        <div className="mt-10 flex flex-col-reverse items-center gap-10 md:grid md:grid-cols-[minmax(0,1.15fr)_minmax(16rem,20rem)] md:items-start md:gap-12 lg:gap-14">
+          <RevealOnScroll delay={120} className="w-full">
+            <p className="w-full whitespace-pre-line text-lg leading-relaxed text-muted-foreground transition-opacity duration-300 hover:text-muted-foreground/95">
+              {loc(profile, "bio")}
+            </p>
+          </RevealOnScroll>
+          <RevealOnScroll delay={180} className="about-intro-image w-full shrink-0">
+            <figure className="group mx-auto w-full max-w-xs overflow-hidden rounded-2xl sm:max-w-sm md:mx-0 md:max-w-[19rem] lg:max-w-[21rem]">
+              <img
+                src={profile?.photo_url || heroPortrait}
+                alt=""
+                width={1024}
+                height={1536}
+                loading="lazy"
+                decoding="async"
+                className="aspect-[2/3] w-full rounded-2xl border border-border object-cover object-[center_12%] shadow-[var(--shadow-card)] transition-all duration-500 ease-out will-change-transform group-hover:scale-[1.03] group-hover:shadow-[0_20px_48px_-16px_color-mix(in_oklab,var(--foreground)_18%,transparent)]"
+              />
+            </figure>
+          </RevealOnScroll>
         </div>
+      </section>
 
+      <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
         <div className="mt-12 grid gap-8 md:grid-cols-2">
           <div className="glass rounded-2xl p-6">
             <h2 className="font-display text-xl font-semibold">{t("about.skills")}</h2>
