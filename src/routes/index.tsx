@@ -243,18 +243,18 @@ function Home() {
               A place for personalized AI solutions — courses, consulting, and collaboration for individuals, universities, and organizations across Armenia and beyond.
             </p>
             <div
-              className="animate-fade-in-up mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap"
+              className="animate-fade-in-up mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center"
               style={{ animationDelay: "380ms", animationDuration: "600ms" }}
             >
               <Link
                 to="/learn"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--primary)_60%,transparent)] transition-transform hover:-translate-y-0.5 hover:brightness-110 sm:w-auto"
+                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--primary)_60%,transparent)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 sm:w-auto sm:min-w-[11.5rem]"
               >
-                Explore Courses <ArrowRight className="size-4" />
+                Explore Courses <ArrowRight className="size-4 shrink-0" />
               </Link>
               <Link
                 to="/transform"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-secondary px-5 py-2.5 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80 sm:w-auto"
+                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-border/80 bg-background/70 px-6 text-sm font-medium text-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-accent/50 sm:w-auto sm:min-w-[11.5rem]"
               >
                 Request a Consultation
               </Link>
@@ -266,8 +266,11 @@ function Home() {
               </Link>
             </div>
             {(socialLinks ?? []).length > 0 && (
-              <div style={{ animationDelay: "460ms", animationDuration: "600ms" }} className="animate-fade-in-up">
-                <SocialLinksIconRow links={socialLinks ?? []} className="mt-6" />
+              <div
+                style={{ animationDelay: "460ms", animationDuration: "600ms" }}
+                className="animate-fade-in-up mt-8 flex w-full justify-center sm:justify-start"
+              >
+                <SocialLinksIconRow links={socialLinks ?? []} />
               </div>
             )}
           </div>

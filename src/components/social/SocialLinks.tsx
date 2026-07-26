@@ -7,8 +7,23 @@ function SocialPlatformIcon({ platform, className }: { platform: string; classNa
   const config = getSocialPlatform(platform);
   if (!config) return null;
   const Icon = config.icon;
-  if (Icon) return <Icon className={className} />;
-  return <span className={`text-xs font-semibold ${className ?? ""}`}>{config.glyph}</span>;
+  const wrapperClass = className
+    ? "flex size-4 items-center justify-center"
+    : "flex size-5 items-center justify-center";
+  if (Icon) {
+    return (
+      <span className={wrapperClass}>
+        <Icon className={className ?? "size-[18px] shrink-0"} strokeWidth={1.75} />
+      </span>
+    );
+  }
+  return (
+    <span
+      className={`${wrapperClass} ${className ? "text-[10px]" : "text-[11px]"} font-semibold leading-none`}
+    >
+      {config.glyph}
+    </span>
+  );
 }
 
 export function SocialLinksIconRow({
@@ -22,7 +37,7 @@ export function SocialLinksIconRow({
   if (visible.length === 0) return null;
 
   return (
-    <div className={`flex flex-wrap gap-3 ${className ?? ""}`}>
+    <div className={`inline-flex items-center justify-center gap-3.5 ${className ?? ""}`}>
       {visible.map((link) => {
         const config = getSocialPlatform(link.platform);
         return (
@@ -32,9 +47,9 @@ export function SocialLinksIconRow({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={config?.label ?? link.platform}
-            className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-border/80 bg-card/90 text-muted-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary hover:shadow-md"
           >
-            <SocialPlatformIcon platform={link.platform} className="size-5" />
+            <SocialPlatformIcon platform={link.platform} />
           </a>
         );
       })}
