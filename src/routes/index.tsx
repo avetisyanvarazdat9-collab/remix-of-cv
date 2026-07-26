@@ -129,7 +129,7 @@ function Home() {
   const loc = useLocalized();
 
   const profileName = (loc(profile, "name") as string) || profile?.name || SITE_BRAND_NAME;
-  const profileTitle = (loc(profile, "title") as string) || profile?.title || "";
+  const heroBadge = (loc(content, "hero_badge") as string) || "";
 
   const stats = (statsRows ?? []).map((s: any) => ({
     label: (loc(s, "label") as string) || s.label,
@@ -212,7 +212,7 @@ function Home() {
             >
               {profileName}.
             </p>
-            {profileTitle && (
+            {heroBadge && (
             <span
               className="animate-fade-in-up mt-4 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-medium text-primary sm:text-xs"
               style={{ animationDelay: "60ms" }}
@@ -221,7 +221,7 @@ function Home() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
                 <span className="relative inline-flex size-2 rounded-full bg-primary" />
               </span>
-              {profileTitle}
+              {heroBadge}
             </span>
             )}
             <h1
