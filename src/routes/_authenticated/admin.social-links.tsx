@@ -1,10 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import { getSocialPlatform, isValidSocialUrl, normalizeSocialUrl } from "@/lib/social-platforms";
+import {
+  SOCIAL_PLATFORMS,
+  getSocialPlatform,
+  isValidSocialUrl,
+  normalizeSocialUrl,
+} from "@/lib/social-platforms";
 
 export const Route = createFileRoute("/_authenticated/admin/social-links")({
   head: () => ({ meta: [{ title: "Social Links — Admin" }] }),
@@ -21,6 +26,29 @@ type EditableRow = {
   display_order: number;
 };
 
+function defaultRows(): EditableRow[] {
+  return SOCIAL_PLATFORMS.map((p) => ({
+    platform: p.id,
+    url: "",
+    is_visible: false,
+    display_order: p.defaultOrder,
+  }));
+}
+
+function mergeRows(data: Row[] | null): EditableRow[] {
+  const byPlatform = new Map((data ?? []).map((r) => [r.platform, r]));
+  return SOCIAL_PLATFORMS.map((p) => {
+    const existing = byPlatform.get(p.id);
+    return {
+      id: existing?.id,
+      platform: p.id,
+      url: existing?.url ?? "",
+      is_visible: existing?.is_visible ?? false,
+      display_order: existing?.display_order ?? p.defaultOrder,
+    };
+  });
+}
+
 function PlatformIcon({ platform }: { platform: string }) {
   const config = getSocialPlatform(platform);
   if (!config) return null;
@@ -30,100 +58,141 @@ function PlatformIcon({ platform }: { platform: string }) {
 }
 
 function SocialLinksAdmin() {
-  const [rows, setRows] = useState<EditableRow[]>([]);
+  const [rows, setRows] = useState<EditableRow[]>(defaultRows);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingPlatform, setSavingPlatform] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("social_links").select("*").order("display_order");
-    if (error) {
-      toast.error(error.message);
+    setLoadError(null);
+    try {
+      const { data, error } = await supabase.from("social_links").select("*").order("display_order");
+      if (error) {
+        setLoadError(error.message);
+        toast.error(error.message);
+        setRows(defaultRows());
+        return;
+      }
+      setRows(mergeRows(data as Row[]));
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to load social links";
+      setLoadError(message);
+      toast.error(message);
+      setRows(defaultRows());
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const byPlatform = new Map((data as Row[]).map((r) => [r.platform, r]));
-    const merged = SOCIAL_PLATFORMS.map((p) => {
-      const existing = byPlatform.get(p.id);
-      return {
-        id: existing?.id,
-        platform: p.id,
-        url: existing?.url ?? "",
-        is_visible: existing?.is_visible ?? false,
-        display_order: existing?.display_order ?? p.defaultOrder,
-      };
-    });
-    setRows(merged);
-    setLoading(false);
-  }
+  }, []);
 
   useEffect(() => {
-    load();
-  }, []);
+    void load();
+  }, [load]);
 
   function updateRow(platform: string, patch: Partial<EditableRow>) {
     setRows((prev) => prev.map((r) => (r.platform === platform ? { ...r, ...patch } : r)));
   }
 
+  function validateRow(row: EditableRow): string | null {
+    const trimmed = row.url.trim();
+    if (trimmed && !isValidSocialUrl(normalizeSocialUrl(trimmed))) {
+      return `Invalid URL for ${getSocialPlatform(row.platform)?.label ?? row.platform}`;
+    }
+    return null;
+  }
+
+  async function persistRow(row: EditableRow): Promise<boolean> {
+    const validationError = validateRow(row);
+    if (validationError) {
+      toast.error(validationError);
+      return false;
+    }
+
+    const url = row.url.trim() ? normalizeSocialUrl(row.url) : null;
+    const payload = {
+      platform: row.platform,
+      url,
+      is_visible: row.is_visible && !!url,
+      display_order: row.display_order,
+    };
+
+    if (row.id) {
+      const { error } = await supabase.from("social_links").update(payload).eq("id", row.id);
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+      return true;
+    }
+
+    const { data, error } = await supabase.from("social_links").insert(payload).select("*").single();
+    if (error) {
+      toast.error(error.message);
+      return false;
+    }
+    updateRow(row.platform, { id: (data as Row).id });
+    return true;
+  }
+
+  async function saveRow(platform: string) {
+    const row = rows.find((r) => r.platform === platform);
+    if (!row) return;
+    setSavingPlatform(platform);
+    const ok = await persistRow(row);
+    setSavingPlatform(null);
+    if (ok) {
+      toast.success(`${getSocialPlatform(platform)?.label ?? platform} saved`);
+      queryClient.invalidateQueries({ queryKey: ["social_links"] });
+      await load();
+    }
+  }
+
   async function saveAll() {
     for (const row of rows) {
-      const trimmed = row.url.trim();
-      if (trimmed && !isValidSocialUrl(normalizeSocialUrl(trimmed))) {
-        toast.error(`Invalid URL for ${getSocialPlatform(row.platform)?.label ?? row.platform}`);
+      const validationError = validateRow(row);
+      if (validationError) {
+        toast.error(validationError);
         return;
       }
     }
 
     setSaving(true);
     for (const row of rows) {
-      const url = row.url.trim() ? normalizeSocialUrl(row.url) : null;
-      const payload = {
-        platform: row.platform,
-        url,
-        is_visible: row.is_visible && !!url,
-        display_order: row.display_order,
-      };
-
-      if (row.id) {
-        const { error } = await supabase.from("social_links").update(payload).eq("id", row.id);
-        if (error) {
-          setSaving(false);
-          toast.error(error.message);
-          return;
-        }
-      } else {
-        const { error } = await supabase.from("social_links").insert(payload);
-        if (error) {
-          setSaving(false);
-          toast.error(error.message);
-          return;
-        }
+      const ok = await persistRow(row);
+      if (!ok) {
+        setSaving(false);
+        return;
       }
     }
-
     setSaving(false);
     toast.success("Social links saved");
     queryClient.invalidateQueries({ queryKey: ["social_links"] });
-    load();
+    await load();
   }
 
   async function clearLink(platform: string) {
     const row = rows.find((r) => r.platform === platform);
-    if (!row?.id) {
+    if (!row) return;
+
+    if (!row.id) {
       updateRow(platform, { url: "", is_visible: false });
       return;
     }
+
     if (!confirm(`Remove ${getSocialPlatform(platform)?.label ?? platform} link?`)) return;
+
     const { error } = await supabase
       .from("social_links")
       .update({ url: null, is_visible: false })
       .eq("id", row.id);
+
     if (error) return toast.error(error.message);
+
     toast.success("Link removed");
     queryClient.invalidateQueries({ queryKey: ["social_links"] });
-    load();
+    await load();
   }
 
   return (
@@ -132,6 +201,23 @@ function SocialLinksAdmin() {
       <p className="mt-1 text-muted-foreground">
         Manage all social profile URLs shown on the homepage hero and Contact page. Hidden or empty links are not displayed publicly.
       </p>
+
+      {loadError && (
+        <div className="mt-4 rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <p className="font-medium">Could not load social links from Supabase.</p>
+          <p className="mt-1">{loadError}</p>
+          <p className="mt-2 text-xs opacity-90">
+            If the table is missing, apply migration <code className="rounded bg-background/60 px-1">20260726193000_create_social_links.sql</code>.
+          </p>
+          <button
+            type="button"
+            onClick={() => void load()}
+            className="mt-3 rounded-md border border-current/30 px-3 py-1 text-xs font-medium hover:bg-current/10"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       <div className="glass mt-6 overflow-hidden rounded-2xl">
         <div className="overflow-x-auto">
@@ -155,6 +241,7 @@ function SocialLinksAdmin() {
               ) : (
                 rows.map((row) => {
                   const label = getSocialPlatform(row.platform)?.label ?? row.platform;
+                  const isSavingRow = savingPlatform === row.platform;
                   return (
                     <tr key={row.platform} className="border-b border-border/40 last:border-0 hover:bg-accent/30">
                       <td className="px-4 py-3">
@@ -196,13 +283,24 @@ function SocialLinksAdmin() {
                         />
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <button
-                          type="button"
-                          onClick={() => clearLink(row.platform)}
-                          className="rounded-md border border-destructive/40 px-3 py-1.5 text-xs text-destructive hover:bg-destructive/10"
-                        >
-                          Clear
-                        </button>
+                        <div className="inline-flex gap-2">
+                          <button
+                            type="button"
+                            disabled={isSavingRow || saving}
+                            onClick={() => void saveRow(row.platform)}
+                            className="rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent disabled:opacity-60"
+                          >
+                            {isSavingRow ? "Saving…" : "Save"}
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isSavingRow || saving}
+                            onClick={() => void clearLink(row.platform)}
+                            className="rounded-md border border-destructive/40 px-3 py-1.5 text-xs text-destructive hover:bg-destructive/10 disabled:opacity-60"
+                          >
+                            Clear
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -217,10 +315,10 @@ function SocialLinksAdmin() {
         <button
           type="button"
           disabled={saving || loading}
-          onClick={saveAll}
+          onClick={() => void saveAll()}
           className="rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-60"
         >
-          {saving ? "Saving…" : "Save social links"}
+          {saving ? "Saving…" : "Save all social links"}
         </button>
       </div>
     </div>

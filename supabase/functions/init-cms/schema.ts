@@ -541,6 +541,8 @@ CREATE POLICY "public read visible social_links" ON public.social_links FOR SELE
 CREATE POLICY "admin all social_links" ON public.social_links FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'));
+CREATE POLICY "admin read all social_links" ON public.social_links FOR SELECT TO authenticated
+  USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'));
 
 -- messages: anyone can insert; only admins read/delete
 CREATE POLICY "anyone insert message" ON public.messages FOR INSERT WITH CHECK (true);
