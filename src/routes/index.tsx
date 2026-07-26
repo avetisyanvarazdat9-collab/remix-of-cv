@@ -221,7 +221,7 @@ function Home() {
               className="animate-fade-in-up mt-4 text-base font-medium text-foreground/85 sm:mt-5 sm:text-lg"
               style={{ animationDelay: "220ms", animationDuration: "600ms" }}
             >
-              Educator · Researcher · Technologist · Entrepreneur · Innovator
+              Educator | Researcher | Technologist | Entrepreneur | Innovator
             </p>
             <p
               className="animate-fade-in-up mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-lg"
