@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { updateAdminUsername } from "@/lib/admin-auth.functions";
 
@@ -8,6 +9,30 @@ export const Route = createFileRoute("/_authenticated/admin/settings")({
   head: () => ({ meta: [{ title: "Settings — Admin" }] }),
   component: SettingsPage,
 });
+
+const MIN_PASSWORD_LENGTH = 8;
+
+type PasswordForm = {
+  current: string;
+  next: string;
+  confirm: string;
+};
+
+const EMPTY_PASSWORD_FORM: PasswordForm = { current: "", next: "", confirm: "" };
+
+function mapPasswordChangeError(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes("invalid login") || lower.includes("invalid credentials")) {
+    return "Current password is incorrect.";
+  }
+  if (lower.includes("same password") || lower.includes("should be different")) {
+    return "New password must be different from your current password.";
+  }
+  if (lower.includes("weak") || lower.includes("at least") || lower.includes("password")) {
+    return "Password must meet the minimum security requirements.";
+  }
+  return "Could not change password. Please try again.";
+}
 
 const META_KEY = "admin:siteMeta";
 type SiteMeta = { title: string; description: string; keywords: string; ogImage: string };
@@ -21,7 +46,7 @@ const META_DEFAULTS: SiteMeta = {
 function SettingsPage() {
   const navigate = useNavigate();
   const [meta, setMeta] = useState<SiteMeta>(META_DEFAULTS);
-  const [pw, setPw] = useState({ next: "", confirm: "" });
+  const [pw, setPw] = useState<PasswordForm>(EMPTY_PASSWORD_FORM);
   const [savingPw, setSavingPw] = useState(false);
   const [username, setUsername] = useState("");
   const [savingName, setSavingName] = useState(false);
@@ -125,14 +150,55 @@ function SettingsPage() {
 
   async function changePassword(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.next.length < 8) return toast.error("Password must be at least 8 characters");
-    if (pw.next !== pw.confirm) return toast.error("Passwords do not match");
+    const { current, next, confirm } = pw;
+
+    if (!current.trim()) {
+      return toast.error("Current password is required.");
+    }
+    if (!next.trim()) {
+      return toast.error("New password is required.");
+    }
+    if (next.length < MIN_PASSWORD_LENGTH) {
+      return toast.error("Password must meet the minimum security requirements.");
+    }
+    if (next !== confirm) {
+      return toast.error("New passwords do not match.");
+    }
+    if (next === current) {
+      return toast.error("New password must be different from your current password.");
+    }
+
     setSavingPw(true);
-    const { error } = await supabase.auth.updateUser({ password: pw.next });
-    setSavingPw(false);
-    if (error) return toast.error(error.message);
-    setPw({ next: "", confirm: "" });
-    toast.success("Password updated");
+    try {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const email = userData.user?.email;
+      if (userError || !email) {
+        toast.error("Could not verify your account. Please sign in again.");
+        return;
+      }
+
+      const { error: verifyError } = await supabase.auth.signInWithPassword({
+        email,
+        password: current,
+      });
+      if (verifyError) {
+        toast.error("Current password is incorrect.");
+        return;
+      }
+
+      const { error: updateError } = await supabase.auth.updateUser({ password: next });
+      if (updateError) {
+        toast.error(mapPasswordChangeError(updateError.message));
+        return;
+      }
+
+      setPw(EMPTY_PASSWORD_FORM);
+      toast.success("Password changed successfully.");
+    } catch {
+      toast.error("Could not change password. Please try again.");
+    } finally {
+      setSavingPw(false);
+    }
   }
 
   async function signOutAll() {
@@ -226,36 +292,38 @@ function SettingsPage() {
 
       <section className="glass rounded-2xl p-6">
         <h2 className="font-display text-xl font-semibold">Change password</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Update your admin account password. You must enter your current password to confirm the change.
+        </p>
 
         <form onSubmit={changePassword} className="mt-4 grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">New password</label>
-            <input
-              type="password"
-              value={pw.next}
-              onChange={(e) => setPw({ ...pw, next: e.target.value })}
-              required
-              minLength={8}
-              className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">Confirm</label>
-            <input
-              type="password"
-              value={pw.confirm}
-              onChange={(e) => setPw({ ...pw, confirm: e.target.value })}
-              required
-              minLength={8}
-              className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
-            />
-          </div>
+          <PasswordField
+            label="Current password"
+            value={pw.current}
+            onChange={(current) => setPw({ ...pw, current })}
+            autoComplete="current-password"
+            className="sm:col-span-2"
+          />
+          <PasswordField
+            label="New password"
+            value={pw.next}
+            onChange={(next) => setPw({ ...pw, next })}
+            autoComplete="new-password"
+            minLength={MIN_PASSWORD_LENGTH}
+          />
+          <PasswordField
+            label="Confirm new password"
+            value={pw.confirm}
+            onChange={(confirm) => setPw({ ...pw, confirm })}
+            autoComplete="new-password"
+            minLength={MIN_PASSWORD_LENGTH}
+          />
           <div className="sm:col-span-2 flex flex-wrap justify-end gap-2">
             <button type="button" onClick={signOutAll} className="rounded-md border border-border px-4 py-2 text-sm">
               Sign out everywhere
             </button>
             <button disabled={savingPw} className="rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground disabled:opacity-60">
-              {savingPw ? "Updating…" : "Update password"}
+              {savingPw ? "Changing…" : "Change Password"}
             </button>
           </div>
         </form>
@@ -296,6 +364,49 @@ function Field({ label, value, onChange, textarea }: { label: string; value: str
           className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
         />
       )}
+    </div>
+  );
+}
+
+function PasswordField({
+  label,
+  value,
+  onChange,
+  autoComplete,
+  minLength,
+  className,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  autoComplete?: string;
+  minLength?: number;
+  className?: string;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div className={className}>
+      <label className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">{label}</label>
+      <div className="relative">
+        <input
+          type={visible ? "text" : "password"}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required
+          minLength={minLength}
+          autoComplete={autoComplete}
+          className="w-full rounded-md border border-input bg-background/60 px-3 py-2 pr-10 text-sm outline-none focus:border-primary"
+        />
+        <button
+          type="button"
+          onClick={() => setVisible((v) => !v)}
+          aria-label={visible ? "Hide password" : "Show password"}
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
+        >
+          {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        </button>
+      </div>
     </div>
   );
 }
