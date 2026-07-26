@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import { Wrench, GraduationCap, User as UserIcon } from "lucide-react";
+import { Wrench, GraduationCap, User as UserIcon, Globe2 } from "lucide-react";
 import { saveAdminProfile } from "@/lib/profile-save";
 import { profileQuery } from "@/lib/queries";
 import {
@@ -111,7 +111,9 @@ function AboutEditor() {
   return (
     <div>
       <h1 className="font-display text-3xl font-bold">About</h1>
-      <p className="mt-1 text-muted-foreground">Long-form narrative shown on the About page. Markdown supported in the bio. Each field saves in HY / EN / RU.</p>
+      <p className="mt-1 text-muted-foreground">
+        Edit the About page narrative (tagline and bio). Skills, education, and professional development are managed separately — use the links below.
+      </p>
 
       <form onSubmit={save} className="glass mt-6 grid gap-4 rounded-2xl p-6">
         {I18N_FIELDS.map((f) => (
@@ -131,21 +133,26 @@ function AboutEditor() {
         </div>
       </form>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Link to="/admin/profile" className="glass rounded-xl p-5 hover:border-primary/40">
           <UserIcon className="mb-2 size-5 text-primary" />
-          <p className="font-display font-semibold">Profile fields</p>
-          <p className="mt-1 text-xs text-muted-foreground">Name, title, location, contacts, social links</p>
+          <p className="font-display font-semibold">Profile</p>
+          <p className="mt-1 text-xs text-muted-foreground">Name, title, contacts, and social links</p>
         </Link>
         <Link to="/admin/skills" className="glass rounded-xl p-5 hover:border-primary/40">
           <Wrench className="mb-2 size-5 text-primary" />
           <p className="font-display font-semibold">Skills</p>
-          <p className="mt-1 text-xs text-muted-foreground">Categorised technical and soft skills</p>
+          <p className="mt-1 text-xs text-muted-foreground">Shown in the Skills section on the About page</p>
         </Link>
         <Link to="/admin/education" className="glass rounded-xl p-5 hover:border-primary/40">
           <GraduationCap className="mb-2 size-5 text-primary" />
           <p className="font-display font-semibold">Education</p>
-          <p className="mt-1 text-xs text-muted-foreground">Degrees, certifications and training</p>
+          <p className="mt-1 text-xs text-muted-foreground">Shown in the Education section on the About page</p>
+        </Link>
+        <Link to="/admin/professional-development" className="glass rounded-xl p-5 hover:border-primary/40">
+          <Globe2 className="mb-2 size-5 text-primary" />
+          <p className="font-display font-semibold">Professional Development</p>
+          <p className="mt-1 text-xs text-muted-foreground">Trainings, workshops, and exchanges on the About page</p>
         </Link>
       </div>
     </div>

@@ -201,15 +201,27 @@ function AboutPage() {
             {professionalDevelopment.map((entry) => {
               const title = (loc(entry, "title") as string) || entry.title || "";
               const year = formatDevelopmentYear(entry.event_date);
-              const location = entry.location || entry.organization || "";
+              const organization = entry.organization || "";
+              const location = entry.location || "";
+              const description = (loc(entry, "description") as string) || entry.description || "";
+              const meta = [organization, location].filter(Boolean).join(" · ");
               return (
                 <li key={entry.id} className="relative">
                   <span className="absolute -left-[31px] top-1.5 size-3 rounded-full bg-primary ring-4 ring-background" />
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <p className="font-medium">{title}</p>
+                    {entry.url ? (
+                      <a href={entry.url} target="_blank" rel="noreferrer" className="font-medium hover:text-primary">
+                        {title}
+                      </a>
+                    ) : (
+                      <p className="font-medium">{title}</p>
+                    )}
                     <p className="text-xs text-muted-foreground">{year}</p>
                   </div>
-                  {location && <p className="text-sm text-muted-foreground">{location}</p>}
+                  {meta && <p className="text-sm text-muted-foreground">{meta}</p>}
+                  {description && (
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p>
+                  )}
                 </li>
               );
             })}

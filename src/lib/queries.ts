@@ -14,7 +14,7 @@ async function run<T>(query: PromiseLike<{ data: T | null; error: unknown }>): P
 }
 
 const PUBLIC_PROFILE_COLUMNS =
-  "id,name,title,tagline,location,bio,photo_url,cv_url,github_url,linkedin_url,twitter_url,website_url,created_at,updated_at,i18n";
+  "id,name,title,tagline,location,bio,email,phone,photo_url,cv_url,github_url,linkedin_url,twitter_url,website_url,created_at,updated_at,i18n";
 
 export const profileQuery = queryOptions({
   queryKey: ["profile"],

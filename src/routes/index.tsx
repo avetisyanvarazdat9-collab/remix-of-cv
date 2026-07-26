@@ -4,6 +4,7 @@ import {
   ArrowRight,
   Mail,
   Linkedin,
+  Github,
   GraduationCap,
   Briefcase,
   Globe2,
@@ -118,7 +119,9 @@ function Home() {
   const { data: intlRows } = useSuspenseQuery(internationalExperienceQuery());
   const { data: fourDimensions } = useSuspenseQuery(fourDimensionsQuery);
   const loc = useLocalized();
-  
+
+  const profileName = (loc(profile, "name") as string) || profile?.name || SITE_BRAND_NAME;
+  const profileTitle = (loc(profile, "title") as string) || profile?.title || "";
 
   const stats = (statsRows ?? []).map((s: any) => ({
     label: (loc(s, "label") as string) || s.label,
@@ -199,8 +202,9 @@ function Home() {
               className="animate-fade-in-up text-sm font-medium tracking-wide text-muted-foreground"
               style={{ animationDelay: "20ms" }}
             >
-              {SITE_BRAND_NAME}.
+              {profileName}.
             </p>
+            {profileTitle && (
             <span
               className="animate-fade-in-up mt-4 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-medium text-primary sm:text-xs"
               style={{ animationDelay: "60ms" }}
@@ -209,8 +213,9 @@ function Home() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
                 <span className="relative inline-flex size-2 rounded-full bg-primary" />
               </span>
-              PhD · AI Educator · CTO · Professor
+              {profileTitle}
             </span>
+            )}
             <h1
               className="animate-fade-in-up mt-5 font-display text-[2rem] font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
               style={{ animationDelay: "120ms", animationDuration: "600ms" }}
@@ -252,17 +257,45 @@ function Home() {
                 <Mail className="size-4" /> Contact Me
               </Link>
             </div>
-            {profile?.linkedin_url && (
-              <a
-                href={profile.linkedin_url}
-                target="_blank"
-                rel="noreferrer"
-                className="animate-fade-in-up mt-6 inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            {(profile?.linkedin_url || profile?.github_url || profile?.twitter_url) && (
+              <div
+                className="animate-fade-in-up mt-6 flex flex-wrap gap-3"
                 style={{ animationDelay: "460ms", animationDuration: "600ms" }}
-                aria-label="LinkedIn"
               >
-                <Linkedin className="size-5" />
-              </a>
+                {profile?.linkedin_url && (
+                  <a
+                    href={profile.linkedin_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                    aria-label="LinkedIn"
+                  >
+                    <Linkedin className="size-5" />
+                  </a>
+                )}
+                {profile?.github_url && (
+                  <a
+                    href={profile.github_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                    aria-label="GitHub"
+                  >
+                    <Github className="size-5" />
+                  </a>
+                )}
+                {profile?.twitter_url && (
+                  <a
+                    href={profile.twitter_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                    aria-label="Twitter / X"
+                  >
+                    <span className="text-sm font-semibold">𝕏</span>
+                  </a>
+                )}
+              </div>
             )}
           </div>
         </div>

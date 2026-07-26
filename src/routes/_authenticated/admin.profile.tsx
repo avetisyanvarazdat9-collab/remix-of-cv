@@ -199,7 +199,9 @@ function ProfileEditor() {
   return (
     <div>
       <h1 className="font-display text-3xl font-bold">Profile</h1>
-      <p className="mt-1 text-muted-foreground">This information appears across the public site. Fields with HY / EN / RU tabs are shown in the visitor's selected language.</p>
+      <p className="mt-1 text-muted-foreground">
+        Shown on the homepage hero (name, title), About page (tagline, bio), Contact page (email, phone, social links), and CV.
+      </p>
       <PreflightBanner preflight={preflight} onRetry={runPreflight} />
       <form onSubmit={save} className="glass mt-6 grid gap-4 rounded-2xl p-6 sm:grid-cols-2">
 

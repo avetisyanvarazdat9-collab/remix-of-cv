@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Mail, MapPin, Globe } from "lucide-react";
+import { Mail, MapPin, Globe, Phone, Github } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { profileQuery } from "@/lib/queries";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,19 +70,41 @@ function ContactPage() {
           <ul className="mt-8 space-y-3 text-sm">
             {profile?.email && (
               <li className="flex items-center gap-3">
-                <Mail className="size-4 text-primary" />
+                <Mail className="size-4 shrink-0 text-primary" />
                 <a href={`mailto:${profile.email}`} className="hover:underline">{profile.email}</a>
+              </li>
+            )}
+            {profile?.phone && (
+              <li className="flex items-center gap-3">
+                <Phone className="size-4 shrink-0 text-primary" />
+                <a href={`tel:${profile.phone.replace(/\s/g, "")}`} className="hover:underline">{profile.phone}</a>
               </li>
             )}
             {location && (
               <li className="flex items-center gap-3">
-                <MapPin className="size-4 text-primary" />
+                <MapPin className="size-4 shrink-0 text-primary" />
                 <span>{location}</span>
+              </li>
+            )}
+            {profile?.github_url && (
+              <li className="flex items-center gap-3">
+                <Github className="size-4 shrink-0 text-primary" />
+                <a href={profile.github_url} target="_blank" rel="noreferrer" className="hover:underline">
+                  GitHub
+                </a>
+              </li>
+            )}
+            {profile?.twitter_url && (
+              <li className="flex items-center gap-3">
+                <span className="flex size-4 shrink-0 items-center justify-center text-xs font-semibold text-primary">𝕏</span>
+                <a href={profile.twitter_url} target="_blank" rel="noreferrer" className="hover:underline">
+                  Twitter / X
+                </a>
               </li>
             )}
             {profile?.website_url && (
               <li className="flex items-center gap-3">
-                <Globe className="size-4 text-primary" />
+                <Globe className="size-4 shrink-0 text-primary" />
                 <a href={profile.website_url} target="_blank" rel="noreferrer" className="hover:underline">
                   {profile.website_url}
                 </a>
