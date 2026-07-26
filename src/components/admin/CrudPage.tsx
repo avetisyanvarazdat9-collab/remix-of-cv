@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Pencil, Plus, Trash2, Upload, X } from "lucide-react";
 import { PreviewPanel } from "./PreviewPanel";
+import { AdminSearchField } from "./AdminSearchField";
+import { rowMatchesAdminSearch } from "@/lib/admin-search";
 
 export type FieldType = "text" | "textarea" | "number" | "boolean" | "date" | "url" | "tags" | "image" | "i18n" | "i18n-textarea";
 export type Field = { name: string; label: string; type: FieldType; required?: boolean; placeholder?: string };
@@ -26,6 +28,9 @@ export interface CrudPageProps {
   defaults?: Record<string, any>;
   /** Hide the page header (useful when embedded under a tabbed parent that owns the heading). */
   hideHeader?: boolean;
+  /** Field names to search — defaults to all form fields. Set to false to disable search. */
+  searchFields?: string[] | false;
+  searchPlaceholder?: string;
 }
 
 type Row = Record<string, any>;
@@ -102,11 +107,18 @@ function canAutoDefaultRequiredField(table: string, fieldName: string) {
   return false;
 }
 
-export function CrudPage({ title, description, table, fields, orderBy, displayColumns, filter, defaults, hideHeader }: CrudPageProps) {
+export function CrudPage({ title, description, table, fields, orderBy, displayColumns, filter, defaults, hideHeader, searchFields, searchPlaceholder }: CrudPageProps) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Row | null>(null);
   const [creating, setCreating] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const resolvedSearchFields = useMemo(
+    () => (searchFields === false ? [] : (searchFields ?? fields.map((f) => f.name))),
+    [searchFields, fields],
+  );
+  const searchEnabled = searchFields !== false;
 
   async function load() {
     setLoading(true);
@@ -181,7 +193,15 @@ export function CrudPage({ title, description, table, fields, orderBy, displayCo
     load();
   }
 
-  const visibleRows = filter ? rows.filter(filter) : rows;
+  const filteredRows = useMemo(() => {
+    let result = filter ? rows.filter(filter) : rows;
+    if (searchEnabled && search.trim()) {
+      result = result.filter((row) => rowMatchesAdminSearch(row, search, resolvedSearchFields));
+    }
+    return result;
+  }, [rows, filter, search, searchEnabled, resolvedSearchFields]);
+
+  const hasSearchQuery = search.trim().length > 0;
 
   return (
     <div>
@@ -199,7 +219,7 @@ export function CrudPage({ title, description, table, fields, orderBy, displayCo
           </button>
         </div>
       )}
-      {hideHeader && (
+      {hideHeader && !searchEnabled && (
         <div className="mb-4 flex justify-end">
           <button
             onClick={() => { setCreating(true); setEditing({ ...(defaults ?? {}) }); }}
@@ -210,7 +230,30 @@ export function CrudPage({ title, description, table, fields, orderBy, displayCo
         </div>
       )}
 
-      <div className="glass mt-6 overflow-hidden rounded-2xl">
+      {searchEnabled && (
+        <div className={`flex flex-wrap items-center justify-between gap-3 ${hideHeader ? "mb-4" : "mt-6"}`}>
+          {searchEnabled ? (
+            <AdminSearchField
+              value={search}
+              onChange={setSearch}
+              placeholder={searchPlaceholder ?? "Search…"}
+              className="min-w-[200px] flex-1"
+            />
+          ) : (
+            <div />
+          )}
+          {hideHeader && (
+            <button
+              onClick={() => { setCreating(true); setEditing({ ...(defaults ?? {}) }); }}
+              className="inline-flex shrink-0 items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground"
+            >
+              <Plus className="size-4" /> New
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className={`glass overflow-hidden rounded-2xl ${searchEnabled || hideHeader ? "mt-4" : "mt-6"}`}>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -224,9 +267,15 @@ export function CrudPage({ title, description, table, fields, orderBy, displayCo
             <tbody>
               {loading ? (
                 <tr><td colSpan={displayColumns.length + 1} className="px-4 py-6 text-center text-muted-foreground">Loading…</td></tr>
-              ) : visibleRows.length === 0 ? (
-                <tr><td colSpan={displayColumns.length + 1} className="px-4 py-6 text-center text-muted-foreground">No items yet. Click New to add one.</td></tr>
-              ) : visibleRows.map((row) => (
+              ) : filteredRows.length === 0 ? (
+                <tr>
+                  <td colSpan={displayColumns.length + 1} className="px-4 py-6 text-center text-muted-foreground">
+                    {hasSearchQuery
+                      ? "No results found. Try a different search term."
+                      : "No items yet. Click New to add one."}
+                  </td>
+                </tr>
+              ) : filteredRows.map((row) => (
                 <tr key={row.id} className="border-b border-border/40 last:border-0 hover:bg-accent/30">
                   {displayColumns.map((c) => (
                     <td key={c} className="max-w-xs truncate px-4 py-3">

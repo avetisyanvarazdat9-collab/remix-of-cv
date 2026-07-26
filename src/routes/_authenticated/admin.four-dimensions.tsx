@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Pencil, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { AdminSearchField } from "@/components/admin/AdminSearchField";
+import { rowMatchesAdminSearch } from "@/lib/admin-search";
 import {
   deleteFourDimensionImage,
   uploadFourDimensionImage,
@@ -30,7 +32,22 @@ function FourDimensionsAdmin() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Row | null>(null);
+  const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
+
+  const filteredRows = useMemo(() => {
+    if (!search.trim()) return rows;
+    return rows.filter((row) =>
+      rowMatchesAdminSearch(row, search, [
+        "title",
+        "subtitle",
+        "description",
+        "badge_text",
+        "engagement_text",
+        "cta_button_text",
+      ]),
+    );
+  }, [rows, search]);
 
   async function load() {
     setLoading(true);
@@ -86,7 +103,15 @@ function FourDimensionsAdmin() {
         Manage the four homepage impact dimensions — titles, descriptions, bullet points, images, and CTAs.
       </p>
 
-      <div className="glass mt-6 overflow-hidden rounded-2xl">
+      <div className="mt-6">
+        <AdminSearchField
+          value={search}
+          onChange={setSearch}
+          placeholder="Search title, subtitle, or description…"
+        />
+      </div>
+
+      <div className="glass mt-4 overflow-hidden rounded-2xl">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -107,14 +132,16 @@ function FourDimensionsAdmin() {
                     Loading…
                   </td>
                 </tr>
-              ) : rows.length === 0 ? (
+              ) : filteredRows.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-6 text-center text-muted-foreground">
-                    No dimensions found. Run the database migration to seed the four dimensions.
+                    {search.trim()
+                      ? "No results found. Try a different search term."
+                      : "No dimensions found. Run the database migration to seed the four dimensions."}
                   </td>
                 </tr>
               ) : (
-                rows.map((row) => (
+                filteredRows.map((row) => (
                   <tr key={row.id} className="border-b border-border/40 last:border-0 hover:bg-accent/30">
                     <td className="px-4 py-3">{row.dimension_number}</td>
                     <td className="px-4 py-3">

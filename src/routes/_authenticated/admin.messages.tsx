@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Trash2, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { formatDateTime } from "@/lib/format-date";
+import { AdminSearchField } from "@/components/admin/AdminSearchField";
+import { textMatchesAdminSearch } from "@/lib/admin-search";
 
 export const Route = createFileRoute("/_authenticated/admin/messages")({
   component: MessagesPage,
@@ -13,6 +15,14 @@ export const Route = createFileRoute("/_authenticated/admin/messages")({
 function MessagesPage() {
   const [rows, setRows] = useState<Tables<"messages">[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const filteredRows = useMemo(() => {
+    if (!search.trim()) return rows;
+    return rows.filter((m) =>
+      textMatchesAdminSearch([m.name, m.email, m.subject, m.body], search),
+    );
+  }, [rows, search]);
 
   async function load() {
     setLoading(true);
@@ -39,10 +49,23 @@ function MessagesPage() {
     <div>
       <h1 className="font-display text-3xl font-bold">Messages</h1>
       <p className="mt-1 text-muted-foreground">Submissions from the contact form.</p>
-      <div className="mt-6 space-y-3">
+      <div className="mt-6">
+        <AdminSearchField
+          value={search}
+          onChange={setSearch}
+          placeholder="Search name, email, subject, or message…"
+        />
+      </div>
+      <div className="mt-4 space-y-3">
         {loading ? <p className="text-muted-foreground">Loading…</p>
-          : rows.length === 0 ? <p className="text-muted-foreground">No messages yet.</p>
-          : rows.map((m) => (
+          : filteredRows.length === 0 ? (
+            <p className="text-muted-foreground">
+              {search.trim()
+                ? "No results found. Try a different search term."
+                : "No messages yet."}
+            </p>
+          )
+          : filteredRows.map((m) => (
             <div key={m.id} className={`glass rounded-2xl p-5 ${m.is_read ? "opacity-70" : ""}`}>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <div>

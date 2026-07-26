@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { AdminSearchField } from "@/components/admin/AdminSearchField";
+import { textMatchesAdminSearch } from "@/lib/admin-search";
 import {
   SOCIAL_PLATFORMS,
   getSocialPlatform,
@@ -63,7 +65,16 @@ function SocialLinksAdmin() {
   const [saving, setSaving] = useState(false);
   const [savingPlatform, setSavingPlatform] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
+
+  const filteredRows = useMemo(() => {
+    if (!search.trim()) return rows;
+    return rows.filter((row) => {
+      const label = getSocialPlatform(row.platform)?.label ?? row.platform;
+      return textMatchesAdminSearch([label, row.platform, row.url], search);
+    });
+  }, [rows, search]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -219,7 +230,15 @@ function SocialLinksAdmin() {
         </div>
       )}
 
-      <div className="glass mt-6 overflow-hidden rounded-2xl">
+      <div className="mt-6">
+        <AdminSearchField
+          value={search}
+          onChange={setSearch}
+          placeholder="Search platform or URL…"
+        />
+      </div>
+
+      <div className="glass mt-4 overflow-hidden rounded-2xl">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -238,8 +257,16 @@ function SocialLinksAdmin() {
                     Loading…
                   </td>
                 </tr>
+              ) : filteredRows.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">
+                    {search.trim()
+                      ? "No results found. Try a different search term."
+                      : "No social platforms configured."}
+                  </td>
+                </tr>
               ) : (
-                rows.map((row) => {
+                filteredRows.map((row) => {
                   const label = getSocialPlatform(row.platform)?.label ?? row.platform;
                   const isSavingRow = savingPlatform === row.platform;
                   return (
