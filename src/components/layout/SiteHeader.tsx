@@ -28,7 +28,7 @@ export function SiteHeader() {
           {logoUrl ? (
             <img src={logoUrl} alt="Site logo" className="h-10 max-h-10 w-auto max-w-[11rem] object-contain sm:max-w-[12rem]" />
           ) : (
-            <>{SITE_BRAND_NAME}<span className="text-primary">.</span></>
+            <>{SITE_BRAND_NAME}</>
           )}
         </Link>
         {(visible.length > 0 || isAdmin) && (
