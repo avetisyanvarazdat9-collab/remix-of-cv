@@ -265,6 +265,21 @@ CREATE TABLE IF NOT EXISTS public.four_dimensions (
   CONSTRAINT four_dimensions_number_range CHECK (dimension_number BETWEEN 1 AND 4)
 );
 
+-- social_links --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.social_links (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  platform text NOT NULL,
+  url text,
+  is_visible boolean NOT NULL DEFAULT true,
+  display_order integer NOT NULL DEFAULT 0,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT social_links_platform_unique UNIQUE (platform),
+  CONSTRAINT social_links_platform_check CHECK (
+    platform IN ('facebook', 'instagram', 'linkedin', 'github', 'twitter', 'youtube', 'telegram', 'tiktok')
+  )
+);
+
 -- certifications ------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.certifications (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -413,7 +428,7 @@ DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','professional_experience','four_dimensions','certifications','skills',
+    'projects','companies','education','professional_experience','four_dimensions','social_links','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings'
   ] LOOP
@@ -445,7 +460,7 @@ DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','professional_experience','four_dimensions','certifications','skills',
+    'projects','companies','education','professional_experience','four_dimensions','social_links','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings','messages','error_logs','user_roles'
   ] LOOP
@@ -456,7 +471,7 @@ BEGIN
   -- Public read (anon) on visitor-facing tables
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','professional_experience','four_dimensions','certifications','skills',
+    'projects','companies','education','professional_experience','four_dimensions','social_links','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings'
   ] LOOP
@@ -476,7 +491,7 @@ DECLARE t text; p record;
 BEGIN
   FOREACH t IN ARRAY ARRAY[
     'profile','navigation_menu','courses','video_courses','blog_posts',
-    'projects','companies','education','professional_experience','four_dimensions','certifications','skills',
+    'projects','companies','education','professional_experience','four_dimensions','social_links','certifications','skills',
     'talks','testimonials','statistics','international_experience',
     'home_content','site_settings','messages','error_logs','user_roles'
   ] LOOP
@@ -517,6 +532,13 @@ END $$;
 CREATE POLICY "public read visible four_dimensions" ON public.four_dimensions FOR SELECT
   USING (is_visible = true);
 CREATE POLICY "admin all four_dimensions" ON public.four_dimensions FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'));
+
+-- social_links: public read visible rows with URLs only
+CREATE POLICY "public read visible social_links" ON public.social_links FOR SELECT
+  USING (is_visible = true AND url IS NOT NULL AND length(trim(url)) > 0);
+CREATE POLICY "admin all social_links" ON public.social_links FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = auth.uid() AND r.role='admin'));
 
@@ -604,6 +626,32 @@ INSERT INTO public.four_dimensions (
    'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80',
    'International travel and global professional collaboration', NULL, NULL, 'View Timeline', '/timeline', true, true, 4)
 ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO public.social_links (platform, url, is_visible, display_order) VALUES
+  ('facebook', NULL, false, 1),
+  ('instagram', NULL, false, 2),
+  ('linkedin', NULL, false, 3),
+  ('github', NULL, false, 4),
+  ('twitter', NULL, false, 5),
+  ('youtube', NULL, false, 6),
+  ('telegram', NULL, false, 7),
+  ('tiktok', NULL, false, 8)
+ON CONFLICT (platform) DO NOTHING;
+
+DO $$
+DECLARE p record;
+BEGIN
+  SELECT github_url, linkedin_url, twitter_url INTO p FROM public.profile ORDER BY created_at LIMIT 1;
+  IF p.github_url IS NOT NULL AND length(trim(p.github_url)) > 0 THEN
+    UPDATE public.social_links SET url = trim(p.github_url), is_visible = true WHERE platform = 'github';
+  END IF;
+  IF p.linkedin_url IS NOT NULL AND length(trim(p.linkedin_url)) > 0 THEN
+    UPDATE public.social_links SET url = trim(p.linkedin_url), is_visible = true WHERE platform = 'linkedin';
+  END IF;
+  IF p.twitter_url IS NOT NULL AND length(trim(p.twitter_url)) > 0 THEN
+    UPDATE public.social_links SET url = trim(p.twitter_url), is_visible = true WHERE platform = 'twitter';
+  END IF;
+END $$;
 
 -- =====================================================================
 -- DROP obsolete helpers if present (safe if missing)

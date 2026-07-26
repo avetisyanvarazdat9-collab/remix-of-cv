@@ -14,7 +14,7 @@ async function run<T>(query: PromiseLike<{ data: T | null; error: unknown }>): P
 }
 
 const PUBLIC_PROFILE_COLUMNS =
-  "id,name,title,tagline,location,bio,email,phone,photo_url,cv_url,github_url,linkedin_url,twitter_url,website_url,created_at,updated_at,i18n";
+  "id,name,title,tagline,location,bio,email,phone,photo_url,cv_url,website_url,created_at,updated_at,i18n";
 
 export const profileQuery = queryOptions({
   queryKey: ["profile"],
@@ -118,6 +118,23 @@ export const statisticsQuery = queryOptions({
   queryKey: ["statistics"],
   queryFn: () =>
     run(supabase.from("statistics").select("*").eq("is_visible", true).order("display_order")),
+});
+
+export const socialLinksQuery = queryOptions({
+  queryKey: ["social_links"],
+  queryFn: () =>
+    run(
+      supabase
+        .from("social_links")
+        .select("id,platform,url,is_visible,display_order")
+        .eq("is_visible", true)
+        .order("display_order"),
+    ),
+});
+
+export const socialLinksAdminQuery = queryOptions({
+  queryKey: ["social_links", "admin"],
+  queryFn: () => run(supabase.from("social_links").select("*").order("display_order")),
 });
 
 export const fourDimensionsQuery = queryOptions({

@@ -12,9 +12,11 @@ import {
   talksQuery,
   statisticsQuery,
   internationalExperienceQuery,
+  socialLinksQuery,
 } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import { socialLinkUrls } from "@/components/social/SocialLinks";
 
 export const Route = createFileRoute("/cv")({
   head: () =>
@@ -35,6 +37,7 @@ export const Route = createFileRoute("/cv")({
     context.queryClient.ensureQueryData(talksQuery);
     context.queryClient.ensureQueryData(statisticsQuery);
     context.queryClient.ensureQueryData(internationalExperienceQuery({}));
+    context.queryClient.ensureQueryData(socialLinksQuery);
   },
   component: CVPage,
 });
@@ -61,6 +64,7 @@ function CVPage() {
   const { data: talks } = useSuspenseQuery(talksQuery);
   const { data: statistics } = useSuspenseQuery(statisticsQuery);
   const { data: intl } = useSuspenseQuery(internationalExperienceQuery({}));
+  const { data: socialLinks } = useSuspenseQuery(socialLinksQuery);
   const loc = useLocalized();
 
   useEffect(() => {
@@ -80,9 +84,7 @@ function CVPage() {
   const contactBits = [
     location,
     profile?.website_url,
-    profile?.linkedin_url,
-    profile?.github_url,
-    profile?.twitter_url,
+    ...socialLinkUrls(socialLinks ?? []),
   ].filter(Boolean);
 
   const skillsByCat = (skills ?? []).reduce<Record<string, typeof skills>>((acc, s) => {

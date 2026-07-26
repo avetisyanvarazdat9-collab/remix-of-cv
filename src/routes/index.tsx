@@ -3,8 +3,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   Mail,
-  Linkedin,
-  Github,
   GraduationCap,
   Briefcase,
   Globe2,
@@ -26,6 +24,7 @@ import {
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { FourDimensionsSection } from "@/components/home/FourDimensionsSection";
+import { SocialLinksIconRow } from "@/components/social/SocialLinks";
 import heroPortrait from "@/assets/hero-portrait.jpg";
 
 import {
@@ -37,6 +36,7 @@ import {
   statisticsQuery,
   internationalExperienceQuery,
   fourDimensionsQuery,
+  socialLinksQuery,
 } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import { useCountUp } from "@/hooks/useCountUp";
@@ -55,12 +55,19 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(statisticsQuery),
       context.queryClient.ensureQueryData(internationalExperienceQuery()),
       context.queryClient.ensureQueryData(fourDimensionsQuery),
+      context.queryClient.ensureQueryData(socialLinksQuery),
     ]);
     const profile = await context.queryClient.ensureQueryData(profileQuery);
-    return { profile };
+    const socialLinks = await context.queryClient.ensureQueryData(socialLinksQuery);
+    return { profile, socialUrls: (socialLinks ?? []).map((l) => l.url).filter(Boolean) };
   },
   head: ({ loaderData }) => {
-    const profile = (loaderData as { profile?: Tables<"profile"> | null } | undefined)?.profile;
+    const data = loaderData as {
+      profile?: Tables<"profile"> | null;
+      socialUrls?: string[];
+    } | undefined;
+    const profile = data?.profile;
+    const socialUrls = data?.socialUrls;
     return buildPageHead({
       title: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist",
       description:
@@ -68,7 +75,7 @@ export const Route = createFileRoute("/")({
       path: "/",
       keywords:
         "AI Training Armenia, Generative AI Armenia, Machine Learning Instructor Armenia, Data Science Training Armenia, Prompt Engineering Armenia, AI Consultant Armenia",
-      jsonLd: buildPersonJsonLd(profile),
+      jsonLd: buildPersonJsonLd(profile, socialUrls),
     });
   },
   component: Home,
@@ -118,6 +125,7 @@ function Home() {
   const { data: statsRows } = useSuspenseQuery(statisticsQuery);
   const { data: intlRows } = useSuspenseQuery(internationalExperienceQuery());
   const { data: fourDimensions } = useSuspenseQuery(fourDimensionsQuery);
+  const { data: socialLinks } = useSuspenseQuery(socialLinksQuery);
   const loc = useLocalized();
 
   const profileName = (loc(profile, "name") as string) || profile?.name || SITE_BRAND_NAME;
@@ -257,44 +265,9 @@ function Home() {
                 <Mail className="size-4" /> Contact Me
               </Link>
             </div>
-            {(profile?.linkedin_url || profile?.github_url || profile?.twitter_url) && (
-              <div
-                className="animate-fade-in-up mt-6 flex flex-wrap gap-3"
-                style={{ animationDelay: "460ms", animationDuration: "600ms" }}
-              >
-                {profile?.linkedin_url && (
-                  <a
-                    href={profile.linkedin_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                    aria-label="LinkedIn"
-                  >
-                    <Linkedin className="size-5" />
-                  </a>
-                )}
-                {profile?.github_url && (
-                  <a
-                    href={profile.github_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                    aria-label="GitHub"
-                  >
-                    <Github className="size-5" />
-                  </a>
-                )}
-                {profile?.twitter_url && (
-                  <a
-                    href={profile.twitter_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                    aria-label="Twitter / X"
-                  >
-                    <span className="text-sm font-semibold">𝕏</span>
-                  </a>
-                )}
+            {(socialLinks ?? []).length > 0 && (
+              <div style={{ animationDelay: "460ms", animationDuration: "600ms" }} className="animate-fade-in-up">
+                <SocialLinksIconRow links={socialLinks ?? []} className="mt-6" />
               </div>
             )}
           </div>

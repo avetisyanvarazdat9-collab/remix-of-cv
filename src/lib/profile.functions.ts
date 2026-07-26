@@ -11,9 +11,6 @@ const STRING_FIELDS = [
   "phone",
   "photo_url",
   "cv_url",
-  "github_url",
-  "linkedin_url",
-  "twitter_url",
   "website_url",
 ] as const;
 

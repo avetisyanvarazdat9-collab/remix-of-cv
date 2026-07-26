@@ -3,9 +3,10 @@ import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Mail, MapPin, Globe, Phone, Github } from "lucide-react";
+import { Mail, MapPin, Globe, Phone } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
-import { profileQuery } from "@/lib/queries";
+import { SocialLinksContactList } from "@/components/social/SocialLinks";
+import { profileQuery, socialLinksQuery } from "@/lib/queries";
 import { supabase } from "@/integrations/supabase/client";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
@@ -18,7 +19,10 @@ export const Route = createFileRoute("/contact")({
         "Get in touch with Dr. Varazdat Avetisyan for speaking, consulting, courses, research collaboration, and partnership inquiries.",
       path: "/contact",
     }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(profileQuery),
+  loader: ({ context }) => {
+    context.queryClient.ensureQueryData(profileQuery);
+    context.queryClient.ensureQueryData(socialLinksQuery);
+  },
   component: ContactPage,
 });
 
@@ -31,6 +35,7 @@ const schema = z.object({
 
 function ContactPage() {
   const { data: profile } = useSuspenseQuery(profileQuery);
+  const { data: socialLinks } = useSuspenseQuery(socialLinksQuery);
   const [submitting, setSubmitting] = useState(false);
   const t = useT();
   const loc = useLocalized();
@@ -86,22 +91,7 @@ function ContactPage() {
                 <span>{location}</span>
               </li>
             )}
-            {profile?.github_url && (
-              <li className="flex items-center gap-3">
-                <Github className="size-4 shrink-0 text-primary" />
-                <a href={profile.github_url} target="_blank" rel="noreferrer" className="hover:underline">
-                  GitHub
-                </a>
-              </li>
-            )}
-            {profile?.twitter_url && (
-              <li className="flex items-center gap-3">
-                <span className="flex size-4 shrink-0 items-center justify-center text-xs font-semibold text-primary">𝕏</span>
-                <a href={profile.twitter_url} target="_blank" rel="noreferrer" className="hover:underline">
-                  Twitter / X
-                </a>
-              </li>
-            )}
+            <SocialLinksContactList links={socialLinks ?? []} />
             {profile?.website_url && (
               <li className="flex items-center gap-3">
                 <Globe className="size-4 shrink-0 text-primary" />

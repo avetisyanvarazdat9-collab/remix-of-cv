@@ -31,9 +31,6 @@ const fields: FieldDef[] = [
   { name: "phone", label: "Phone" },
   { name: "photo_url", label: "Profile Photo", type: "image" },
   { name: "cv_url", label: "CV URL", type: "url" },
-  { name: "github_url", label: "GitHub URL", type: "url" },
-  { name: "linkedin_url", label: "LinkedIn URL", type: "url" },
-  { name: "twitter_url", label: "Twitter / X URL", type: "url" },
   { name: "website_url", label: "Website URL", type: "url" },
 ];
 
@@ -200,7 +197,7 @@ function ProfileEditor() {
     <div>
       <h1 className="font-display text-3xl font-bold">Profile</h1>
       <p className="mt-1 text-muted-foreground">
-        Shown on the homepage hero (name, title), About page (tagline, bio), Contact page (email, phone, social links), and CV.
+        Shown on the homepage hero (name, title), About page (tagline, bio), and Contact page (email, phone). Social links are managed under Social Links.
       </p>
       <PreflightBanner preflight={preflight} onRetry={runPreflight} />
       <form onSubmit={save} className="glass mt-6 grid gap-4 rounded-2xl p-6 sm:grid-cols-2">

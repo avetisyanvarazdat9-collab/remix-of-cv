@@ -137,7 +137,7 @@ function AboutEditor() {
         <Link to="/admin/profile" className="glass rounded-xl p-5 hover:border-primary/40">
           <UserIcon className="mb-2 size-5 text-primary" />
           <p className="font-display font-semibold">Profile</p>
-          <p className="mt-1 text-xs text-muted-foreground">Name, title, contacts, and social links</p>
+          <p className="mt-1 text-xs text-muted-foreground">Name, title, contacts — social links are under Social Links</p>
         </Link>
         <Link to="/admin/skills" className="glass rounded-xl p-5 hover:border-primary/40">
           <Wrench className="mb-2 size-5 text-primary" />

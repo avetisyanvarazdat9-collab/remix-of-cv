@@ -140,7 +140,7 @@ type ProfileLike = {
   i18n?: unknown;
 } | null | undefined;
 
-export function buildPersonJsonLd(profile?: ProfileLike) {
+export function buildPersonJsonLd(profile?: ProfileLike, socialUrls?: string[]) {
   const name = localizedField(profile as Record<string, unknown>, "name") || SITE_NAME;
   const jobTitle =
     localizedField(profile as Record<string, unknown>, "title") ||
@@ -151,9 +151,7 @@ export function buildPersonJsonLd(profile?: ProfileLike) {
   );
 
   const sameAs = [
-    profile?.linkedin_url,
-    profile?.github_url,
-    profile?.twitter_url,
+    ...(socialUrls ?? []),
     profile?.website_url,
   ].filter((url): url is string => typeof url === "string" && url.startsWith("http"));
 
