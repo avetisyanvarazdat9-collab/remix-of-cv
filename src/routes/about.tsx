@@ -111,7 +111,7 @@ function AboutPage() {
       </section>
 
       <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
-        <div className="mt-12 grid gap-8 md:grid-cols-2">
+        <div className="mt-12 grid gap-8 md:grid-cols-2 items-start">
           <div className="glass rounded-2xl p-6">
             <h2 className="font-display text-xl font-semibold">{t("about.skills")}</h2>
             <div className="mt-4 space-y-5">
