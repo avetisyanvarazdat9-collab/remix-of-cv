@@ -1,0 +1,1 @@
+var e=`Varazdat Avetisyan`;export{e as t};

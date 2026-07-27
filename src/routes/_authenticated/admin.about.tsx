@@ -7,11 +7,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import { Wrench, GraduationCap, User as UserIcon, Globe2 } from "lucide-react";
 import { saveAdminProfile } from "@/lib/profile-save";
 import { profileQuery } from "@/lib/queries";
-import {
-  hydrateProfileI18nFields,
-  mergeProfileI18nPayload,
-  type ProfileI18nTri,
-} from "@/lib/profile-i18n";
+import { mergeProfileI18nPayload, type ProfileI18nTri } from "@/lib/profile-i18n";
 
 export const Route = createFileRoute("/_authenticated/admin/about")({
   head: () => ({ meta: [{ title: "About — Admin" }] }),
@@ -37,12 +33,61 @@ const REQUIRED_PROFILE_DEFAULTS = {
   title: "AI/ML Researcher, Lecturer & Entrepreneur",
 };
 
+const EMPTY_TRI: ProfileI18nTri = { hy: "", en: "", ru: "" };
+
+/** Load editor state per language without cross-filling missing translations from the plain column. */
+function hydrateAboutI18nFields(row: Partial<Profile>): Record<string, ProfileI18nTri> {
+  const rawI18n = (row as { i18n?: unknown }).i18n;
+  let existing: Record<string, Partial<ProfileI18nTri>> = {};
+  if (rawI18n && typeof rawI18n === "object" && !Array.isArray(rawI18n)) {
+    existing = rawI18n as Record<string, Partial<ProfileI18nTri>>;
+  } else if (typeof rawI18n === "string") {
+    try {
+      const parsed = JSON.parse(rawI18n) as unknown;
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        existing = parsed as Record<string, Partial<ProfileI18nTri>>;
+      }
+    } catch {
+      /* ignore malformed i18n JSON */
+    }
+  }
+
+  const bag: Record<string, ProfileI18nTri> = {};
+  for (const name of I18N_FIELD_NAMES) {
+    const plain = String((row as Record<string, unknown>)[name] ?? "");
+    const tri = existing[name];
+    let hy = tri?.hy ?? "";
+    let en = tri?.en ?? "";
+    let ru = tri?.ru ?? "";
+    // Legacy rows: plain column only, no per-language i18n yet.
+    if (!hy && !en && !ru && plain) {
+      en = plain;
+    }
+    bag[name] = { hy, en, ru };
+  }
+  return bag;
+}
+
+function normalizeAboutI18n(next: Record<string, ProfileI18nTri>): Record<string, ProfileI18nTri> {
+  const bag: Record<string, ProfileI18nTri> = {};
+  for (const name of I18N_FIELD_NAMES) {
+    const tri = next[name] ?? EMPTY_TRI;
+    bag[name] = {
+      hy: tri.hy ?? "",
+      en: tri.en ?? "",
+      ru: tri.ru ?? "",
+    };
+  }
+  return bag;
+}
+
 // Focused editor for the "About" narrative: bio (Markdown) and tagline.
 // Structured Skills and Education live in their own pages, linked below.
 function AboutEditor() {
   const queryClient = useQueryClient();
   const [profile, setProfile] = useState<Partial<Profile> | null>(null);
   const [i18n, setI18n] = useState<Record<string, ProfileI18nTri>>({});
+  const [activeLang, setActiveLang] = useState<"hy" | "en" | "ru">("en");
   const [saving, setSaving] = useState(false);
   const i18nRef = useRef(i18n);
   i18nRef.current = i18n;
@@ -61,7 +106,7 @@ function AboutEditor() {
         if (error) toast.error(error.message);
         const row = data ?? {};
         setProfile(row);
-        setI18n(hydrateProfileI18nFields(row, I18N_FIELD_NAMES));
+        setI18n(hydrateAboutI18nFields(row));
       });
 
     return () => {
@@ -74,12 +119,12 @@ function AboutEditor() {
     if (!profile) return;
     setSaving(true);
 
-    const currentI18n = i18nRef.current;
+    const currentI18n = normalizeAboutI18n(i18nRef.current);
     const { id, i18n: existingI18n, ...rest } = profile as Profile & { i18n?: unknown };
     const payload: Record<string, unknown> = { ...rest };
 
     for (const f of I18N_FIELDS) {
-      const tri = currentI18n[f.name] ?? { hy: "", en: "", ru: "" };
+      const tri = currentI18n[f.name] ?? EMPTY_TRI;
       payload[f.name] = tri.en || tri.hy || tri.ru || null;
     }
 
@@ -91,16 +136,19 @@ function AboutEditor() {
     setSaving(false);
     if (error) return toast.error(error.message);
 
-    const nextI18n = mergeProfileI18nPayload(existingI18n, currentI18n);
-    setI18n(nextI18n);
+    const nextI18n = normalizeAboutI18n(
+      mergeProfileI18nPayload(existingI18n, currentI18n) as Record<string, ProfileI18nTri>,
+    );
 
     if (savedProfile) {
       setProfile(savedProfile);
+      setI18n(hydrateAboutI18nFields(savedProfile));
       queryClient.setQueryData(profileQuery.queryKey, savedProfile);
     } else {
-      queryClient.setQueryData(profileQuery.queryKey, (prev: Profile | null | undefined) =>
-        prev ? { ...prev, ...payload, i18n: nextI18n } as Profile : prev,
-      );
+      const mergedProfile = { ...(profile as Profile), ...payload, i18n: nextI18n } as Profile;
+      setProfile(mergedProfile);
+      setI18n(hydrateAboutI18nFields(mergedProfile));
+      queryClient.setQueryData(profileQuery.queryKey, mergedProfile);
     }
 
     toast.success("About saved");
@@ -115,17 +163,66 @@ function AboutEditor() {
         Edit the About page narrative (tagline and bio). Skills, education, and professional development are managed separately — use the links below.
       </p>
 
-      <form onSubmit={save} className="glass mt-6 grid gap-4 rounded-2xl p-6">
-        {I18N_FIELDS.map((f) => (
-          <div key={f.name}>
-            <label className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">{f.label}</label>
-            <I18nInput
-              value={i18n[f.name] ?? { hy: "", en: "", ru: "" }}
-              multiline={f.multiline}
-              onChange={(v) => setI18n((prev) => ({ ...prev, [f.name]: v }))}
-            />
-          </div>
-        ))}
+      <form onSubmit={save} className="mt-6 space-y-6">
+        <div className="flex flex-wrap gap-1">
+          {LANG_TABS.map((t) => {
+            const filled = I18N_FIELD_NAMES.some(
+              (name) => (i18n[name]?.[t.code] ?? "").trim().length > 0,
+            );
+            return (
+              <button
+                type="button"
+                key={t.code}
+                onClick={() => setActiveLang(t.code)}
+                className={`rounded-md px-2.5 py-1 text-xs font-medium ${
+                  activeLang === t.code
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border text-muted-foreground hover:bg-accent"
+                }`}
+              >
+                {t.label}
+                {!filled && <span className="ml-1 text-destructive">•</span>}
+              </button>
+            );
+          })}
+        </div>
+
+        {I18N_FIELDS.map((f) => {
+          const tri = i18n[f.name] ?? EMPTY_TRI;
+          return (
+            <div key={f.name}>
+              <label className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">
+                {f.label}
+              </label>
+              {f.multiline ? (
+                <textarea
+                  rows={14}
+                  value={tri[activeLang]}
+                  onChange={(e) =>
+                    setI18n((prev) => ({
+                      ...prev,
+                      [f.name]: { ...(prev[f.name] ?? EMPTY_TRI), [activeLang]: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-md border border-input bg-background/60 px-3 py-2 font-mono text-sm outline-none focus:border-primary"
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={tri[activeLang]}
+                  onChange={(e) =>
+                    setI18n((prev) => ({
+                      ...prev,
+                      [f.name]: { ...(prev[f.name] ?? EMPTY_TRI), [activeLang]: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
+                />
+              )}
+            </div>
+          );
+        })}
+
         <div className="flex justify-end">
           <button disabled={saving} className="rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground disabled:opacity-60">
             {saving ? "Saving…" : "Save about"}
@@ -155,46 +252,6 @@ function AboutEditor() {
           <p className="mt-1 text-xs text-muted-foreground">Trainings, workshops, and exchanges on the About page</p>
         </Link>
       </div>
-    </div>
-  );
-}
-
-function I18nInput({ value, onChange, multiline }: { value: ProfileI18nTri; onChange: (v: ProfileI18nTri) => void; multiline?: boolean }) {
-  const [active, setActive] = useState<"hy" | "en" | "ru">("en");
-  return (
-    <div className="rounded-md border border-border bg-background/40 p-2">
-      <div className="mb-2 flex gap-1">
-        {LANG_TABS.map((t) => {
-          const filled = (value?.[t.code] ?? "").trim().length > 0;
-          return (
-            <button
-              type="button"
-              key={t.code}
-              onClick={() => setActive(t.code)}
-              className={`rounded-md px-2.5 py-1 text-xs font-medium ${
-                active === t.code ? "bg-primary text-primary-foreground" : "border border-border text-muted-foreground hover:bg-accent"
-              }`}
-            >
-              {t.label}{!filled && <span className="ml-1 text-destructive">•</span>}
-            </button>
-          );
-        })}
-      </div>
-      {multiline ? (
-        <textarea
-          rows={14}
-          value={value?.[active] ?? ""}
-          onChange={(e) => onChange({ ...value, [active]: e.target.value })}
-          className="w-full rounded-md border border-input bg-background/60 px-3 py-2 font-mono text-sm outline-none focus:border-primary"
-        />
-      ) : (
-        <input
-          type="text"
-          value={value?.[active] ?? ""}
-          onChange={(e) => onChange({ ...value, [active]: e.target.value })}
-          className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
-        />
-      )}
     </div>
   );
 }
