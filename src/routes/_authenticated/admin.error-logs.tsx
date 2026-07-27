@@ -232,8 +232,13 @@ function ErrorLogsPage() {
       : "This will permanently remove the selected error log record(s) from Supabase. This action cannot be undone.";
 
   return (
-    <div>
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <div
+      className={`grid max-h-[calc(100dvh-8.5rem)] gap-4 overflow-hidden md:max-h-[calc(100dvh-4rem)] ${
+        total > PAGE_SIZE ? "grid-rows-[auto_minmax(0,1fr)_auto]" : "grid-rows-[auto_minmax(0,1fr)]"
+      }`}
+    >
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-bold">Error logs</h1>
           <p className="mt-1 text-muted-foreground">
@@ -345,7 +350,10 @@ function ErrorLogsPage() {
         </div>
       )}
 
-      <div className="mt-4 space-y-3">
+      </div>
+
+      <div className="min-h-0 overflow-y-auto overscroll-contain scroll-smooth">
+        <div className="space-y-3 pr-1">
         {loading ? (
           <p className="text-muted-foreground">Loading…</p>
         ) : rows.length === 0 ? (
@@ -434,10 +442,11 @@ function ErrorLogsPage() {
             </div>
           ))
         )}
+        </div>
       </div>
 
       {total > PAGE_SIZE && (
-        <div className="mt-6 flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3 border-t border-border/60 pt-4">
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0 || loading || deleting}
