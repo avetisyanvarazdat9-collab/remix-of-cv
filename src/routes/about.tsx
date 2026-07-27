@@ -4,6 +4,7 @@ import { Download } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { CareerTimeline } from "@/components/about/CareerTimeline";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
+import { ProfileBioContent } from "@/components/profile/ProfileBioContent";
 import heroPortrait from "@/assets/hero-portrait.jpg";
 import {
   profileQuery,
@@ -90,9 +91,10 @@ function AboutPage() {
         )}
         <div className="mt-10 flex flex-col-reverse items-center gap-10 md:grid md:grid-cols-[minmax(0,1.15fr)_minmax(16rem,20rem)] md:items-start md:gap-12 lg:gap-14">
           <RevealOnScroll delay={120} className="w-full">
-            <p className="w-full whitespace-pre-line text-lg leading-relaxed text-muted-foreground transition-opacity duration-300 hover:text-muted-foreground/95">
-              {loc(profile, "bio")}
-            </p>
+            <ProfileBioContent
+              bio={(loc(profile, "bio") as string) || profile?.bio || ""}
+              paragraphClassName="w-full whitespace-pre-line text-lg leading-relaxed text-muted-foreground"
+            />
           </RevealOnScroll>
           <RevealOnScroll delay={180} className="about-intro-image w-full shrink-0">
             <figure className="group mx-auto w-full max-w-xs overflow-hidden rounded-2xl sm:max-w-sm md:mx-0 md:max-w-[19rem] lg:max-w-[21rem]">
