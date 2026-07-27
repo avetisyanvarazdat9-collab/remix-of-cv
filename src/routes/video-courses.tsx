@@ -43,7 +43,7 @@ function VideoCoursesIndex() {
               <div key={v.id} className="glass group flex flex-col rounded-2xl p-4 hover:border-primary/40">
                 <Link to="/video-courses/$slug" params={{ slug: v.slug }} className="block">
                   <VideoThumbnail
-                    src={v.thumbnail_url}
+                    video={v}
                     title={title}
                     fallbackLabel={t("video.thumbnailLabel")}
                   />

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Pencil, Plus, Trash2, Upload, X } from "lucide-react";
@@ -97,6 +98,13 @@ function applyTablePayloadDefaults(table: string, payload: Row) {
 
   if (table === "video_courses") {
     payload.topics = Array.isArray(payload.topics) ? payload.topics : [];
+    const thumb = typeof payload.thumbnail_url === "string" ? payload.thumbnail_url.trim() : "";
+    if (thumb) {
+      payload.thumbnail_url = thumb;
+      payload.image_url = thumb;
+    } else if (typeof payload.image_url === "string" && payload.image_url.trim()) {
+      payload.thumbnail_url = payload.image_url.trim();
+    }
   }
 
   if (table === "blog_posts") payload.is_published = payload.is_published ?? false;
@@ -115,6 +123,7 @@ function canAutoDefaultRequiredField(table: string, fieldName: string) {
 }
 
 export function CrudPage({ title, description, table, fields, orderBy, displayColumns, filter, defaults, hideHeader, searchFields, searchPlaceholder }: CrudPageProps) {
+  const queryClient = useQueryClient();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Row | null>(null);
@@ -197,6 +206,7 @@ export function CrudPage({ title, description, table, fields, orderBy, displayCo
     toast.success("Saved");
     setEditing(null);
     setCreating(false);
+    await queryClient.invalidateQueries({ queryKey: [table] });
     load();
   }
 
@@ -308,6 +318,7 @@ export function CrudPage({ title, description, table, fields, orderBy, displayCo
 
       {(editing || creating) && (
         <EditModal
+          table={table}
           fields={fields}
           initial={editing ?? {}}
           isNew={creating}
@@ -327,7 +338,7 @@ function formatCell(v: any) {
   return String(v);
 }
 
-function EditModal({ fields, initial, isNew, onCancel, onSave }: { fields: Field[]; initial: Row; isNew: boolean; onCancel: () => void; onSave: (v: Row) => void }) {
+function EditModal({ table, fields, initial, isNew, onCancel, onSave }: { table: string; fields: Field[]; initial: Row; isNew: boolean; onCancel: () => void; onSave: (v: Row) => void }) {
   const [values, setValues] = useState<Row>(() => {
     const v: Row = { ...initial };
     const bag = (initial?.i18n && typeof initial.i18n === "object") ? initial.i18n : {};
@@ -401,6 +412,9 @@ function EditModal({ fields, initial, isNew, onCancel, onSave }: { fields: Field
                   value={values[f.name] ?? ""}
                   onChange={(url) => setValues({ ...values, [f.name]: url })}
                   required={f.required}
+                  uploadFolder={
+                    table === "video_courses" && f.name === "thumbnail_url" ? "video-thumbnails" : undefined
+                  }
                 />
               ) : (f.type === "i18n" || f.type === "i18n-textarea") ? (
                 <I18nField
@@ -516,7 +530,17 @@ function formatBytes(n: number) {
   return `${(n / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function ImageUploadField({ value, onChange, required }: { value: string; onChange: (url: string) => void; required?: boolean }) {
+function ImageUploadField({
+  value,
+  onChange,
+  required,
+  uploadFolder,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+  required?: boolean;
+  uploadFolder?: string;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -551,10 +575,11 @@ function ImageUploadField({ value, onChange, required }: { value: string; onChan
 
     setUploading(true);
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "png";
-    const path = `${crypto.randomUUID()}.${ext}`;
+    const fileName = `${crypto.randomUUID()}.${ext}`;
+    const path = uploadFolder ? `${uploadFolder}/${fileName}` : fileName;
     const { error: uploadError } = await supabase.storage.from(ASSET_BUCKET).upload(path, file, {
       cacheControl: "3600",
-      upsert: false,
+      upsert: uploadFolder ? true : false,
       contentType: file.type,
     });
     if (uploadError) {

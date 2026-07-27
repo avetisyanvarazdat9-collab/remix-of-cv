@@ -142,6 +142,7 @@ CREATE TABLE IF NOT EXISTS public.video_courses (
   title text NOT NULL DEFAULT '',
   slug text NOT NULL DEFAULT '',
   description text, level text, duration text, link_url text, image_url text,
+  thumbnail_url text,
   video_url text, platform text, price text, category text,
   display_order int NOT NULL DEFAULT 0,
   is_visible boolean NOT NULL DEFAULT true,
@@ -153,6 +154,8 @@ CREATE TABLE IF NOT EXISTS public.video_courses (
 DO $$ BEGIN
   CREATE UNIQUE INDEX video_courses_slug_key ON public.video_courses(slug) WHERE slug <> '';
 EXCEPTION WHEN duplicate_table THEN NULL; END $$;
+ALTER TABLE public.video_courses ADD COLUMN IF NOT EXISTS thumbnail_url text;
+ALTER TABLE public.video_courses ADD COLUMN IF NOT EXISTS youtube_url text;
 
 CREATE OR REPLACE FUNCTION public.video_courses_autofill_slug()
 RETURNS trigger LANGUAGE plpgsql SET search_path = public AS $$

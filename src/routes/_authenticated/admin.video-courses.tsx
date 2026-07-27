@@ -14,6 +14,7 @@ export const Route = createFileRoute("/_authenticated/admin/video-courses")({
         { name: "slug", label: "Slug", type: "text", placeholder: "auto-generated-from-title" },
         { name: "description", label: "Description", type: "i18n-textarea" },
         { name: "video_url", label: "Video URL", type: "url" },
+        { name: "youtube_url", label: "YouTube URL", type: "url" },
         { name: "thumbnail_url", label: "Thumbnail", type: "image" },
         { name: "platform", label: "Platform (YouTube, Vimeo…)", type: "i18n" },
         { name: "duration", label: "Duration", type: "i18n" },

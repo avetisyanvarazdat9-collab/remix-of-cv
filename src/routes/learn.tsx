@@ -81,7 +81,7 @@ function LearnHub() {
               className="group overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40"
             >
               <VideoThumbnail
-                src={v.thumbnail_url}
+                video={v}
                 title={loc(v, "title")}
                 fallbackLabel={t("video.thumbnailLabel")}
                 roundedClassName="rounded-none"

@@ -4,6 +4,8 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { videoCoursesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead, localizedField, truncateDescription } from "@/lib/seo";
+import { resolveVideoThumbnail } from "@/lib/video-thumbnail";
+import { VideoThumbnail } from "@/components/video/VideoThumbnail";
 
 export const Route = createFileRoute("/video-courses/$slug")({
   loader: async ({ context, params }) => {
@@ -25,7 +27,7 @@ export const Route = createFileRoute("/video-courses/$slug")({
       title: `${title} — Dr. Varazdat Avetisyan`,
       description,
       path: `/video-courses/${video.slug}`,
-      ogImage: video.thumbnail_url,
+      ogImage: resolveVideoThumbnail(video) ?? undefined,
     });
   },
   component: VideoCourseDetail,
@@ -106,8 +108,12 @@ function VideoCourseDetail() {
               className="h-full w-full"
             />
           </div>
-        ) : video.thumbnail_url ? (
-          <img src={video.thumbnail_url} alt={title} className="mt-8 aspect-video w-full rounded-2xl border border-border object-cover" />
+        ) : resolveVideoThumbnail(video) ? (
+          <img
+            src={resolveVideoThumbnail(video)!}
+            alt={title}
+            className="mt-8 aspect-video w-full rounded-2xl border border-border object-cover"
+          />
         ) : null}
 
         {description && (
@@ -138,12 +144,10 @@ function VideoCourseDetail() {
                   key={v.id}
                   to="/video-courses/$slug"
                   params={{ slug: v.slug }}
-                  className="glass rounded-xl p-3 hover:border-primary/40"
+                  className="glass overflow-hidden rounded-xl hover:border-primary/40"
                 >
-                  {v.thumbnail_url && (
-                    <img src={v.thumbnail_url} alt={loc(v, "title")} className="aspect-video w-full rounded-lg object-cover" />
-                  )}
-                  <div className="mt-3 font-display text-sm font-semibold">{loc(v, "title")}</div>
+                  <VideoThumbnail video={v} title={loc(v, "title")} roundedClassName="rounded-none" />
+                  <div className="p-3 font-display text-sm font-semibold">{loc(v, "title")}</div>
                 </Link>
               ))}
             </div>

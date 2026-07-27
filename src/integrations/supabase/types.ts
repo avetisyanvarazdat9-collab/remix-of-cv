@@ -1009,6 +1009,7 @@ export type Database = {
           duration: string | null
           i18n: Json
           id: string
+          image_url: string | null
           is_visible: boolean
           platform: string | null
           slug: string
@@ -1026,6 +1027,7 @@ export type Database = {
           duration?: string | null
           i18n?: Json
           id?: string
+          image_url?: string | null
           is_visible?: boolean
           platform?: string | null
           slug: string
@@ -1043,6 +1045,7 @@ export type Database = {
           duration?: string | null
           i18n?: Json
           id?: string
+          image_url?: string | null
           is_visible?: boolean
           platform?: string | null
           slug?: string
