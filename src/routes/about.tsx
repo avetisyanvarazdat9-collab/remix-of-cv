@@ -108,50 +108,46 @@ function AboutPage() {
             </figure>
           </RevealOnScroll>
         </div>
-      </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        <div className="mt-12 grid gap-8 md:grid-cols-2">
-          <div className="glass rounded-2xl p-6">
-            <h2 className="font-display text-xl font-semibold">{t("about.skills")}</h2>
-            <div className="mt-4 space-y-5">
-              {Object.entries(grouped).map(([cat, items]) => (
-                <div key={cat}>
-                  <p className="text-xs uppercase tracking-wider text-primary">{cat}</p>
-                  <ul className="mt-2 flex flex-wrap gap-2">
-                    {items.map((s) => (
-                      <li
-                        key={s.id}
-                        className="rounded-full border border-border bg-card/60 px-3 py-1 text-sm"
-                      >
-                        {loc(s, "name")}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+        <div className="mt-12 glass rounded-2xl p-6">
+          <h2 className="font-display text-xl font-semibold">{t("about.skills")}</h2>
+          <div className="mt-4 space-y-5">
+            {Object.entries(grouped).map(([cat, items]) => (
+              <div key={cat}>
+                <p className="text-xs uppercase tracking-wider text-primary">{cat}</p>
+                <ul className="mt-2 flex flex-wrap gap-2">
+                  {items.map((s) => (
+                    <li
+                      key={s.id}
+                      className="rounded-full border border-border bg-card/60 px-3 py-1 text-sm"
+                    >
+                      {loc(s, "name")}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
+        </div>
 
-          <div className="glass rounded-2xl p-6">
-            <h2 className="font-display text-xl font-semibold">{t("about.education")}</h2>
-            <ul className="mt-4 space-y-4">
-              {(education ?? []).map((e) => {
-                const degree = loc(e, "degree") || e.degree;
-                const field = loc(e, "field") || e.field;
-                const institution = loc(e, "institution") || e.institution;
-                return (
-                  <li key={e.id} className="border-l-2 border-primary/40 pl-4">
-                    <p className="font-medium">{degree}{field ? ` · ${field}` : ""}</p>
-                    <p className="text-sm text-muted-foreground">{institution}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {e.start_year}{e.end_year ? `–${e.end_year}` : ` — ${t("about.present")}`}
-                    </p>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+        <div className="mt-8 glass rounded-2xl p-6">
+          <h2 className="font-display text-xl font-semibold">{t("about.education")}</h2>
+          <ul className="mt-4 space-y-4">
+            {(education ?? []).map((e) => {
+              const degree = loc(e, "degree") || e.degree;
+              const field = loc(e, "field") || e.field;
+              const institution = loc(e, "institution") || e.institution;
+              return (
+                <li key={e.id} className="border-l-2 border-primary/40 pl-4">
+                  <p className="font-medium">{degree}{field ? ` · ${field}` : ""}</p>
+                  <p className="text-sm text-muted-foreground">{institution}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {e.start_year}{e.end_year ? `–${e.end_year}` : ` — ${t("about.present")}`}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
         </div>
 
         {(certifications ?? []).filter((c) => c.is_visible).length > 0 && (
