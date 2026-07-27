@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, BookOpen, Video, FileText } from "lucide-react";
+import { ArrowRight, BookOpen, FileText } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
+import { VideoThumbnail } from "@/components/video/VideoThumbnail";
 import { coursesQuery, videoCoursesQuery, blogQuery } from "@/lib/queries";
-import { useLocalized } from "@/lib/i18n";
+import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/learn")({
@@ -30,6 +31,7 @@ function LearnHub() {
   const { data: videos } = useSuspenseQuery(videoCoursesQuery);
   const { data: posts } = useSuspenseQuery(blogQuery);
   const loc = useLocalized();
+  const t = useT();
 
   const featuredCourses = (courses ?? []).filter((c: any) => c.is_visible).slice(0, 6);
   const featuredVideos = (videos ?? []).filter((v: any) => v.is_visible).slice(0, 4);
@@ -71,16 +73,24 @@ function LearnHub() {
       <HubSection eyebrow="Video Library" heading="Watch and learn at your pace" viewAllTo="/video-courses">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {featuredVideos.map((v: any) => (
-            <a key={v.id} href={v.video_url || "#"} target="_blank" rel="noreferrer" className="group overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40">
-              <div className="relative aspect-video w-full bg-muted">
-                {v.thumbnail_url && <img src={v.thumbnail_url} alt={loc(v, "title")} className="size-full object-cover" />}
-                <span className="absolute inset-0 flex items-center justify-center bg-foreground/10 opacity-0 transition-opacity group-hover:opacity-100">
-                  <Video className="size-8 text-white" />
-                </span>
-              </div>
+            <a
+              key={v.id}
+              href={v.video_url || "#"}
+              target="_blank"
+              rel="noreferrer"
+              className="group overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40"
+            >
+              <VideoThumbnail
+                src={v.thumbnail_url}
+                title={loc(v, "title")}
+                fallbackLabel={t("video.thumbnailLabel")}
+                roundedClassName="rounded-none"
+              />
               <div className="p-4">
                 <p className="line-clamp-2 text-sm font-medium text-foreground">{loc(v, "title")}</p>
-                {v.category && <p className="mt-1 text-xs text-muted-foreground">{v.category}</p>}
+                {v.platform && (
+                  <p className="mt-1 text-xs text-muted-foreground">{loc(v, "platform")}</p>
+                )}
               </div>
             </a>
           ))}

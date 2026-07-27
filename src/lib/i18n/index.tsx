@@ -183,6 +183,7 @@ export const DICT: Dict = {
   "video.heading": { hy: "Տեսադասընթացներ", en: "Video Courses", ru: "Видеокурсы" },
   "video.lead": { hy: "Դիտեք ամբողջական դասախոսություններ և սեմինարներ։", en: "Watch full lectures and workshop sessions.", ru: "Полные лекции и записи воркшопов." },
   "video.empty": { hy: "Տեսանյութեր դեռ չկան։", en: "No videos yet.", ru: "Видео пока нет." },
+  "video.thumbnailLabel": { hy: "Տեսանյութ", en: "Video", ru: "Видео" },
 
   "talks.heading": { hy: "Ելույթներ և միջոցառումներ", en: "Talks & Events", ru: "Доклады и мероприятия" },
   "talks.empty": { hy: "Ելույթներ դեռ չկան։", en: "No talks listed yet.", ru: "Докладов пока нет." },

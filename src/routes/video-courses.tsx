@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, useMatches } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { PlayCircle } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { VideoThumbnail } from "@/components/video/VideoThumbnail";
 import { videoCoursesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
@@ -41,23 +41,27 @@ function VideoCoursesIndex() {
             const duration = loc(v, "duration");
             return (
               <div key={v.id} className="glass group flex flex-col rounded-2xl p-4 hover:border-primary/40">
-                <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
-                  {v.thumbnail_url ? (
-                    <img src={v.thumbnail_url} alt={title} className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <PlayCircle className="size-12 text-primary/60" />
-                    </div>
-                  )}
-                </div>
+                <Link to="/video-courses/$slug" params={{ slug: v.slug }} className="block">
+                  <VideoThumbnail
+                    src={v.thumbnail_url}
+                    title={title}
+                    fallbackLabel={t("video.thumbnailLabel")}
+                  />
+                </Link>
                 <div className="px-2 pt-4 pb-2">
-                  <div className="text-xs text-primary">{platform} {duration && `· ${duration}`}</div>
+                  <div className="text-xs text-primary">
+                    {platform}
+                    {duration && ` · ${duration}`}
+                  </div>
                   <h3 className="mt-1 font-display text-base font-semibold">{title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{loc(v, "description")}</p>
+                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{loc(v, "description")}</p>
                   {v.topics && v.topics.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {v.topics.slice(0, 5).map((tp) => (
-                        <span key={tp} className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
+                        <span
+                          key={tp}
+                          className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground"
+                        >
                           {tp}
                         </span>
                       ))}
