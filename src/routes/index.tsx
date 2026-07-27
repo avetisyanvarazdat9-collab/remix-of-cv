@@ -6,15 +6,7 @@ import {
   GraduationCap,
   Briefcase,
   Globe2,
-  BrainCircuit,
-  Sparkles,
-  Database,
-  Cpu,
-  Layers,
-  Bot,
-  MessageSquare,
   BookOpen,
-  Wand2,
   Quote,
   BookOpenCheck,
   Rocket,
@@ -24,6 +16,7 @@ import {
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { FourDimensionsSection } from "@/components/home/FourDimensionsSection";
+import { ExpertiseBentoSection } from "@/components/home/ExpertiseBentoSection";
 import { SocialLinksIconRow } from "@/components/social/SocialLinks";
 import heroPortrait from "@/assets/hero-portrait.jpg";
 
@@ -95,21 +88,7 @@ function StatBlock({ value, label }: { value: string; label: string }) {
   );
 }
 
-// -- Constants for cards ----------------------------------------------------
-const EXPERTISE = [
-  { icon: BrainCircuit, label: "Artificial Intelligence", to: "/courses" },
-  { icon: Sparkles, label: "Generative AI", to: "/courses" },
-  { icon: Database, label: "Data Science", to: "/courses" },
-  { icon: Cpu, label: "Machine Learning", to: "/courses" },
-  { icon: Layers, label: "Deep Learning", to: "/courses" },
-  { icon: Wand2, label: "Prompt Engineering", to: "/courses" },
-  { icon: Bot, label: "AI Agents", to: "/projects" },
-  { icon: BookOpen, label: "Computer Science Education", to: "/collaborate" },
-  { icon: Rocket, label: "Educational Innovation", to: "/learn" },
-  { icon: MessageSquare, label: "Digital Transformation", to: "/transform" },
-];
-
-const JOURNEYS = [
+// -- Constants for journey cards ----------------------------------------------------
   { icon: BookOpenCheck, eyebrow: "Learn", title: "Develop AI & Technology Skills", text: "Courses, videos, and articles for AI beginners through practitioners.", cta: "Explore Learning →", to: "/learn" },
   { icon: Rocket, eyebrow: "Transform", title: "Transform Your Organization", text: "Consulting, corporate training, AI adoption, and digital transformation.", cta: "Transform With Me →", to: "/transform" },
   { icon: Handshake, eyebrow: "Collaborate", title: "Research & Partnerships", text: "Publications, speaking engagements, academic and industry collaborations.", cta: "Let's Collaborate →", to: "/collaborate" },
@@ -328,32 +307,7 @@ function Home() {
         engagementCount={timelineEntries.length}
       />
 
-      {/* ================ SECTION 4 · AREAS OF EXPERTISE ================ */}
-      <section className="section-divider section-surface py-24 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <RevealOnScroll className="mx-auto max-w-2xl text-center">
-            <p className="section-eyebrow">Areas of expertise</p>
-            <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-              Where I can help
-            </h2>
-          </RevealOnScroll>
-          <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {EXPERTISE.map((e, i) => (
-              <RevealOnScroll key={e.label} delay={i * 50} className="h-full min-w-0">
-                <Link
-                  to={e.to as any}
-                  className="premium-card group flex h-full flex-col items-start gap-3.5 p-5"
-                >
-                  <div className="icon-badge size-10 group-hover:scale-105 group-hover:bg-primary group-hover:text-primary-foreground">
-                    <e.icon className="size-4" />
-                  </div>
-                  <span className="text-sm font-medium leading-snug break-words text-foreground">{e.label}</span>
-                </Link>
-              </RevealOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ExpertiseBentoSection />
 
       {/* ================ SECTION 5 · TRUST & CREDIBILITY ================ */}
       <section className="relative overflow-hidden bg-background py-24 sm:py-28">
