@@ -171,6 +171,7 @@ export type Database = {
         Row: {
           category: string | null
           created_at: string
+          delivery_type: string
           description: string | null
           display_order: number | null
           duration: string | null
@@ -184,6 +185,7 @@ export type Database = {
           link_url: string | null
           prerequisites: string[]
           slug: string
+          status: string
           title: string
           topics: string[]
           updated_at: string
@@ -191,6 +193,7 @@ export type Database = {
         Insert: {
           category?: string | null
           created_at?: string
+          delivery_type?: string
           description?: string | null
           display_order?: number | null
           duration?: string | null
@@ -204,6 +207,7 @@ export type Database = {
           link_url?: string | null
           prerequisites?: string[]
           slug: string
+          status?: string
           title: string
           topics?: string[]
           updated_at?: string
@@ -211,6 +215,7 @@ export type Database = {
         Update: {
           category?: string | null
           created_at?: string
+          delivery_type?: string
           description?: string | null
           display_order?: number | null
           duration?: string | null
@@ -224,6 +229,7 @@ export type Database = {
           link_url?: string | null
           prerequisites?: string[]
           slug?: string
+          status?: string
           title?: string
           topics?: string[]
           updated_at?: string

@@ -6,8 +6,15 @@ import { PreviewPanel } from "./PreviewPanel";
 import { AdminSearchField } from "./AdminSearchField";
 import { rowMatchesAdminSearch } from "@/lib/admin-search";
 
-export type FieldType = "text" | "textarea" | "number" | "boolean" | "date" | "url" | "tags" | "image" | "i18n" | "i18n-textarea";
-export type Field = { name: string; label: string; type: FieldType; required?: boolean; placeholder?: string };
+export type FieldType = "text" | "textarea" | "number" | "boolean" | "date" | "url" | "tags" | "image" | "i18n" | "i18n-textarea" | "select";
+export type Field = {
+  name: string;
+  label: string;
+  type: FieldType;
+  required?: boolean;
+  placeholder?: string;
+  options?: { value: string; label: string }[];
+};
 
 const LANG_TABS: { code: "hy" | "en" | "ru"; label: string }[] = [
   { code: "hy", label: "HY · Հայերեն" },
@@ -336,6 +343,9 @@ function EditModal({ fields, initial, isNew, onCancel, onSave }: { fields: Field
           ru: existing?.ru ?? plain ?? "",
         };
       }
+      if (f.type === "select" && (v[f.name] === undefined || v[f.name] === null || v[f.name] === "")) {
+        v[f.name] = f.options?.[0]?.value ?? "";
+      }
     }
     return v;
   });
@@ -373,6 +383,19 @@ function EditModal({ fields, initial, isNew, onCancel, onSave }: { fields: Field
                   />
                   <span className="text-sm">{f.label}</span>
                 </label>
+              ) : f.type === "select" ? (
+                <select
+                  value={values[f.name] ?? f.options?.[0]?.value ?? ""}
+                  onChange={(e) => setValues({ ...values, [f.name]: e.target.value })}
+                  required={f.required}
+                  className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
+                >
+                  {(f.options ?? []).map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
               ) : f.type === "image" ? (
                 <ImageUploadField
                   value={values[f.name] ?? ""}

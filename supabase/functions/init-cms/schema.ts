@@ -104,6 +104,14 @@ ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS learning_outcomes text[] NOT
 ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS prerequisites text[] NOT NULL DEFAULT '{}';
 ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS is_featured boolean NOT NULL DEFAULT false;
 ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS category text;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS delivery_type text NOT NULL DEFAULT 'offline';
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'ongoing';
+DO $$ BEGIN
+  ALTER TABLE public.courses ADD CONSTRAINT courses_delivery_type_check CHECK (delivery_type IN ('online', 'offline'));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  ALTER TABLE public.courses ADD CONSTRAINT courses_status_check CHECK (status IN ('ongoing', 'completed'));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN
   CREATE UNIQUE INDEX courses_slug_key ON public.courses(slug) WHERE slug <> '';
 EXCEPTION WHEN duplicate_table THEN NULL; END $$;

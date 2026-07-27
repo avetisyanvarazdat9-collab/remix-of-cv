@@ -1,9 +1,11 @@
 import { createFileRoute, Link, Outlet, useMatches } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { coursesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/courses")({
   head: () =>
@@ -17,6 +19,31 @@ export const Route = createFileRoute("/courses")({
   component: CoursesLayout,
 });
 
+type Course = Tables<"courses">;
+type CourseFilter = "all" | "online" | "ongoing" | "completed";
+
+const FILTER_OPTIONS: { id: CourseFilter; labelKey: string }[] = [
+  { id: "all", labelKey: "courses.filter.all" },
+  { id: "online", labelKey: "courses.filter.online" },
+  { id: "ongoing", labelKey: "courses.filter.ongoing" },
+  { id: "completed", labelKey: "courses.filter.completed" },
+];
+
+function courseDeliveryType(course: Course) {
+  return course.delivery_type === "online" ? "online" : "offline";
+}
+
+function courseStatus(course: Course) {
+  return course.status === "completed" ? "completed" : "ongoing";
+}
+
+function matchesCourseFilter(course: Course, filter: CourseFilter) {
+  if (filter === "all") return true;
+  if (filter === "online") return courseDeliveryType(course) === "online";
+  if (filter === "ongoing") return courseStatus(course) === "ongoing";
+  return courseStatus(course) === "completed";
+}
+
 function CoursesLayout() {
   const matches = useMatches();
   const isChild = matches.some((m) => m.routeId === "/courses/$slug");
@@ -28,13 +55,42 @@ function CoursesIndex() {
   const { data: courses } = useSuspenseQuery(coursesQuery);
   const loc = useLocalized();
   const t = useT();
+  const [filter, setFilter] = useState<CourseFilter>("all");
+
+  const filteredCourses = useMemo(
+    () => (courses ?? []).filter((c) => matchesCourseFilter(c, filter)),
+    [courses, filter],
+  );
+
   return (
     <PublicLayout>
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
         <h1 className="font-display text-4xl font-bold sm:text-5xl">{t("courses.heading")}</h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">{t("courses.lead")}</p>
+
+        <div className="mt-8 -mx-1 flex flex-wrap gap-2 overflow-x-auto px-1 pb-1">
+          {FILTER_OPTIONS.map((option) => {
+            const active = filter === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => setFilter(option.id)}
+                aria-pressed={active}
+                className={`shrink-0 rounded-md px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                  active
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "border border-border bg-background/60 text-muted-foreground hover:bg-accent hover:text-foreground"
+                }`}
+              >
+                {t(option.labelKey)}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {(courses ?? []).map((c) => {
+          {filteredCourses.map((c) => {
             const title = loc(c, "title");
             const level = loc(c, "level");
             const duration = loc(c, "duration");
@@ -45,10 +101,15 @@ function CoursesIndex() {
                 )}
                 <div className="flex items-center gap-2 text-xs text-primary">
                   {level && <span>{level}</span>}
-                  {duration && <><span>·</span><span>{duration}</span></>}
+                  {duration && (
+                    <>
+                      <span>·</span>
+                      <span>{duration}</span>
+                    </>
+                  )}
                 </div>
                 <h3 className="mt-2 font-display text-lg font-semibold">{title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{loc(c, "description")}</p>
+                <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{loc(c, "description")}</p>
                 {c.topics && c.topics.length > 0 && (
                   <div className="mt-4 flex flex-wrap gap-1.5">
                     {c.topics.slice(0, 6).map((tp) => (
@@ -70,10 +131,14 @@ function CoursesIndex() {
               </div>
             );
           })}
-          {(courses ?? []).length === 0 && (
-            <p className="text-muted-foreground">{t("courses.empty")}</p>
-          )}
         </div>
+
+        {(courses ?? []).length === 0 && (
+          <p className="mt-10 text-muted-foreground">{t("courses.empty")}</p>
+        )}
+        {(courses ?? []).length > 0 && filteredCourses.length === 0 && (
+          <p className="mt-10 text-muted-foreground">{t("courses.filter.empty")}</p>
+        )}
       </section>
     </PublicLayout>
   );
