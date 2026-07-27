@@ -110,7 +110,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
+      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
         <div className="mt-12 grid gap-8 md:grid-cols-2">
           <div className="glass rounded-2xl p-6">
             <h2 className="font-display text-xl font-semibold">{t("about.skills")}</h2>
@@ -155,7 +155,8 @@ function AboutPage() {
         </div>
 
         {(certifications ?? []).filter((c) => c.is_visible).length > 0 && (
-          <div className="mt-8 glass rounded-2xl p-6">
+          <div className="mx-auto mt-8 w-full max-w-4xl">
+          <div className="glass rounded-2xl p-6">
             <h2 className="font-display text-xl font-semibold">Certifications</h2>
             <ul className="mt-4 grid gap-4 sm:grid-cols-2">
               {(certifications ?? [])
@@ -193,15 +194,18 @@ function AboutPage() {
                 })}
             </ul>
           </div>
+          </div>
         )}
 
         {(professionalExperience ?? []).filter((e) => e.is_visible !== false).length > 0 && (
-          <div className="mt-8 glass rounded-2xl p-6 sm:p-8">
+          <div className="mx-auto mt-8 w-full max-w-4xl">
+          <div className="glass rounded-2xl p-6 sm:p-8">
             <h2 className="font-display text-xl font-semibold">Professional Experience</h2>
             <CareerTimeline
               items={(professionalExperience ?? []).filter((e) => e.is_visible !== false)}
               loc={loc}
             />
+          </div>
           </div>
         )}
 
