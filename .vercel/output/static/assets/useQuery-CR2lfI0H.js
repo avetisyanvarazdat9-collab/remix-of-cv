@@ -1,1 +1,0 @@
-import{r as e,t}from"./useBaseQuery-CUdc-YJH.js";function n(n,r){return t(n,e,r)}export{n as t};

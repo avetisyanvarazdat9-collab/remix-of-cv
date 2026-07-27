@@ -1,1 +1,0 @@
-import{tt as e}from"./index-CwMDhxM6.js";var t=e({type:`function`});export{t};

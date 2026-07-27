@@ -1,9 +1,0 @@
-import { T as require_jsx_runtime } from "./_libs/@radix-ui/react-alert-dialog+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/_._lovable.oauth.consent-DUjx3JjX.js
-var import_jsx_runtime = require_jsx_runtime();
-var SplitErrorComponent = ({ error }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
-	className: "mx-auto max-w-md p-8 text-sm",
-	children: ["Could not load this authorization request: ", String(error?.message ?? error)]
-});
-//#endregion
-export { SplitErrorComponent as errorComponent };
