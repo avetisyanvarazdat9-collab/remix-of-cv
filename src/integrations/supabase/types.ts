@@ -638,6 +638,33 @@ export type Database = {
         }
         Relationships: []
       }
+      page_content: {
+        Row: {
+          description: string | null
+          i18n: Json
+          id: string
+          key: string
+          page: string
+          updated_at: string
+        }
+        Insert: {
+          description?: string | null
+          i18n?: Json
+          id?: string
+          key: string
+          page: string
+          updated_at?: string
+        }
+        Update: {
+          description?: string | null
+          i18n?: Json
+          id?: string
+          key?: string
+          page?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profile: {
         Row: {
           bio: string | null
