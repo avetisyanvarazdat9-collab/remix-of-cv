@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History, Layers, Share2 } from "lucide-react";
+import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History, Layers, Share2, Languages } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
@@ -28,6 +28,7 @@ const items: NavItem[] = [
   { to: "/admin/messages", label: "Messages", icon: Inbox },
   { to: "/admin/error-logs", label: "Error logs", icon: AlertTriangle },
   { to: "/admin/navigation", label: "Navigation", icon: MenuIcon },
+  { to: "/admin/site-text", label: "Site Text", icon: Languages },
   { to: "/admin/theme", label: "Theme", icon: Palette },
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ];

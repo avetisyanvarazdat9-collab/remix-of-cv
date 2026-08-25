@@ -39,10 +39,24 @@ import {
   socialLinksQuery,
 } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  usePageContent,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
 import { useCountUp } from "@/hooks/useCountUp";
 import { buildPageHead, buildPersonJsonLd } from "@/lib/seo";
 import { SITE_BRAND_NAME } from "@/lib/brand";
 import type { Tables } from "@/integrations/supabase/types";
+
+const HOME_PAGE = "home";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -56,22 +70,37 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(internationalExperienceQuery()),
       context.queryClient.ensureQueryData(fourDimensionsQuery),
       context.queryClient.ensureQueryData(socialLinksQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(HOME_PAGE)),
     ]);
     const profile = await context.queryClient.ensureQueryData(profileQuery);
     const socialLinks = await context.queryClient.ensureQueryData(socialLinksQuery);
-    return { profile, socialUrls: (socialLinks ?? []).map((l) => l.url).filter(Boolean) };
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(HOME_PAGE));
+    return {
+      profile,
+      socialUrls: (socialLinks ?? []).map((l) => l.url).filter(Boolean),
+      pageContent,
+    };
   },
   head: ({ loaderData }) => {
     const data = loaderData as {
       profile?: Tables<"profile"> | null;
       socialUrls?: string[];
+      pageContent?: PageContentRow[];
     } | undefined;
     const profile = data?.profile;
     const socialUrls = data?.socialUrls;
+    const pageContent = data?.pageContent;
     return buildPageHead({
-      title: "Dr. Varazdat Avetisyan — AI Educator, Researcher & Technologist",
-      description:
-        "Dr. Varazdat Avetisyan — AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies.",
+      title: pageContentLookup(
+        pageContent,
+        "seo.title",
+        "Dr. Varazdat Avetisyan AI Educator, Researcher & Technologist",
+      ),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
+        "Dr. Varazdat Avetisyan AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies.",
+      ),
       path: "/",
       keywords:
         "AI Training Armenia, Generative AI Armenia, Machine Learning Instructor Armenia, Data Science Training Armenia, Prompt Engineering Armenia, AI Consultant Armenia",
@@ -95,28 +124,57 @@ function StatBlock({ value, label }: { value: string; label: string }) {
   );
 }
 
-// -- Constants for cards ----------------------------------------------------
-const EXPERTISE = [
-  { icon: BrainCircuit, label: "Artificial Intelligence", to: "/courses" },
-  { icon: Sparkles, label: "Generative AI", to: "/courses" },
-  { icon: Database, label: "Data Science", to: "/courses" },
-  { icon: Cpu, label: "Machine Learning", to: "/courses" },
-  { icon: Layers, label: "Deep Learning", to: "/courses" },
-  { icon: Wand2, label: "Prompt Engineering", to: "/courses" },
-  { icon: Bot, label: "AI Agents", to: "/projects" },
-  { icon: BookOpen, label: "Computer Science Education", to: "/collaborate" },
-  { icon: Rocket, label: "Educational Innovation", to: "/learn" },
-  { icon: MessageSquare, label: "Digital Transformation", to: "/transform" },
-];
-
-const JOURNEYS = [
-  { icon: BookOpenCheck, eyebrow: "Learn", title: "Develop AI & Technology Skills", text: "Courses, videos, and articles for AI beginners through practitioners.", cta: "Explore Learning →", to: "/learn" },
-  { icon: Rocket, eyebrow: "Transform", title: "Transform Your Organization", text: "Consulting, corporate training, AI adoption, and digital transformation.", cta: "Transform With Me →", to: "/transform" },
-  { icon: Handshake, eyebrow: "Collaborate", title: "Research & Partnerships", text: "Publications, speaking engagements, academic and industry collaborations.", cta: "Let's Collaborate →", to: "/collaborate" },
-  { icon: Award, eyebrow: "Impact", title: "See the Measurable Impact", text: "Awards, talks, media appearances, achievements, and partnerships.", cta: "See the Impact →", to: "/impact" },
-];
-
 function Home() {
+  const { pc } = usePageContent(HOME_PAGE);
+
+  const EXPERTISE = [
+    { icon: BrainCircuit, label: pc("expertise.0", "Artificial Intelligence"), to: "/courses" },
+    { icon: Sparkles, label: pc("expertise.1", "Generative AI"), to: "/courses" },
+    { icon: Database, label: pc("expertise.2", "Data Science"), to: "/courses" },
+    { icon: Cpu, label: pc("expertise.3", "Machine Learning"), to: "/courses" },
+    { icon: Layers, label: pc("expertise.4", "Deep Learning"), to: "/courses" },
+    { icon: Wand2, label: pc("expertise.5", "Prompt Engineering"), to: "/courses" },
+    { icon: Bot, label: pc("expertise.6", "AI Agents"), to: "/projects" },
+    { icon: BookOpen, label: pc("expertise.7", "Computer Science Education"), to: "/collaborate" },
+    { icon: Rocket, label: pc("expertise.8", "Educational Innovation"), to: "/learn" },
+    { icon: MessageSquare, label: pc("expertise.9", "Digital Transformation"), to: "/transform" },
+  ];
+
+  const JOURNEYS = [
+    {
+      icon: BookOpenCheck,
+      eyebrow: "Learn",
+      title: pc("journeys.learn.title", "Develop AI & Technology Skills"),
+      text: pc("journeys.learn.body", "Courses, videos, and articles for AI beginners through practitioners."),
+      cta: pc("journeys.learn.cta", "Explore Learning"),
+      to: "/learn",
+    },
+    {
+      icon: Rocket,
+      eyebrow: "Transform",
+      title: pc("journeys.transform.title", "Transform Your Organization"),
+      text: pc("journeys.transform.body", "Consulting, corporate training, AI adoption, and digital transformation."),
+      cta: pc("journeys.transform.cta", "Transform With Me"),
+      to: "/transform",
+    },
+    {
+      icon: Handshake,
+      eyebrow: "Collaborate",
+      title: pc("journeys.collaborate.title", "Research & Partnerships"),
+      text: pc("journeys.collaborate.body", "Publications, speaking engagements, academic and industry collaborations."),
+      cta: pc("journeys.collaborate.cta", "Let's Collaborate"),
+      to: "/collaborate",
+    },
+    {
+      icon: Award,
+      eyebrow: "Impact",
+      title: pc("journeys.impact.title", "See the Measurable Impact"),
+      text: pc("journeys.impact.body", "Awards, talks, media appearances, achievements, and partnerships."),
+      cta: pc("journeys.impact.cta", "See the Impact"),
+      to: "/impact",
+    },
+  ];
+
   const { data: profile } = useSuspenseQuery(profileQuery);
   const { data: courses } = useSuspenseQuery(coursesQuery);
   const { data: companies } = useSuspenseQuery(companiesQuery);
@@ -165,7 +223,7 @@ function Home() {
         <div className="hero-image pointer-events-none absolute right-0 top-0 h-[55%] w-full opacity-90 sm:opacity-100 md:bottom-0 md:top-auto md:h-full md:w-[58%] lg:w-[52%]">
           <img
             src={profile?.photo_url || heroPortrait}
-            alt=""
+            alt={pc("hero.image_alt", "")}
             width={1024}
             height={1536}
             loading="eager"
@@ -228,19 +286,22 @@ function Home() {
               className="animate-fade-in-up mt-5 font-display text-[2rem] font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
               style={{ animationDelay: "120ms", animationDuration: "600ms" }}
             >
-              Bridging Research, Education, and Industry Through Intelligent Technologies
+              {pc("hero.title", "Bridging Research, Education, and Industry Through Intelligent Technologies")}
             </h1>
             <p
               className="animate-fade-in-up mt-4 text-base font-medium text-foreground/85 sm:mt-5 sm:text-lg"
               style={{ animationDelay: "220ms", animationDuration: "600ms" }}
             >
-              Educator | Researcher | Technologist | Entrepreneur | Innovator
+              {pc("hero.subtitle", "Educator | Researcher | Technologist | Entrepreneur | Innovator")}
             </p>
             <p
               className="animate-fade-in-up mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-lg"
               style={{ animationDelay: "300ms", animationDuration: "600ms" }}
             >
-              A place for personalized AI solutions — courses, consulting, and collaboration for individuals, universities, and organizations across Armenia and beyond.
+              {pc(
+                "hero.lead",
+                "A place for personalized AI solutions: courses, consulting, and collaboration for individuals, universities, and organizations across Armenia and beyond.",
+              )}
             </p>
             <div
               className="animate-fade-in-up mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center"
@@ -250,13 +311,13 @@ function Home() {
                 to="/learn"
                 className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--primary)_60%,transparent)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 sm:w-auto sm:min-w-[11.5rem]"
               >
-                Explore Courses <ArrowRight className="size-4 shrink-0" />
+                {pc("hero.cta1", "Explore Courses")} <ArrowRight className="size-4 shrink-0" />
               </Link>
               <Link
                 to="/transform"
                 className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-border/80 bg-background/70 px-6 text-sm font-medium text-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-accent/50 sm:w-auto sm:min-w-[11.5rem]"
               >
-                Request a Consultation
+                {pc("hero.cta2", "Request a Consultation")}
               </Link>
               <Link
                 to="/contact"

@@ -45,6 +45,7 @@ import { Route as AuthenticatedAdminTalksRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminSocialLinksRouteImport } from './routes/_authenticated/admin.social-links'
 import { Route as AuthenticatedAdminSkillsRouteImport } from './routes/_authenticated/admin.skills'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
+import { Route as AuthenticatedAdminSiteTextRouteImport } from './routes/_authenticated/admin.site-text'
 import { Route as AuthenticatedAdminQuickStatsRouteImport } from './routes/_authenticated/admin.quick-stats'
 import { Route as AuthenticatedAdminProjectsRouteImport } from './routes/_authenticated/admin.projects'
 import { Route as AuthenticatedAdminProfileRouteImport } from './routes/_authenticated/admin.profile'
@@ -252,6 +253,12 @@ const AuthenticatedAdminSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminSiteTextRoute =
+  AuthenticatedAdminSiteTextRouteImport.update({
+    id: '/site-text',
+    path: '/site-text',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminQuickStatsRoute =
   AuthenticatedAdminQuickStatsRouteImport.update({
     id: '/quick-stats',
@@ -419,6 +426,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects': typeof AuthenticatedAdminProjectsRoute
   '/admin/quick-stats': typeof AuthenticatedAdminQuickStatsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/site-text': typeof AuthenticatedAdminSiteTextRoute
   '/admin/skills': typeof AuthenticatedAdminSkillsRoute
   '/admin/social-links': typeof AuthenticatedAdminSocialLinksRoute
   '/admin/talks': typeof AuthenticatedAdminTalksRoute
@@ -476,6 +484,7 @@ export interface FileRoutesByTo {
   '/admin/projects': typeof AuthenticatedAdminProjectsRoute
   '/admin/quick-stats': typeof AuthenticatedAdminQuickStatsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/site-text': typeof AuthenticatedAdminSiteTextRoute
   '/admin/skills': typeof AuthenticatedAdminSkillsRoute
   '/admin/social-links': typeof AuthenticatedAdminSocialLinksRoute
   '/admin/talks': typeof AuthenticatedAdminTalksRoute
@@ -535,6 +544,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/projects': typeof AuthenticatedAdminProjectsRoute
   '/_authenticated/admin/quick-stats': typeof AuthenticatedAdminQuickStatsRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/site-text': typeof AuthenticatedAdminSiteTextRoute
   '/_authenticated/admin/skills': typeof AuthenticatedAdminSkillsRoute
   '/_authenticated/admin/social-links': typeof AuthenticatedAdminSocialLinksRoute
   '/_authenticated/admin/talks': typeof AuthenticatedAdminTalksRoute
@@ -594,6 +604,7 @@ export interface FileRouteTypes {
     | '/admin/projects'
     | '/admin/quick-stats'
     | '/admin/settings'
+    | '/admin/site-text'
     | '/admin/skills'
     | '/admin/social-links'
     | '/admin/talks'
@@ -651,6 +662,7 @@ export interface FileRouteTypes {
     | '/admin/projects'
     | '/admin/quick-stats'
     | '/admin/settings'
+    | '/admin/site-text'
     | '/admin/skills'
     | '/admin/social-links'
     | '/admin/talks'
@@ -709,6 +721,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/projects'
     | '/_authenticated/admin/quick-stats'
     | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/site-text'
     | '/_authenticated/admin/skills'
     | '/_authenticated/admin/social-links'
     | '/_authenticated/admin/talks'
@@ -1000,6 +1013,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/site-text': {
+      id: '/_authenticated/admin/site-text'
+      path: '/site-text'
+      fullPath: '/admin/site-text'
+      preLoaderRoute: typeof AuthenticatedAdminSiteTextRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/quick-stats': {
       id: '/_authenticated/admin/quick-stats'
       path: '/quick-stats'
@@ -1163,6 +1183,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminProjectsRoute: typeof AuthenticatedAdminProjectsRoute
   AuthenticatedAdminQuickStatsRoute: typeof AuthenticatedAdminQuickStatsRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminSiteTextRoute: typeof AuthenticatedAdminSiteTextRoute
   AuthenticatedAdminSkillsRoute: typeof AuthenticatedAdminSkillsRoute
   AuthenticatedAdminSocialLinksRoute: typeof AuthenticatedAdminSocialLinksRoute
   AuthenticatedAdminTalksRoute: typeof AuthenticatedAdminTalksRoute
@@ -1194,6 +1215,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminProjectsRoute: AuthenticatedAdminProjectsRoute,
   AuthenticatedAdminQuickStatsRoute: AuthenticatedAdminQuickStatsRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+  AuthenticatedAdminSiteTextRoute: AuthenticatedAdminSiteTextRoute,
   AuthenticatedAdminSkillsRoute: AuthenticatedAdminSkillsRoute,
   AuthenticatedAdminSocialLinksRoute: AuthenticatedAdminSocialLinksRoute,
   AuthenticatedAdminTalksRoute: AuthenticatedAdminTalksRoute,
