@@ -27,7 +27,7 @@ type Draft = {
 const EMPTY_TRI: Tri = { hy: "", en: "", ru: "" };
 
 /** page_content pages with a dedicated admin editor — hidden from this flat list */
-const MANAGED_ELSEWHERE = ["home", "transform"];
+const MANAGED_ELSEWHERE = ["home", "transform", "learn"];
 
 function isPageManagedElsewhere(page: string) {
   return MANAGED_ELSEWHERE.includes(page.trim().toLowerCase());

@@ -56,6 +56,7 @@ import { Route as AuthenticatedAdminPartnersRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminNavigationRouteImport } from './routes/_authenticated/admin.navigation'
 import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
 import { Route as AuthenticatedAdminInternationalExperienceRouteImport } from './routes/_authenticated/admin.international-experience'
+import { Route as AuthenticatedAdminLearnRouteImport } from './routes/_authenticated/admin.learn'
 import { Route as AuthenticatedAdminHomeRouteImport } from './routes/_authenticated/admin.home'
 import { Route as AuthenticatedAdminFourDimensionsRouteImport } from './routes/_authenticated/admin.four-dimensions'
 import { Route as AuthenticatedAdminErrorLogsRouteImport } from './routes/_authenticated/admin.error-logs'
@@ -320,6 +321,11 @@ const AuthenticatedAdminInternationalExperienceRoute =
     path: '/international-experience',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminLearnRoute = AuthenticatedAdminLearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminHomeRoute = AuthenticatedAdminHomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -424,6 +430,7 @@ export interface FileRoutesByFullPath {
   '/admin/four-dimensions': typeof AuthenticatedAdminFourDimensionsRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
   '/admin/international-experience': typeof AuthenticatedAdminInternationalExperienceRoute
+  '/admin/learn': typeof AuthenticatedAdminLearnRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
@@ -483,6 +490,7 @@ export interface FileRoutesByTo {
   '/admin/four-dimensions': typeof AuthenticatedAdminFourDimensionsRoute
   '/admin/home': typeof AuthenticatedAdminHomeRoute
   '/admin/international-experience': typeof AuthenticatedAdminInternationalExperienceRoute
+  '/admin/learn': typeof AuthenticatedAdminLearnRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
@@ -544,6 +552,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/four-dimensions': typeof AuthenticatedAdminFourDimensionsRoute
   '/_authenticated/admin/home': typeof AuthenticatedAdminHomeRoute
   '/_authenticated/admin/international-experience': typeof AuthenticatedAdminInternationalExperienceRoute
+  '/_authenticated/admin/learn': typeof AuthenticatedAdminLearnRoute
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/navigation': typeof AuthenticatedAdminNavigationRoute
   '/_authenticated/admin/partners': typeof AuthenticatedAdminPartnersRoute
@@ -605,6 +614,7 @@ export interface FileRouteTypes {
     | '/admin/four-dimensions'
     | '/admin/home'
     | '/admin/international-experience'
+    | '/admin/learn'
     | '/admin/messages'
     | '/admin/navigation'
     | '/admin/partners'
@@ -664,6 +674,7 @@ export interface FileRouteTypes {
     | '/admin/four-dimensions'
     | '/admin/home'
     | '/admin/international-experience'
+    | '/admin/learn'
     | '/admin/messages'
     | '/admin/navigation'
     | '/admin/partners'
@@ -724,6 +735,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/four-dimensions'
     | '/_authenticated/admin/home'
     | '/_authenticated/admin/international-experience'
+    | '/_authenticated/admin/learn'
     | '/_authenticated/admin/messages'
     | '/_authenticated/admin/navigation'
     | '/_authenticated/admin/partners'
@@ -1096,6 +1108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminMessagesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/learn': {
+      id: '/_authenticated/admin/learn'
+      path: '/learn'
+      fullPath: '/admin/learn'
+      preLoaderRoute: typeof AuthenticatedAdminLearnRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/international-experience': {
       id: '/_authenticated/admin/international-experience'
       path: '/international-experience'
@@ -1194,6 +1213,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminFourDimensionsRoute: typeof AuthenticatedAdminFourDimensionsRoute
   AuthenticatedAdminHomeRoute: typeof AuthenticatedAdminHomeRoute
   AuthenticatedAdminInternationalExperienceRoute: typeof AuthenticatedAdminInternationalExperienceRoute
+  AuthenticatedAdminLearnRoute: typeof AuthenticatedAdminLearnRoute
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminNavigationRoute: typeof AuthenticatedAdminNavigationRoute
   AuthenticatedAdminPartnersRoute: typeof AuthenticatedAdminPartnersRoute
@@ -1225,6 +1245,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminHomeRoute: AuthenticatedAdminHomeRoute,
   AuthenticatedAdminInternationalExperienceRoute:
     AuthenticatedAdminInternationalExperienceRoute,
+  AuthenticatedAdminLearnRoute: AuthenticatedAdminLearnRoute,
   AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminNavigationRoute: AuthenticatedAdminNavigationRoute,
   AuthenticatedAdminPartnersRoute: AuthenticatedAdminPartnersRoute,

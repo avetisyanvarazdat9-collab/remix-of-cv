@@ -9,6 +9,7 @@ const items: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/home", label: "Homepage", icon: Home },
   { to: "/admin/transform", label: "Transform", icon: Rocket },
+  { to: "/admin/learn", label: "Learn", icon: BookOpen },
   { to: "/admin/four-dimensions", label: "Four Dimensions", icon: Layers },
   { to: "/admin/profile", label: "Profile", icon: User },
   { to: "/admin/social-links", label: "Social links", icon: Share2 },
