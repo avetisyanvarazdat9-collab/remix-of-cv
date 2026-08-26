@@ -102,8 +102,11 @@ export const Route = createFileRoute("/")({
         "Dr. Varazdat Avetisyan AI Educator, Data Scientist, University Professor and CTO. Bridging research, education, and industry through intelligent technologies.",
       ),
       path: "/",
-      keywords:
+      keywords: pageContentLookup(
+        pageContent,
+        "seo.keywords",
         "AI Training Armenia, Generative AI Armenia, Machine Learning Instructor Armenia, Data Science Training Armenia, Prompt Engineering Armenia, AI Consultant Armenia",
+      ),
       jsonLd: buildPersonJsonLd(profile, socialUrls),
     });
   },
@@ -194,10 +197,10 @@ function Home() {
     value: (loc(s, "value") as string) || s.value,
   }));
   const fallbackStats = [
-    { value: "10+", label: "Years of Experience" },
-    { value: "5,000+", label: "Students Trained" },
-    { value: "100+", label: "Workshops Delivered" },
-    { value: "20+", label: "AI Courses Developed" },
+    { value: pc("stats.fallback.0.value", "10+"), label: pc("stats.fallback.0.label", "Years of Experience") },
+    { value: pc("stats.fallback.1.value", "5,000+"), label: pc("stats.fallback.1.label", "Students Trained") },
+    { value: pc("stats.fallback.2.value", "100+"), label: pc("stats.fallback.2.label", "Workshops Delivered") },
+    { value: pc("stats.fallback.3.value", "20+"), label: pc("stats.fallback.3.label", "AI Courses Developed") },
   ];
   const shownStats = stats.length > 0 ? stats : fallbackStats;
 
@@ -323,7 +326,7 @@ function Home() {
                 to="/contact"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-muted px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:w-auto"
               >
-                <Mail className="size-4" /> Contact Me
+                <Mail className="size-4" /> {pc("hero.cta3", "Contact Me")}
               </Link>
             </div>
             {(socialLinks ?? []).length > 0 && (
@@ -343,9 +346,9 @@ function Home() {
       <section className="section-divider section-surface py-24 sm:py-28">
         <div className="mx-auto grid max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-5 lg:items-center lg:gap-16">
           <RevealOnScroll className="lg:col-span-3">
-            <p className="section-eyebrow">Meet Dr. Varazdat</p>
+            <p className="section-eyebrow">{pc("about.eyebrow", "Meet Dr. Varazdat")}</p>
             <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-              The person behind the expertise
+              {pc("about.heading", "The person behind the expertise")}
             </h2>
             <p className="mt-6 line-clamp-6 whitespace-pre-line text-base leading-[1.75] text-muted-foreground">
               {loc(profile, "bio")}
@@ -354,28 +357,28 @@ function Home() {
               to="/about"
               className="hover-lift mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--primary)_55%,transparent)]"
             >
-              Learn More <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+              {pc("about.cta", "Learn More")} <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
           </RevealOnScroll>
           <RevealOnScroll className="lg:col-span-2" delay={120}>
             <div className="premium-card glass p-8 sm:p-9">
-              <p className="section-eyebrow">In brief</p>
+              <p className="section-eyebrow">{pc("about.brief.eyebrow", "In brief")}</p>
               <ul className="mt-5 space-y-4 text-sm text-foreground">
                 <li className="flex items-start gap-3">
                   <span className="icon-badge mt-0.5 size-8 shrink-0"><GraduationCap className="size-4" /></span>
-                  PhD in Computer Engineering
+                  {pc("about.highlight.0", "PhD in Computer Engineering")}
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="icon-badge mt-0.5 size-8 shrink-0"><Briefcase className="size-4" /></span>
-                  CTO & Co-Founder, Luseen Mobile
+                  {pc("about.highlight.1", "CTO & Co-Founder, Luseen Mobile")}
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="icon-badge mt-0.5 size-8 shrink-0"><BookOpen className="size-4" /></span>
-                  Professor at UFAR, NPUA, GSU
+                  {pc("about.highlight.2", "Professor at UFAR, NPUA, GSU")}
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="icon-badge mt-0.5 size-8 shrink-0"><Globe2 className="size-4" /></span>
-                  International speaker & trainer
+                  {pc("about.highlight.3", "International speaker & trainer")}
                 </li>
               </ul>
             </div>
@@ -426,9 +429,9 @@ function Home() {
         </div>
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
           <RevealOnScroll className="mx-auto max-w-2xl text-center">
-            <p className="section-eyebrow">Impact in action</p>
+            <p className="section-eyebrow">{pc("stats.eyebrow", "Impact in action")}</p>
             <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-              A decade of measurable results
+              {pc("stats.heading", "A decade of measurable results")}
             </h2>
           </RevealOnScroll>
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
