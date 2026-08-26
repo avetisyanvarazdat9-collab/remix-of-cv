@@ -6,20 +6,52 @@ import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { projectsQuery, talksQuery, companiesQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  usePageContent,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
+
+const COLLABORATE_PAGE = "collaborate";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
 
 export const Route = createFileRoute("/collaborate")({
-  head: () =>
-    buildPageHead({
-      title: "Collaborate — Research, Talks & Partnerships | Dr. Varazdat Avetisyan",
-      description:
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(projectsQuery),
+      context.queryClient.ensureQueryData(talksQuery),
+      context.queryClient.ensureQueryData(companiesQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(COLLABORATE_PAGE)),
+    ]);
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(COLLABORATE_PAGE));
+    return { pageContent };
+  },
+  head: ({ loaderData }) => {
+    const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
+    return buildPageHead({
+      title: pageContentLookup(
+        pageContent,
+        "seo.title",
+        "Collaborate Research, Talks & Partnerships | Dr. Varazdat Avetisyan",
+      ),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
         "Research collaborations, speaking engagements, academic partnerships, and applied AI projects with Dr. Varazdat Avetisyan.",
+      ),
       path: "/collaborate",
-      keywords: "AI Speaker Armenia, Research collaboration, Academic partnership, AI keynote speaker",
-    }),
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(projectsQuery);
-    context.queryClient.ensureQueryData(talksQuery);
-    context.queryClient.ensureQueryData(companiesQuery);
+      keywords: pageContentLookup(
+        pageContent,
+        "seo.keywords",
+        "AI Speaker Armenia, Research collaboration, Academic partnership, AI keynote speaker",
+      ),
+    });
   },
   component: CollaborateHub,
 });
@@ -29,6 +61,7 @@ function CollaborateHub() {
   const { data: talks } = useSuspenseQuery(talksQuery);
   const { data: companies } = useSuspenseQuery(companiesQuery);
   const loc = useLocalized();
+  const { pc } = usePageContent(COLLABORATE_PAGE);
 
   const featuredProjects = (projects ?? []).filter((p: any) => p.is_visible).slice(0, 6);
   const featuredTalks = (talks ?? []).slice(0, 4);
@@ -37,16 +70,23 @@ function CollaborateHub() {
   return (
     <PublicLayout>
       <HubHero
-        eyebrow="Collaborate"
-        heading="Research, speaking, and partnerships"
-        subheading="From joint research and grant proposals to keynote talks and cross-institutional programs — let's build something together."
+        eyebrow={pc("hero.eyebrow", "Collaborate")}
+        heading={pc("hero.heading", "Research, speaking, and partnerships")}
+        subheading={pc(
+          "hero.subheading",
+          "From joint research and grant proposals to keynote talks and cross-institutional programs, let's build something together.",
+        )}
         primaryTo="/contact"
-        primaryLabel="Propose a Collaboration"
+        primaryLabel={pc("hero.cta", "Propose a Collaboration")}
         secondaryTo="/talks"
-        secondaryLabel="See Talks & Events"
+        secondaryLabel={pc("hero.cta_secondary", "See Talks & Events")}
       />
 
-      <HubSection eyebrow="Projects" heading="Selected research & applied work" viewAllTo="/projects">
+      <HubSection
+        eyebrow={pc("projects.eyebrow", "Projects")}
+        heading={pc("projects.heading", "Selected research & applied work")}
+        viewAllTo="/projects"
+      >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {featuredProjects.map((p: any) => (
             <Link key={p.id} to="/projects/$slug" params={{ slug: p.slug }} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/40">
@@ -65,7 +105,11 @@ function CollaborateHub() {
         </div>
       </HubSection>
 
-      <HubSection eyebrow="Speaking" heading="Recent talks & events" viewAllTo="/talks">
+      <HubSection
+        eyebrow={pc("speaking.eyebrow", "Speaking")}
+        heading={pc("speaking.heading", "Recent talks & events")}
+        viewAllTo="/talks"
+      >
         <div className="grid gap-6 md:grid-cols-2">
           {featuredTalks.map((t: any) => (
             <article key={t.id} className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
@@ -83,7 +127,11 @@ function CollaborateHub() {
         </div>
       </HubSection>
 
-      <HubSection eyebrow="Partners" heading="Institutions I collaborate with" viewAllTo="/companies">
+      <HubSection
+        eyebrow={pc("partners.eyebrow", "Partners")}
+        heading={pc("partners.heading", "Institutions I collaborate with")}
+        viewAllTo="/companies"
+      >
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {partners.map((p: any) => (
             <a key={p.id} href={p.website_url ?? "#"} target={p.website_url ? "_blank" : undefined} rel="noreferrer"
@@ -99,10 +147,13 @@ function CollaborateHub() {
       </HubSection>
 
       <HubCTA
-        heading="Have an idea worth exploring together?"
-        text="Research collaborations, guest lectures, joint grants, keynote talks, and industry partnerships are all welcome."
+        heading={pc("cta.heading", "Have an idea worth exploring together?")}
+        text={pc(
+          "cta.body",
+          "Research collaborations, guest lectures, joint grants, keynote talks, and industry partnerships are all welcome.",
+        )}
         primaryTo="/contact"
-        primaryLabel="Get in Touch"
+        primaryLabel={pc("cta.button", "Get in Touch")}
         icon={Handshake}
       />
     </PublicLayout>
