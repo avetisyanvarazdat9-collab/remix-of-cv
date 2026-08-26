@@ -73,6 +73,8 @@ const HOME_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
   {
     heading: "Areas of expertise",
     keys: [
+      { key: "expertise.eyebrow", label: "Eyebrow" },
+      { key: "expertise.heading", label: "Heading" },
       { key: "expertise.0", label: "Artificial Intelligence" },
       { key: "expertise.1", label: "Generative AI" },
       { key: "expertise.2", label: "Data Science" },

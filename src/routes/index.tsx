@@ -396,9 +396,9 @@ function Home() {
       <section className="section-divider section-surface py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <RevealOnScroll className="mx-auto max-w-2xl text-center">
-            <p className="section-eyebrow">Areas of expertise</p>
+            <p className="section-eyebrow">{pc("expertise.eyebrow", "Areas of expertise")}</p>
             <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-              Where I can help
+              {pc("expertise.heading", "Where I can help")}
             </h2>
           </RevealOnScroll>
           <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
