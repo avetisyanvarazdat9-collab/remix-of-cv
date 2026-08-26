@@ -1,11 +1,9 @@
+import { Fragment } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   Download,
-  GraduationCap,
-  Briefcase,
-  Globe2,
   BrainCircuit,
   Sparkles,
   Database,
@@ -31,12 +29,14 @@ import {
   profileQuery,
   coursesQuery,
   companiesQuery,
+  aboutHighlightsQuery,
   homeContentQuery,
   testimonialsQuery,
   statisticsQuery,
   internationalExperienceQuery,
   fourDimensionsQuery,
   socialLinksQuery,
+  type AboutHighlightInstitution,
 } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import {
@@ -58,12 +58,25 @@ function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fall
   return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
 }
 
+function parseHighlightInstitutions(value: unknown): AboutHighlightInstitution[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => {
+    const row = item as Partial<AboutHighlightInstitution>;
+    return {
+      name: String(row.name ?? ""),
+      url: String(row.url ?? ""),
+      logo_url: String(row.logo_url ?? ""),
+    };
+  });
+}
+
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     await Promise.all([
       context.queryClient.ensureQueryData(profileQuery),
       context.queryClient.ensureQueryData(coursesQuery),
       context.queryClient.ensureQueryData(companiesQuery),
+      context.queryClient.ensureQueryData(aboutHighlightsQuery),
       context.queryClient.ensureQueryData(homeContentQuery),
       context.queryClient.ensureQueryData(testimonialsQuery),
       context.queryClient.ensureQueryData(statisticsQuery),
@@ -181,6 +194,7 @@ function Home() {
   const { data: profile } = useSuspenseQuery(profileQuery);
   const { data: courses } = useSuspenseQuery(coursesQuery);
   const { data: companies } = useSuspenseQuery(companiesQuery);
+  const { data: aboutHighlights } = useSuspenseQuery(aboutHighlightsQuery);
   const { data: content } = useSuspenseQuery(homeContentQuery);
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const { data: statsRows } = useSuspenseQuery(statisticsQuery);
@@ -390,22 +404,49 @@ function Home() {
           <RevealOnScroll className="lg:col-span-2" delay={120}>
             <div className="premium-card glass p-8 sm:p-9">
               <ul className="space-y-4 text-sm text-foreground">
-                <li className="flex items-start gap-3">
-                  <span className="icon-badge mt-0.5 size-8 shrink-0"><GraduationCap className="size-4" /></span>
-                  {pc("about.highlight.0", "PhD in Computer Engineering")}
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="icon-badge mt-0.5 size-8 shrink-0"><Briefcase className="size-4" /></span>
-                  {pc("about.highlight.1", "CTO & Co-Founder, Luseen Mobile")}
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="icon-badge mt-0.5 size-8 shrink-0"><BookOpen className="size-4" /></span>
-                  {pc("about.highlight.2", "Professor at UFAR, NPUA, GSU")}
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="icon-badge mt-0.5 size-8 shrink-0"><Globe2 className="size-4" /></span>
-                  {pc("about.highlight.3", "International speaker & trainer")}
-                </li>
+                {(aboutHighlights ?? []).map((highlight) => {
+                  const institutions = parseHighlightInstitutions(highlight.institutions).filter(
+                    (inst) => inst.name.trim(),
+                  );
+                  if (institutions.length === 0) return null;
+                  return (
+                    <li key={highlight.id} className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 font-semibold leading-snug text-foreground">
+                        {institutions.map((inst, index) => (
+                          <Fragment key={`${highlight.id}-${index}`}>
+                            {index > 0 && (
+                              <span className="font-normal text-muted-foreground">&</span>
+                            )}
+                            <span className="inline-flex items-center gap-1.5">
+                              {inst.logo_url ? (
+                                <img
+                                  src={inst.logo_url}
+                                  alt=""
+                                  className="h-5 w-5 shrink-0 object-contain"
+                                />
+                              ) : null}
+                              {inst.url.trim() ? (
+                                <a
+                                  href={inst.url.trim()}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hover:text-primary"
+                                >
+                                  {inst.name}
+                                </a>
+                              ) : (
+                                <span>{inst.name}</span>
+                              )}
+                            </span>
+                          </Fragment>
+                        ))}
+                      </div>
+                      {loc(highlight, "role") ? (
+                        <p className="text-xs text-muted-foreground">{loc(highlight, "role")}</p>
+                      ) : null}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </RevealOnScroll>

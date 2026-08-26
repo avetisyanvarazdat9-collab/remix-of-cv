@@ -49,10 +49,6 @@ const HOME_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
       { key: "about.heading", label: "Section heading" },
       { key: "about.cta", label: "Learn more button" },
       { key: "about.brief.eyebrow", label: "Sidebar eyebrow (In brief)" },
-      { key: "about.highlight.0", label: "Highlight: PhD in Computer Engineering" },
-      { key: "about.highlight.1", label: "Highlight: CTO & Co-Founder" },
-      { key: "about.highlight.2", label: "Highlight: Professor" },
-      { key: "about.highlight.3", label: "Highlight: International speaker" },
     ],
   },
   {

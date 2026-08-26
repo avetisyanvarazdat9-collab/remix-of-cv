@@ -96,6 +96,35 @@ export const companiesQuery = queryOptions({
   queryFn: () => run(supabase.from("companies").select("*").order("display_order")),
 });
 
+export type AboutHighlightInstitution = {
+  name: string;
+  url: string;
+  logo_url: string;
+};
+
+export type AboutHighlight = {
+  id: string;
+  role: string;
+  institutions: AboutHighlightInstitution[];
+  i18n: Record<string, { hy: string; en: string; ru: string }>;
+  display_order: number;
+  is_visible: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export const aboutHighlightsQuery = queryOptions({
+  queryKey: ["about_highlights"],
+  queryFn: () =>
+    run(
+      supabase
+        .from("about_highlights")
+        .select("*")
+        .eq("is_visible", true)
+        .order("display_order"),
+    ) as Promise<AboutHighlight[]>,
+});
+
 export const messagesQuery = queryOptions({
   queryKey: ["messages"],
   queryFn: () =>

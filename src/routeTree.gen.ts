@@ -67,6 +67,7 @@ import { Route as AuthenticatedAdminCoursesRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminCompaniesRouteImport } from './routes/_authenticated/admin.companies'
 import { Route as AuthenticatedAdminCertificationsRouteImport } from './routes/_authenticated/admin.certifications'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin.blog'
+import { Route as AuthenticatedAdminAboutHighlightsRouteImport } from './routes/_authenticated/admin.about-highlights'
 import { Route as AuthenticatedAdminAboutPageRouteImport } from './routes/_authenticated/admin.about-page'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -386,6 +387,12 @@ const AuthenticatedAdminBlogRoute = AuthenticatedAdminBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminAboutHighlightsRoute =
+  AuthenticatedAdminAboutHighlightsRouteImport.update({
+    id: '/about-highlights',
+    path: '/about-highlights',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminAboutPageRoute = AuthenticatedAdminAboutPageRouteImport.update({
   id: '/about-page',
   path: '/about-page',
@@ -439,6 +446,7 @@ export interface FileRoutesByFullPath {
   '/video-courses/$slug': typeof VideoCoursesSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/about-highlights': typeof AuthenticatedAdminAboutHighlightsRoute
   '/admin/about-page': typeof AuthenticatedAdminAboutPageRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
@@ -502,6 +510,7 @@ export interface FileRoutesByTo {
   '/video-courses/$slug': typeof VideoCoursesSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/about-highlights': typeof AuthenticatedAdminAboutHighlightsRoute
   '/admin/about-page': typeof AuthenticatedAdminAboutPageRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
@@ -567,6 +576,7 @@ export interface FileRoutesById {
   '/video-courses/$slug': typeof VideoCoursesSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/_authenticated/admin/about-highlights': typeof AuthenticatedAdminAboutHighlightsRoute
   '/_authenticated/admin/about-page': typeof AuthenticatedAdminAboutPageRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
@@ -632,6 +642,7 @@ export interface FileRouteTypes {
     | '/video-courses/$slug'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/about-highlights'
     | '/admin/about-page'
     | '/admin/about'
     | '/admin/blog'
@@ -695,6 +706,7 @@ export interface FileRouteTypes {
     | '/video-courses/$slug'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/about-highlights'
     | '/admin/about-page'
     | '/admin/about'
     | '/admin/blog'
@@ -759,6 +771,7 @@ export interface FileRouteTypes {
     | '/video-courses/$slug'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/_authenticated/admin/about-highlights'
     | '/_authenticated/admin/about-page'
     | '/_authenticated/admin/about'
     | '/_authenticated/admin/blog'
@@ -1229,6 +1242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBlogRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/about-highlights': {
+      id: '/_authenticated/admin/about-highlights'
+      path: '/about-highlights'
+      fullPath: '/admin/about-highlights'
+      preLoaderRoute: typeof AuthenticatedAdminAboutHighlightsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/about-page': {
       id: '/_authenticated/admin/about-page'
       path: '/about-page'
@@ -1261,6 +1281,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAboutHighlightsRoute: typeof AuthenticatedAdminAboutHighlightsRoute
   AuthenticatedAdminAboutPageRoute: typeof AuthenticatedAdminAboutPageRoute
   AuthenticatedAdminAboutRoute: typeof AuthenticatedAdminAboutRoute
   AuthenticatedAdminBlogRoute: typeof AuthenticatedAdminBlogRoute
@@ -1295,6 +1316,7 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAboutHighlightsRoute: AuthenticatedAdminAboutHighlightsRoute,
   AuthenticatedAdminAboutPageRoute: AuthenticatedAdminAboutPageRoute,
   AuthenticatedAdminAboutRoute: AuthenticatedAdminAboutRoute,
   AuthenticatedAdminBlogRoute: AuthenticatedAdminBlogRoute,

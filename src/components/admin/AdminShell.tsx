@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History, Layers, Share2, Languages, Rocket, TrendingUp, Handshake, ScrollText } from "lucide-react";
+import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History, Layers, Share2, Languages, Rocket, TrendingUp, Handshake, ScrollText, Landmark } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
@@ -17,6 +17,7 @@ const items: NavItem[] = [
   { to: "/admin/social-links", label: "Social links", icon: Share2 },
   { to: "/admin/about", label: "About", icon: BookText },
   { to: "/admin/about-page", label: "About — Page Text", icon: ScrollText },
+  { to: "/admin/about-highlights", label: "About Highlights", icon: Landmark },
   { to: "/admin/quick-stats", label: "Quick stats", icon: BarChart3 },
   { to: "/admin/projects", label: "Projects", icon: Briefcase },
   { to: "/admin/blog", label: "Blog posts", icon: FileText },
