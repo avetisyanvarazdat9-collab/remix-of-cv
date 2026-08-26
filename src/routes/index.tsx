@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
-  Mail,
+  Download,
   GraduationCap,
   Briefcase,
   Globe2,
@@ -323,10 +323,12 @@ function Home() {
                 {pc("hero.cta2", "Request a Consultation")}
               </Link>
               <Link
-                to="/contact"
+                to="/cv"
+                target="_blank"
+                rel="noopener"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-muted px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:w-auto"
               >
-                <Mail className="size-4" /> {pc("hero.cta3", "Contact Me")}
+                <Download className="size-4" /> {pc("hero.cta3", "Contact Me")}
               </Link>
             </div>
             {(socialLinks ?? []).length > 0 && (
@@ -342,7 +344,32 @@ function Home() {
       </section>
 
 
-      {/* ================ SECTION 2 · MEET DR. VARAZDAT ================ */}
+      {/* ================ SECTION 2 · TRUST & CREDIBILITY ================ */}
+      <section className="relative overflow-hidden bg-background py-24 sm:py-28">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div
+            className="ambient-orb left-0 bottom-0 size-[360px] -translate-x-1/4 bg-accent/10"
+            style={{ animationDelay: "-8s" }}
+          />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+          <RevealOnScroll className="mx-auto max-w-2xl text-center">
+            <p className="section-eyebrow">{pc("stats.eyebrow", "Impact in action")}</p>
+            <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
+              {pc("stats.heading", "A decade of measurable results")}
+            </h2>
+          </RevealOnScroll>
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {shownStats.map((s, i) => (
+              <RevealOnScroll key={s.label} delay={i * 70}>
+                <StatBlock value={s.value} label={s.label} />
+              </RevealOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================ SECTION 3 · MEET DR. VARAZDAT ================ */}
       <section className="section-divider section-surface py-24 sm:py-28">
         <div className="mx-auto grid max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-5 lg:items-center lg:gap-16">
           <RevealOnScroll className="lg:col-span-3">
@@ -385,13 +412,14 @@ function Home() {
         </div>
       </section>
 
+      {/* ================ SECTION 4 · FOUR DIMENSIONS ================ */}
       <FourDimensionsSection
         dimensions={fourDimensions ?? []}
         countryCount={countryCount}
         engagementCount={timelineEntries.length}
       />
 
-      {/* ================ SECTION 4 · AREAS OF EXPERTISE ================ */}
+      {/* ================ SECTION 5 · AREAS OF EXPERTISE ================ */}
       <section className="section-divider section-surface py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <RevealOnScroll className="mx-auto max-w-2xl text-center">
@@ -418,32 +446,105 @@ function Home() {
         </div>
       </section>
 
-      {/* ================ SECTION 5 · TRUST & CREDIBILITY ================ */}
-      <section className="relative overflow-hidden bg-background py-24 sm:py-28">
+      {/* ================ SECTION 6 · FEATURED COURSES ================ */}
+      {featuredCourses.length > 0 && (
+        <section className="section-divider bg-background pb-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <RevealOnScroll className="mb-10 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
+              <div>
+                <p className="section-eyebrow">{pc("featured_courses.eyebrow", "Featured courses")}</p>
+                <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
+                  {pc("featured_courses.heading", "Popular programs")}
+                </h2>
+              </div>
+              <Link to="/learn" className="group inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80">
+                {pc("featured_courses.view_all", "View all")}
+                <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </Link>
+            </RevealOnScroll>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {featuredCourses.slice(0, 3).map((c: any, i: number) => (
+                <RevealOnScroll key={c.id} delay={i * 80} className="h-full min-w-0">
+                  <article className="premium-card group flex h-full flex-col overflow-hidden">
+                    <div className="relative overflow-hidden">
+                      {c.image_url ? (
+                        <img
+                          src={c.image_url}
+                          alt={loc(c, "title")}
+                          className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
+                      ) : (
+                        <div
+                          className="h-44 w-full"
+                          style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--primary) 30%, transparent), color-mix(in oklab, var(--accent) 30%, transparent))" }}
+                        />
+                      )}
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    </div>
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="font-display text-base font-semibold tracking-tight text-foreground">{loc(c, "title")}</h3>
+                      <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-muted-foreground">{loc(c, "description")}</p>
+                      <Link to="/learn" className="group/link mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-primary transition-colors hover:text-primary/80">
+                        {pc("featured_courses.card_cta", "Learn more")}
+                        <ArrowRight className="size-4 transition-transform duration-200 group-hover/link:translate-x-0.5" />
+                      </Link>
+                    </div>
+                  </article>
+                </RevealOnScroll>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ================ SECTION 7 · CHOOSE YOUR JOURNEY ================ */}
+      <section className="relative overflow-hidden bg-background py-28 sm:py-32">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-50"
+          style={{
+            background:
+              "radial-gradient(55% 50% at 50% 0%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 72%)",
+          }}
+        />
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           <div
-            className="ambient-orb left-0 bottom-0 size-[360px] -translate-x-1/4 bg-accent/10"
-            style={{ animationDelay: "-8s" }}
+            className="ambient-orb right-1/4 top-1/3 size-[320px] bg-accent/12"
+            style={{ animationDelay: "-12s" }}
           />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
           <RevealOnScroll className="mx-auto max-w-2xl text-center">
-            <p className="section-eyebrow">{pc("stats.eyebrow", "Impact in action")}</p>
-            <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-              {pc("stats.heading", "A decade of measurable results")}
+            <p className="section-eyebrow">{pc("journeys.section.eyebrow", "Choose your journey")}</p>
+            <h2 className="section-heading mt-3 text-4xl sm:text-5xl">
+              {pc("journeys.section.heading", "Where would you like to go next?")}
             </h2>
           </RevealOnScroll>
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {shownStats.map((s, i) => (
-              <RevealOnScroll key={s.label} delay={i * 70}>
-                <StatBlock value={s.value} label={s.label} />
+          <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {JOURNEYS.map((j, i) => (
+              <RevealOnScroll key={j.eyebrow} delay={i * 70} className="h-full min-w-0">
+                <Link
+                  to={j.to as any}
+                  className="premium-card group flex h-full flex-col p-7"
+                >
+                  <div className="icon-badge size-11 group-hover:bg-primary group-hover:text-primary-foreground">
+                    <j.icon className="size-5" />
+                  </div>
+                  <p className="section-eyebrow mt-6">{j.eyebrow}</p>
+                  <h3 className="mt-1.5 font-display text-lg font-semibold tracking-tight text-foreground">{j.title}</h3>
+                  <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted-foreground">{j.text}</p>
+                  <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors group-hover:text-primary/80">
+                    {j.cta}
+                    <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
               </RevealOnScroll>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ================ SECTION 6 · TRUSTED BY ================ */}
+      {/* ================ SECTION 8 · TRUSTED BY ================ */}
       {visiblePartners.length > 0 && (
         <section className="section-divider bg-background py-24 sm:py-28 lg:py-32">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -497,7 +598,7 @@ function Home() {
         </section>
       )}
 
-      {/* Optional testimonials strip (keeps admin's testimonial data in front of visitors) */}
+      {/* ================ SECTION 9 · TESTIMONIALS ================ */}
       {(testimonials?.length ?? 0) > 0 && (
         <section className="section-surface pb-24 pt-4">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -531,104 +632,6 @@ function Home() {
           </div>
         </section>
       )}
-
-      {/* Featured courses — quick preview so home isn't just navigation */}
-      {featuredCourses.length > 0 && (
-        <section className="section-divider bg-background pb-24">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <RevealOnScroll className="mb-10 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
-              <div>
-                <p className="section-eyebrow">{pc("featured_courses.eyebrow", "Featured courses")}</p>
-                <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-                  {pc("featured_courses.heading", "Popular programs")}
-                </h2>
-              </div>
-              <Link to="/learn" className="group inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80">
-                {pc("featured_courses.view_all", "View all")}
-                <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </Link>
-            </RevealOnScroll>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {featuredCourses.slice(0, 3).map((c: any, i: number) => (
-                <RevealOnScroll key={c.id} delay={i * 80} className="h-full min-w-0">
-                  <article className="premium-card group flex h-full flex-col overflow-hidden">
-                    <div className="relative overflow-hidden">
-                      {c.image_url ? (
-                        <img
-                          src={c.image_url}
-                          alt={loc(c, "title")}
-                          className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
-                      ) : (
-                        <div
-                          className="h-44 w-full"
-                          style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--primary) 30%, transparent), color-mix(in oklab, var(--accent) 30%, transparent))" }}
-                        />
-                      )}
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                    </div>
-                    <div className="flex flex-1 flex-col p-6">
-                      <h3 className="font-display text-base font-semibold tracking-tight text-foreground">{loc(c, "title")}</h3>
-                      <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-muted-foreground">{loc(c, "description")}</p>
-                      <Link to="/learn" className="group/link mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-primary transition-colors hover:text-primary/80">
-                        {pc("featured_courses.card_cta", "Learn more")}
-                        <ArrowRight className="size-4 transition-transform duration-200 group-hover/link:translate-x-0.5" />
-                      </Link>
-                    </div>
-                  </article>
-                </RevealOnScroll>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ================ SECTION 6 · CHOOSE YOUR JOURNEY ================ */}
-      <section className="relative overflow-hidden bg-background py-28 sm:py-32">
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-50"
-          style={{
-            background:
-              "radial-gradient(55% 50% at 50% 0%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 72%)",
-          }}
-        />
-        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-          <div
-            className="ambient-orb right-1/4 top-1/3 size-[320px] bg-accent/12"
-            style={{ animationDelay: "-12s" }}
-          />
-        </div>
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
-          <RevealOnScroll className="mx-auto max-w-2xl text-center">
-            <p className="section-eyebrow">{pc("journeys.section.eyebrow", "Choose your journey")}</p>
-            <h2 className="section-heading mt-3 text-4xl sm:text-5xl">
-              {pc("journeys.section.heading", "Where would you like to go next?")}
-            </h2>
-          </RevealOnScroll>
-          <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {JOURNEYS.map((j, i) => (
-              <RevealOnScroll key={j.eyebrow} delay={i * 70} className="h-full min-w-0">
-                <Link
-                  to={j.to as any}
-                  className="premium-card group flex h-full flex-col p-7"
-                >
-                  <div className="icon-badge size-11 group-hover:bg-primary group-hover:text-primary-foreground">
-                    <j.icon className="size-5" />
-                  </div>
-                  <p className="section-eyebrow mt-6">{j.eyebrow}</p>
-                  <h3 className="mt-1.5 font-display text-lg font-semibold tracking-tight text-foreground">{j.title}</h3>
-                  <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted-foreground">{j.text}</p>
-                  <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors group-hover:text-primary/80">
-                    {j.cta}
-                    <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                  </span>
-                </Link>
-              </RevealOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
     </PublicLayout>
 
   );
