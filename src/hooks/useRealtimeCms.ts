@@ -17,6 +17,7 @@ const TABLE_QUERY_KEYS: Record<string, string> = {
   four_dimensions: "four_dimensions",
   social_links: "social_links",
   home_content: "home_content",
+  page_content: "page_content",
   navigation_menu: "navigation_menu",
   testimonials: "testimonials",
   statistics: "statistics",
