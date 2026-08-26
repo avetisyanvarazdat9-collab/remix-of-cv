@@ -26,6 +26,13 @@ type Draft = {
 
 const EMPTY_TRI: Tri = { hy: "", en: "", ru: "" };
 
+/** page_content pages with a dedicated admin editor — hidden from this flat list */
+const MANAGED_ELSEWHERE = ["home"];
+
+function isPageManagedElsewhere(page: string) {
+  return MANAGED_ELSEWHERE.includes(page.trim().toLowerCase());
+}
+
 const LANG_TABS: { code: keyof Tri; label: string }[] = [
   { code: "hy", label: "HY · Հայերեն" },
   { code: "en", label: "EN · English" },
@@ -114,15 +121,22 @@ function SiteTextAdmin() {
     });
   }, [rows, drafts, search]);
 
+  const listableRows = useMemo(
+    () => filteredRows.filter((row) => !isPageManagedElsewhere(row.page)),
+    [filteredRows],
+  );
+
   const grouped = useMemo(() => {
     const map = new Map<string, Row[]>();
-    for (const row of filteredRows) {
+    for (const row of listableRows) {
       const list = map.get(row.page) ?? [];
       list.push(row);
       map.set(row.page, list);
     }
-    return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
-  }, [filteredRows]);
+    return [...map.entries()]
+      .filter(([page]) => !isPageManagedElsewhere(page))
+      .sort(([a], [b]) => a.localeCompare(b));
+  }, [listableRows]);
 
   function togglePage(page: string) {
     setExpandedPages((prev) => {
@@ -228,7 +242,7 @@ function SiteTextAdmin() {
         <div>
           <h1 className="font-display text-3xl font-bold">Site Text</h1>
           <p className="mt-1 max-w-2xl text-muted-foreground">
-            Manage reusable UI copy by page and key. Entries are not wired to public pages yet — add rows here to prepare for migration from hardcoded strings.
+            Manage reusable UI copy for pages that don&apos;t yet have a dedicated admin section. Homepage content is managed under Homepage.
           </p>
         </div>
         <button
@@ -243,7 +257,7 @@ function SiteTextAdmin() {
 
       <div className="mt-6 flex flex-wrap gap-1">
         {LANG_TABS.map((t) => {
-          const filled = rows.some((row) => draftFilled(drafts[row.id] ?? rowToDraft(row), t.code));
+          const filled = listableRows.some((row) => draftFilled(drafts[row.id] ?? rowToDraft(row), t.code));
           return (
             <button
               type="button"
@@ -256,7 +270,7 @@ function SiteTextAdmin() {
               }`}
             >
               {t.label}
-              {!filled && rows.length > 0 && <span className="ml-1 text-destructive">•</span>}
+              {!filled && listableRows.length > 0 && <span className="ml-1 text-destructive">•</span>}
             </button>
           );
         })}
