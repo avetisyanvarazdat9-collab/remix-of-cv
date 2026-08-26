@@ -7,6 +7,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import { AdminSearchField } from "@/components/admin/AdminSearchField";
 import { textMatchesAdminSearch } from "@/lib/admin-search";
 import type { PageContentI18n } from "@/lib/page-content";
+import { fillMissingTranslationsFromEn } from "@/lib/translate";
 
 export const Route = createFileRoute("/_authenticated/admin/site-text")({
   head: () => ({ meta: [{ title: "Site Text Admin" }] }),
@@ -157,13 +158,14 @@ function SiteTextAdmin() {
     if (!page || !key) return toast.error("Page and key are required");
 
     setSavingId(id);
+    const i18n = await fillMissingTranslationsFromEn(draft.i18n);
     const { data, error } = await supabase
       .from("page_content")
       .update({
         page,
         key,
         description: draft.description.trim() || null,
-        i18n: draft.i18n,
+        i18n,
       })
       .eq("id", id)
       .select("*")
@@ -198,13 +200,14 @@ function SiteTextAdmin() {
     if (!page || !key) return toast.error("Page and key are required");
 
     setAdding(true);
+    const i18n = await fillMissingTranslationsFromEn(newDraft.i18n);
     const { data, error } = await supabase
       .from("page_content")
       .insert({
         page,
         key,
         description: newDraft.description.trim() || null,
-        i18n: newDraft.i18n,
+        i18n,
       })
       .select("*")
       .single();
@@ -322,7 +325,7 @@ function SiteTextAdmin() {
               disabled={adding}
               className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-60"
             >
-              {adding ? "Adding…" : "Add entry"}
+              {adding ? "Translating & saving…" : "Add entry"}
             </button>
           </div>
         </form>
@@ -424,7 +427,7 @@ function SiteTextAdmin() {
                               disabled={savingId === row.id}
                               className="rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground disabled:opacity-60"
                             >
-                              {savingId === row.id ? "Saving…" : "Save"}
+                              {savingId === row.id ? "Translating & saving…" : "Save"}
                             </button>
                           </div>
                         </div>
