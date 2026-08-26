@@ -39,6 +39,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AuthenticatedAdminVideoCoursesRouteImport } from './routes/_authenticated/admin.video-courses'
+import { Route as AuthenticatedAdminTransformRouteImport } from './routes/_authenticated/admin.transform'
 import { Route as AuthenticatedAdminThemeRouteImport } from './routes/_authenticated/admin.theme'
 import { Route as AuthenticatedAdminTalksEventsRouteImport } from './routes/_authenticated/admin.talks-events'
 import { Route as AuthenticatedAdminTalksRouteImport } from './routes/_authenticated/admin.talks'
@@ -217,6 +218,12 @@ const AuthenticatedAdminVideoCoursesRoute =
   AuthenticatedAdminVideoCoursesRouteImport.update({
     id: '/video-courses',
     path: '/video-courses',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminTransformRoute =
+  AuthenticatedAdminTransformRouteImport.update({
+    id: '/transform',
+    path: '/transform',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminThemeRoute = AuthenticatedAdminThemeRouteImport.update({
@@ -432,6 +439,7 @@ export interface FileRoutesByFullPath {
   '/admin/talks': typeof AuthenticatedAdminTalksRoute
   '/admin/talks-events': typeof AuthenticatedAdminTalksEventsRoute
   '/admin/theme': typeof AuthenticatedAdminThemeRoute
+  '/admin/transform': typeof AuthenticatedAdminTransformRoute
   '/admin/video-courses': typeof AuthenticatedAdminVideoCoursesRoute
 }
 export interface FileRoutesByTo {
@@ -490,6 +498,7 @@ export interface FileRoutesByTo {
   '/admin/talks': typeof AuthenticatedAdminTalksRoute
   '/admin/talks-events': typeof AuthenticatedAdminTalksEventsRoute
   '/admin/theme': typeof AuthenticatedAdminThemeRoute
+  '/admin/transform': typeof AuthenticatedAdminTransformRoute
   '/admin/video-courses': typeof AuthenticatedAdminVideoCoursesRoute
 }
 export interface FileRoutesById {
@@ -550,6 +559,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/talks': typeof AuthenticatedAdminTalksRoute
   '/_authenticated/admin/talks-events': typeof AuthenticatedAdminTalksEventsRoute
   '/_authenticated/admin/theme': typeof AuthenticatedAdminThemeRoute
+  '/_authenticated/admin/transform': typeof AuthenticatedAdminTransformRoute
   '/_authenticated/admin/video-courses': typeof AuthenticatedAdminVideoCoursesRoute
 }
 export interface FileRouteTypes {
@@ -610,6 +620,7 @@ export interface FileRouteTypes {
     | '/admin/talks'
     | '/admin/talks-events'
     | '/admin/theme'
+    | '/admin/transform'
     | '/admin/video-courses'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -668,6 +679,7 @@ export interface FileRouteTypes {
     | '/admin/talks'
     | '/admin/talks-events'
     | '/admin/theme'
+    | '/admin/transform'
     | '/admin/video-courses'
   id:
     | '__root__'
@@ -727,6 +739,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/talks'
     | '/_authenticated/admin/talks-events'
     | '/_authenticated/admin/theme'
+    | '/_authenticated/admin/transform'
     | '/_authenticated/admin/video-courses'
   fileRoutesById: FileRoutesById
 }
@@ -971,6 +984,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminVideoCoursesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/transform': {
+      id: '/_authenticated/admin/transform'
+      path: '/transform'
+      fullPath: '/admin/transform'
+      preLoaderRoute: typeof AuthenticatedAdminTransformRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/theme': {
       id: '/_authenticated/admin/theme'
       path: '/theme'
@@ -1189,6 +1209,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminTalksRoute: typeof AuthenticatedAdminTalksRoute
   AuthenticatedAdminTalksEventsRoute: typeof AuthenticatedAdminTalksEventsRoute
   AuthenticatedAdminThemeRoute: typeof AuthenticatedAdminThemeRoute
+  AuthenticatedAdminTransformRoute: typeof AuthenticatedAdminTransformRoute
   AuthenticatedAdminVideoCoursesRoute: typeof AuthenticatedAdminVideoCoursesRoute
 }
 
@@ -1221,6 +1242,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminTalksRoute: AuthenticatedAdminTalksRoute,
   AuthenticatedAdminTalksEventsRoute: AuthenticatedAdminTalksEventsRoute,
   AuthenticatedAdminThemeRoute: AuthenticatedAdminThemeRoute,
+  AuthenticatedAdminTransformRoute: AuthenticatedAdminTransformRoute,
   AuthenticatedAdminVideoCoursesRoute: AuthenticatedAdminVideoCoursesRoute,
 }
 
