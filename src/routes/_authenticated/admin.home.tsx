@@ -5,58 +5,101 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Tables } from "@/integrations/supabase/types";
 import { PreviewPanel } from "@/components/admin/PreviewPanel";
+import { PageContentEditor, type PageContentEditorSection } from "@/components/admin/PageContentEditor";
 
 export const Route = createFileRoute("/_authenticated/admin/home")({
-  head: () => ({ meta: [{ title: "Homepage — Admin" }] }),
+  head: () => ({ meta: [{ title: "Homepage Admin" }] }),
   component: HomeContentEditor,
 });
 
 type Row = Tables<"home_content">;
 type Tri = { hy: string; en: string; ru: string };
 
-type FieldDef = { name: keyof Row; label: string; type?: "text" | "textarea" | "url" | "i18n" | "i18n-textarea" };
+const HERO_SECTION = {
+  title: "Hero",
+  hint: "Badge below the name. Main hero copy (title, subtitle, CTAs) is edited in Site text below. Name and bio come from Profile.",
+  fields: [{ name: "hero_badge" as const, label: "Badge text", type: "i18n" as const }],
+};
 
-const SECTIONS: { title: string; hint?: string; fields: FieldDef[] }[] = [
+const HOME_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
   {
-    title: "Hero",
-    hint: "Top of the homepage. Name, title and bio come from the Profile page.",
-    fields: [
-      { name: "hero_badge", label: "Badge text", type: "i18n" },
-      { name: "hero_btn1_label", label: "Button 1 — label", type: "i18n" },
-      { name: "hero_btn1_url", label: "Button 1 — URL", type: "url" },
-      { name: "hero_btn2_label", label: "Button 2 — label", type: "i18n" },
-      { name: "hero_btn2_url", label: "Button 2 — URL", type: "url" },
-      { name: "hero_btn3_label", label: "Button 3 — label", type: "i18n" },
-      { name: "hero_btn3_url", label: "Button 3 — URL", type: "url" },
+    heading: "SEO",
+    keys: [
+      { key: "seo.title", label: "Document title" },
+      { key: "seo.description", label: "Meta description" },
+      { key: "seo.keywords", label: "Meta keywords" },
     ],
   },
   {
-    title: "About section",
-    fields: [
-      { name: "about_label", label: "Eyebrow label", type: "i18n" },
-      { name: "about_heading", label: "Heading", type: "i18n" },
-      { name: "about_btn_label", label: "Button label", type: "i18n" },
-      { name: "about_btn_url", label: "Button URL", type: "url" },
+    heading: "Hero",
+    keys: [
+      { key: "hero.title", label: "Main heading" },
+      { key: "hero.subtitle", label: "Subtitle" },
+      { key: "hero.lead", label: "Lead paragraph" },
+      { key: "hero.cta1", label: "Primary button (Explore Courses)" },
+      { key: "hero.cta2", label: "Secondary button (Request a Consultation)" },
+      { key: "hero.cta3", label: "Tertiary button (Contact Me)" },
+      { key: "hero.image_alt", label: "Portrait image alt text" },
     ],
   },
   {
-    title: "Featured Courses section",
-    fields: [
-      { name: "courses_label", label: "Eyebrow label", type: "i18n" },
-      { name: "courses_heading", label: "Heading", type: "i18n" },
+    heading: "About preview",
+    keys: [
+      { key: "about.eyebrow", label: "Section eyebrow" },
+      { key: "about.heading", label: "Section heading" },
+      { key: "about.cta", label: "Learn more button" },
+      { key: "about.brief.eyebrow", label: "Sidebar eyebrow (In brief)" },
+      { key: "about.highlight.0", label: "Highlight: PhD in Computer Engineering" },
+      { key: "about.highlight.1", label: "Highlight: CTO & Co-Founder" },
+      { key: "about.highlight.2", label: "Highlight: Professor" },
+      { key: "about.highlight.3", label: "Highlight: International speaker" },
     ],
   },
   {
-    title: "Partners section",
-    fields: [{ name: "partners_heading", label: "Heading", type: "i18n" }],
+    heading: "Stats",
+    keys: [
+      { key: "stats.eyebrow", label: "Section eyebrow" },
+      { key: "stats.heading", label: "Section heading" },
+      { key: "stats.fallback.0.value", label: "Fallback stat 1 — value" },
+      { key: "stats.fallback.0.label", label: "Fallback stat 1 — label" },
+      { key: "stats.fallback.1.value", label: "Fallback stat 2 — value" },
+      { key: "stats.fallback.1.label", label: "Fallback stat 2 — label" },
+      { key: "stats.fallback.2.value", label: "Fallback stat 3 — value" },
+      { key: "stats.fallback.2.label", label: "Fallback stat 3 — label" },
+      { key: "stats.fallback.3.value", label: "Fallback stat 4 — value" },
+      { key: "stats.fallback.3.label", label: "Fallback stat 4 — label" },
+    ],
   },
   {
-    title: "Contact CTA",
-    fields: [
-      { name: "cta_heading", label: "Heading", type: "i18n" },
-      { name: "cta_text", label: "Text", type: "i18n-textarea" },
-      { name: "cta_btn_label", label: "Button label", type: "i18n" },
-      { name: "cta_btn_url", label: "Button URL", type: "url" },
+    heading: "Areas of expertise",
+    keys: [
+      { key: "expertise.0", label: "Artificial Intelligence" },
+      { key: "expertise.1", label: "Generative AI" },
+      { key: "expertise.2", label: "Data Science" },
+      { key: "expertise.3", label: "Machine Learning" },
+      { key: "expertise.4", label: "Deep Learning" },
+      { key: "expertise.5", label: "Prompt Engineering" },
+      { key: "expertise.6", label: "AI Agents" },
+      { key: "expertise.7", label: "Computer Science Education" },
+      { key: "expertise.8", label: "Educational Innovation" },
+      { key: "expertise.9", label: "Digital Transformation" },
+    ],
+  },
+  {
+    heading: "Journey cards",
+    keys: [
+      { key: "journeys.learn.title", label: "Learn — heading" },
+      { key: "journeys.learn.body", label: "Learn — body" },
+      { key: "journeys.learn.cta", label: "Learn — button" },
+      { key: "journeys.transform.title", label: "Transform — heading" },
+      { key: "journeys.transform.body", label: "Transform — body" },
+      { key: "journeys.transform.cta", label: "Transform — button" },
+      { key: "journeys.collaborate.title", label: "Collaborate — heading" },
+      { key: "journeys.collaborate.body", label: "Collaborate — body" },
+      { key: "journeys.collaborate.cta", label: "Collaborate — button" },
+      { key: "journeys.impact.title", label: "Impact — heading" },
+      { key: "journeys.impact.body", label: "Impact — body" },
+      { key: "journeys.impact.cta", label: "Impact — button" },
     ],
   },
 ];
@@ -66,8 +109,6 @@ const LANG_TABS: { code: "hy" | "en" | "ru"; label: string }[] = [
   { code: "en", label: "EN" },
   { code: "ru", label: "RU" },
 ];
-
-const ALL_FIELDS: FieldDef[] = SECTIONS.flatMap((s) => s.fields);
 
 function HomeContentEditor() {
   const [data, setData] = useState<Partial<Row> | null>(null);
@@ -86,18 +127,14 @@ function HomeContentEditor() {
         const row = data ?? ({ id: true } as Partial<Row>);
         setData(row);
         const existing = ((row as any).i18n ?? {}) as Record<string, Partial<Tri>>;
-        const bag: Record<string, Tri> = {};
-        for (const f of ALL_FIELDS) {
-          if (f.type === "i18n" || f.type === "i18n-textarea") {
-            const plain = ((row as any)[f.name] ?? "") as string;
-            bag[f.name as string] = {
-              hy: existing[f.name as string]?.hy ?? plain ?? "",
-              en: existing[f.name as string]?.en ?? plain ?? "",
-              ru: existing[f.name as string]?.ru ?? plain ?? "",
-            };
-          }
-        }
-        setI18n(bag);
+        const plain = ((row as any).hero_badge ?? "") as string;
+        setI18n({
+          hero_badge: {
+            hy: existing.hero_badge?.hy ?? plain ?? "",
+            en: existing.hero_badge?.en ?? plain ?? "",
+            ru: existing.hero_badge?.ru ?? plain ?? "",
+          },
+        });
       });
   }, []);
 
@@ -105,21 +142,18 @@ function HomeContentEditor() {
     e.preventDefault();
     if (!data) return;
     setSaving(true);
-    const payload: any = { ...data, id: true };
-    for (const f of ALL_FIELDS) {
-      if (f.type === "i18n" || f.type === "i18n-textarea") {
-        const tri = i18n[f.name as string] ?? { hy: "", en: "", ru: "" };
-        payload[f.name] = tri.en || tri.hy || tri.ru || null;
-      }
-    }
-    payload.i18n = i18n;
-    const { error } = await supabase
-      .from("home_content")
-      .upsert(payload, { onConflict: "id" });
+    const tri = i18n.hero_badge ?? { hy: "", en: "", ru: "" };
+    const payload: any = {
+      ...data,
+      id: true,
+      hero_badge: tri.en || tri.hy || tri.ru || null,
+      i18n: { ...((data as any).i18n ?? {}), hero_badge: tri },
+    };
+    const { error } = await supabase.from("home_content").upsert(payload, { onConflict: "id" });
     setSaving(false);
     if (error) return toast.error(error.message);
     queryClient.invalidateQueries({ queryKey: ["home_content"] });
-    toast.success("Homepage saved — live on the public site");
+    toast.success("Badge saved and live on the public site");
   }
 
   if (!data) return <p className="text-muted-foreground">Loading…</p>;
@@ -128,68 +162,42 @@ function HomeContentEditor() {
     <div>
       <h1 className="font-display text-3xl font-bold">Homepage content</h1>
       <p className="mt-1 text-muted-foreground">
-        Edit copy in Armenian, English and Russian. Visitors see the version matching their selected language.
+        Edit homepage copy in Armenian, English and Russian. Visitors see the version matching their selected language.
       </p>
 
       <form onSubmit={save} className="mt-6 space-y-6">
-        {SECTIONS.map((section) => (
-          <div key={section.title} className="glass rounded-2xl p-6">
-            <h2 className="font-display text-lg font-semibold">{section.title}</h2>
-            {section.hint && <p className="mt-1 text-xs text-muted-foreground">{section.hint}</p>}
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              {section.fields.map((f) => {
-                const colSpan = f.type === "textarea" || f.type === "i18n-textarea" ? "sm:col-span-2" : "";
-                return (
-                  <div key={f.name as string} className={colSpan}>
-                    <label className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">{f.label}</label>
-                    {f.type === "i18n" || f.type === "i18n-textarea" ? (
-                      <I18nInput
-                        value={i18n[f.name as string] ?? { hy: "", en: "", ru: "" }}
-                        multiline={f.type === "i18n-textarea"}
-                        onChange={(v) => setI18n({ ...i18n, [f.name as string]: v })}
-                      />
-                    ) : f.type === "textarea" ? (
-                      <textarea
-                        rows={3}
-                        value={(data[f.name] as string | null) ?? ""}
-                        onChange={(e) => setData({ ...data, [f.name]: e.target.value })}
-                        className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
-                      />
-                    ) : (
-                      <input
-                        type="text"
-                        placeholder={f.type === "url" ? "/path, https://… or mailto:" : ""}
-                        value={(data[f.name] as string | null) ?? ""}
-                        onChange={(e) => setData({ ...data, [f.name]: e.target.value })}
-                        className="w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+        <div className="glass rounded-2xl p-6">
+          <h2 className="font-display text-lg font-semibold">{HERO_SECTION.title}</h2>
+          <p className="mt-1 text-xs text-muted-foreground">{HERO_SECTION.hint}</p>
+          <div className="mt-4">
+            <label className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">
+              Badge text
+            </label>
+            <I18nInput
+              value={i18n.hero_badge ?? { hy: "", en: "", ru: "" }}
+              onChange={(v) => setI18n({ hero_badge: v })}
+            />
           </div>
-        ))}
+        </div>
 
-        {SECTIONS.map((section) => (
-          <PreviewPanel
-            key={`preview-${section.title}`}
-            title={`${section.title} preview`}
-            fields={section.fields.map((f) => ({ name: f.name as string, label: f.label, type: f.type })) as any}
-            values={data as Record<string, any>}
-            i18nValues={i18n}
-          />
-        ))}
+        <PreviewPanel
+          title="Hero badge preview"
+          fields={[{ name: "hero_badge", label: "Badge text", type: "i18n" }]}
+          values={data as Record<string, any>}
+          i18nValues={i18n}
+        />
 
         <div className="sticky bottom-4 flex justify-end">
           <button
             disabled={saving}
             className="rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-lg disabled:opacity-60"
           >
-            {saving ? "Saving…" : "Save homepage"}
+            {saving ? "Saving…" : "Save badge"}
           </button>
         </div>
       </form>
+
+      <PageContentEditor page="home" sections={HOME_PAGE_CONTENT_SECTIONS} />
     </div>
   );
 }
