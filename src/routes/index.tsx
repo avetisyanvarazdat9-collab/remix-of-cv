@@ -610,25 +610,19 @@ function Home() {
                         href={p.website_url || undefined}
                         target={p.website_url ? "_blank" : undefined}
                         rel={p.website_url ? "noopener noreferrer" : undefined}
-                        className="premium-card group flex h-full flex-col items-center p-8 text-center"
+                        className="flex h-full min-h-[7rem] items-center justify-center rounded-2xl bg-muted p-10"
                       >
-                        <div className="flex h-16 w-full items-center justify-center">
-                          {p.logo_url ? (
-                            <img
-                              src={p.logo_url}
-                              alt=""
-                              className="max-h-12 w-auto object-contain opacity-75 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
-                            />
-                          ) : (
-                            <div className="icon-badge size-12 text-lg font-bold">
-                              {p.name?.slice(0, 1)}
-                            </div>
-                          )}
-                        </div>
-                        <h3 className="mt-4 font-display text-base font-semibold tracking-tight text-foreground">{p.name}</h3>
-                        <span className="mt-2.5 inline-flex items-center rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-xs font-medium text-primary">
-                          {p.category || pc("partners.category_fallback", "Partner")}
-                        </span>
+                        {p.logo_url ? (
+                          <img
+                            src={p.logo_url}
+                            alt=""
+                            className="max-h-16 w-auto object-contain sm:max-h-20"
+                          />
+                        ) : (
+                          <div className="icon-badge size-12 text-lg font-bold">
+                            {p.name?.slice(0, 1)}
+                          </div>
+                        )}
                       </a>
                     </RevealOnScroll>
                   ))}
