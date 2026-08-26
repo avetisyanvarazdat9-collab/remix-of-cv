@@ -6,21 +6,53 @@ import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { statisticsQuery, testimonialsQuery, companiesQuery, talksQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  usePageContent,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
+
+const IMPACT_PAGE = "impact";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
 
 export const Route = createFileRoute("/impact")({
-  head: () =>
-    buildPageHead({
-      title: "Impact — Achievements, Talks & Recognition | Dr. Varazdat Avetisyan",
-      description:
-        "Measurable impact of Dr. Varazdat Avetisyan's work in AI education, research, and industry — students trained, workshops delivered, partnerships built.",
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(statisticsQuery),
+      context.queryClient.ensureQueryData(testimonialsQuery),
+      context.queryClient.ensureQueryData(companiesQuery),
+      context.queryClient.ensureQueryData(talksQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(IMPACT_PAGE)),
+    ]);
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(IMPACT_PAGE));
+    return { pageContent };
+  },
+  head: ({ loaderData }) => {
+    const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
+    return buildPageHead({
+      title: pageContentLookup(
+        pageContent,
+        "seo.title",
+        "Impact Achievements, Talks & Recognition | Dr. Varazdat Avetisyan",
+      ),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
+        "Measurable impact of Dr. Varazdat Avetisyan's work in AI education, research, and industry: students trained, workshops delivered, partnerships built.",
+      ),
       path: "/impact",
-      keywords: "Computer Science Professor Armenia, AI Educator Armenia, AI Speaker Armenia",
-    }),
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(statisticsQuery);
-    context.queryClient.ensureQueryData(testimonialsQuery);
-    context.queryClient.ensureQueryData(companiesQuery);
-    context.queryClient.ensureQueryData(talksQuery);
+      keywords: pageContentLookup(
+        pageContent,
+        "seo.keywords",
+        "Computer Science Professor Armenia, AI Educator Armenia, AI Speaker Armenia",
+      ),
+    });
   },
   component: ImpactHub,
 });
@@ -31,6 +63,7 @@ function ImpactHub() {
   const { data: companies } = useSuspenseQuery(companiesQuery);
   const { data: talks } = useSuspenseQuery(talksQuery);
   const loc = useLocalized();
+  const { pc } = usePageContent(IMPACT_PAGE);
 
   const partners = (companies ?? []).filter((c: any) => c.is_visible);
   const featuredTalks = (talks ?? []).slice(0, 6);
@@ -38,14 +71,20 @@ function ImpactHub() {
   return (
     <PublicLayout>
       <HubHero
-        eyebrow="Impact"
-        heading="Measurable outcomes, real people"
-        subheading="A decade of teaching, building, and speaking — turned into numbers, stories, and lasting partnerships."
+        eyebrow={pc("hero.eyebrow", "Impact")}
+        heading={pc("hero.heading", "Measurable outcomes, real people")}
+        subheading={pc(
+          "hero.subheading",
+          "A decade of teaching, building, and speaking turned into numbers, stories, and lasting partnerships.",
+        )}
         primaryTo="/contact"
-        primaryLabel="See How I Can Help"
+        primaryLabel={pc("hero.cta", "See How I Can Help")}
       />
 
-      <HubSection eyebrow="By the numbers" heading="Impact in action">
+      <HubSection
+        eyebrow={pc("stats.eyebrow", "By the numbers")}
+        heading={pc("stats.heading", "Impact in action")}
+      >
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {(stats ?? []).map((s: any) => (
             <div key={s.id} className="rounded-2xl border border-border bg-card p-6 text-center">
@@ -61,7 +100,10 @@ function ImpactHub() {
       </HubSection>
 
       {(testimonials?.length ?? 0) > 0 && (
-        <HubSection eyebrow="Voices" heading="What people say">
+        <HubSection
+          eyebrow={pc("testimonials.eyebrow", "Voices")}
+          heading={pc("testimonials.heading", "What people say")}
+        >
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {(testimonials ?? []).map((tm: any) => (
               <figure key={tm.id} className="rounded-2xl border border-border bg-card p-6">
@@ -91,7 +133,11 @@ function ImpactHub() {
       )}
 
       {featuredTalks.length > 0 && (
-        <HubSection eyebrow="Recognition" heading="Talks, keynotes & media" viewAllTo="/talks">
+        <HubSection
+          eyebrow={pc("talks.eyebrow", "Recognition")}
+          heading={pc("talks.heading", "Talks, keynotes & media")}
+          viewAllTo="/talks"
+        >
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {featuredTalks.map((t: any) => (
               <div key={t.id} className="rounded-2xl border border-border bg-card p-6">
@@ -107,7 +153,11 @@ function ImpactHub() {
       )}
 
       {partners.length > 0 && (
-        <HubSection eyebrow="Partners" heading="Trusted by universities and organizations" viewAllTo="/companies">
+        <HubSection
+          eyebrow={pc("partners.eyebrow", "Partners")}
+          heading={pc("partners.heading", "Trusted by universities and organizations")}
+          viewAllTo="/companies"
+        >
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {partners.map((p: any) => (
               <a key={p.id} href={p.website_url ?? "#"} target={p.website_url ? "_blank" : undefined} rel="noreferrer"
@@ -125,10 +175,13 @@ function ImpactHub() {
       )}
 
       <HubCTA
-        heading="Bring this impact to your team"
-        text="Whether you're an organization, university, or team — let's see what's possible."
+        heading={pc("cta.heading", "Bring this impact to your team")}
+        text={pc(
+          "cta.body",
+          "Whether you're an organization, university, or team, let's see what's possible.",
+        )}
         primaryTo="/contact"
-        primaryLabel="Start a Conversation"
+        primaryLabel={pc("cta.button", "Start a Conversation")}
         icon={Award}
       />
     </PublicLayout>
