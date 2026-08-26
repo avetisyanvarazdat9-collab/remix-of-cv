@@ -3,6 +3,9 @@ import { ArrowRight, Globe2 } from "lucide-react";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import heroPortrait from "@/assets/hero-portrait.jpg";
 import type { Tables } from "@/integrations/supabase/types";
+import { usePageContent } from "@/lib/page-content";
+
+const HOME_PAGE = "home";
 
 type FourDimension = Tables<"four_dimensions">;
 
@@ -30,7 +33,7 @@ function parseBullets(value: unknown): string[] {
   return [];
 }
 
-function toPillar(row: FourDimension): Pillar {
+function toPillar(row: FourDimension, ctaFallback: string): Pillar {
   const bullets = parseBullets(row.bullet_points);
   const lead = row.description?.trim() || bullets[0] || "";
   const listBullets = row.description?.trim() ? bullets : bullets.slice(1);
@@ -41,7 +44,7 @@ function toPillar(row: FourDimension): Pillar {
     lead,
     bullets: listBullets,
     to: row.cta_button_url?.trim() || null,
-    ctaLabel: row.cta_button_text?.trim() || "Learn More",
+    ctaLabel: row.cta_button_text?.trim() || ctaFallback,
     isTimeline: row.show_timeline_footer,
     image: row.image_url?.trim() || heroPortrait,
     imageAlt: row.image_alt?.trim() || row.title,
@@ -97,12 +100,14 @@ function TimelineFooter({
   pillar,
   countryCount,
   engagementCount,
+  timelineCtaFallback,
 }: {
   pillar: Pillar;
   countryCount: number;
   engagementCount: number;
+  timelineCtaFallback: string;
 }) {
-  const buttonText = pillar.timelineButtonText?.trim() || "View Timeline";
+  const buttonText = pillar.timelineButtonText?.trim() || timelineCtaFallback;
   const buttonUrl = pillar.timelineButtonUrl?.trim() || "/timeline";
 
   return (
@@ -132,10 +137,12 @@ function DimensionCard({
   pillar,
   countryCount,
   engagementCount,
+  timelineCtaFallback,
 }: {
   pillar: Pillar;
   countryCount: number;
   engagementCount: number;
+  timelineCtaFallback: string;
 }) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-[var(--surface-elevated)] shadow-[var(--shadow-card)] transition-shadow duration-300 hover:shadow-[var(--shadow-card-hover)]">
@@ -157,7 +164,12 @@ function DimensionCard({
         {pillar.lead && <p className="mt-2 text-sm leading-relaxed text-foreground/85">{pillar.lead}</p>}
         <PillarBullets bullets={pillar.bullets} />
         {pillar.isTimeline ? (
-          <TimelineFooter pillar={pillar} countryCount={countryCount} engagementCount={engagementCount} />
+          <TimelineFooter
+            pillar={pillar}
+            countryCount={countryCount}
+            engagementCount={engagementCount}
+            timelineCtaFallback={timelineCtaFallback}
+          />
         ) : (
           pillar.to && <PillarLink to={pillar.to} label={pillar.ctaLabel} />
         )}
@@ -175,10 +187,13 @@ export function FourDimensionsSection({
   countryCount: number;
   engagementCount: number;
 }) {
+  const { pc } = usePageContent(HOME_PAGE);
+  const ctaFallback = pc("four_dimensions.cta_fallback", "Learn More");
+  const timelineCtaFallback = pc("four_dimensions.timeline_cta_fallback", "View Timeline");
   const pillars = dimensions
     .slice()
     .sort((a, b) => a.display_order - b.display_order || a.dimension_number - b.dimension_number)
-    .map(toPillar);
+    .map((row) => toPillar(row, ctaFallback));
 
   if (pillars.length === 0) return null;
 
@@ -192,18 +207,27 @@ export function FourDimensionsSection({
       </div>
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <RevealOnScroll className="mx-auto max-w-2xl text-center">
-          <p className="section-eyebrow">Four Dimensions of Impact</p>
-          <h2 className="section-heading mt-3 text-3xl sm:text-4xl">Four worlds. One practitioner.</h2>
+          <p className="section-eyebrow">{pc("four_dimensions.eyebrow", "Four Dimensions of Impact")}</p>
+          <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
+            {pc("four_dimensions.heading", "Four worlds. One practitioner.")}
+          </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            Academic depth, industry execution, real teaching, and international perspective — combined in one
-            person.
+            {pc(
+              "four_dimensions.lead",
+              "Academic depth, industry execution, real teaching, and international perspective combined in one person.",
+            )}
           </p>
         </RevealOnScroll>
 
         <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:gap-7">
           {pillars.map((pillar, index) => (
             <RevealOnScroll key={pillar.dimensionLabel + pillar.title} delay={index * 80} className="min-w-0">
-              <DimensionCard pillar={pillar} countryCount={countryCount} engagementCount={engagementCount} />
+              <DimensionCard
+                pillar={pillar}
+                countryCount={countryCount}
+                engagementCount={engagementCount}
+                timelineCtaFallback={timelineCtaFallback}
+              />
             </RevealOnScroll>
           ))}
         </div>

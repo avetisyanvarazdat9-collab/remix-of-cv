@@ -146,7 +146,7 @@ function Home() {
   const JOURNEYS = [
     {
       icon: BookOpenCheck,
-      eyebrow: "Learn",
+      eyebrow: pc("journeys.learn.eyebrow", "Learn"),
       title: pc("journeys.learn.title", "Develop AI & Technology Skills"),
       text: pc("journeys.learn.body", "Courses, videos, and articles for AI beginners through practitioners."),
       cta: pc("journeys.learn.cta", "Explore Learning"),
@@ -154,7 +154,7 @@ function Home() {
     },
     {
       icon: Rocket,
-      eyebrow: "Transform",
+      eyebrow: pc("journeys.transform.eyebrow", "Transform"),
       title: pc("journeys.transform.title", "Transform Your Organization"),
       text: pc("journeys.transform.body", "Consulting, corporate training, AI adoption, and digital transformation."),
       cta: pc("journeys.transform.cta", "Transform With Me"),
@@ -162,7 +162,7 @@ function Home() {
     },
     {
       icon: Handshake,
-      eyebrow: "Collaborate",
+      eyebrow: pc("journeys.collaborate.eyebrow", "Collaborate"),
       title: pc("journeys.collaborate.title", "Research & Partnerships"),
       text: pc("journeys.collaborate.body", "Publications, speaking engagements, academic and industry collaborations."),
       cta: pc("journeys.collaborate.cta", "Let's Collaborate"),
@@ -170,7 +170,7 @@ function Home() {
     },
     {
       icon: Award,
-      eyebrow: "Impact",
+      eyebrow: pc("journeys.impact.eyebrow", "Impact"),
       title: pc("journeys.impact.title", "See the Measurable Impact"),
       text: pc("journeys.impact.body", "Awards, talks, media appearances, achievements, and partnerships."),
       cta: pc("journeys.impact.cta", "See the Impact"),
@@ -451,12 +451,15 @@ function Home() {
             <RevealOnScroll>
               <div className="rounded-3xl border border-border/60 bg-[var(--surface-muted)] p-8 shadow-[var(--shadow-card)] sm:p-12 lg:p-16">
                 <div className="mx-auto max-w-2xl text-center">
-                  <p className="section-eyebrow">Trusted by</p>
+                  <p className="section-eyebrow">{pc("partners.eyebrow", "Trusted by")}</p>
                   <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-                    Universities, Companies & Training Centers
+                    {pc("partners.heading", "Universities, Companies & Training Centers")}
                   </h2>
                   <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                    Organizations that I have worked with, taught at, collaborated with, or conducted research for.
+                    {pc(
+                      "partners.lead",
+                      "Organizations that I have worked with, taught at, collaborated with, or conducted research for.",
+                    )}
                   </p>
                 </div>
                 <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -483,7 +486,7 @@ function Home() {
                         </div>
                         <h3 className="mt-4 font-display text-base font-semibold tracking-tight text-foreground">{p.name}</h3>
                         <span className="mt-2.5 inline-flex items-center rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-xs font-medium text-primary">
-                          {p.category || "Partner"}
+                          {p.category || pc("partners.category_fallback", "Partner")}
                         </span>
                       </a>
                     </RevealOnScroll>
@@ -536,13 +539,13 @@ function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <RevealOnScroll className="mb-10 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
               <div>
-                <p className="section-eyebrow">Featured courses</p>
+                <p className="section-eyebrow">{pc("featured_courses.eyebrow", "Featured courses")}</p>
                 <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-                  Popular programs
+                  {pc("featured_courses.heading", "Popular programs")}
                 </h2>
               </div>
               <Link to="/learn" className="group inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80">
-                View all
+                {pc("featured_courses.view_all", "View all")}
                 <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
               </Link>
             </RevealOnScroll>
@@ -569,7 +572,7 @@ function Home() {
                       <h3 className="font-display text-base font-semibold tracking-tight text-foreground">{loc(c, "title")}</h3>
                       <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-muted-foreground">{loc(c, "description")}</p>
                       <Link to="/learn" className="group/link mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-primary transition-colors hover:text-primary/80">
-                        Learn more
+                        {pc("featured_courses.card_cta", "Learn more")}
                         <ArrowRight className="size-4 transition-transform duration-200 group-hover/link:translate-x-0.5" />
                       </Link>
                     </div>
@@ -599,9 +602,9 @@ function Home() {
         </div>
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
           <RevealOnScroll className="mx-auto max-w-2xl text-center">
-            <p className="section-eyebrow">Choose your journey</p>
+            <p className="section-eyebrow">{pc("journeys.section.eyebrow", "Choose your journey")}</p>
             <h2 className="section-heading mt-3 text-4xl sm:text-5xl">
-              Where would you like to go next?
+              {pc("journeys.section.heading", "Where would you like to go next?")}
             </h2>
           </RevealOnScroll>
           <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
