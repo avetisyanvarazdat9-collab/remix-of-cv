@@ -190,7 +190,7 @@ function Home() {
   const loc = useLocalized();
 
   const profileName = (loc(profile, "name") as string) || profile?.name || SITE_BRAND_NAME;
-  const heroBadge = (loc(content, "hero_badge") as string) || "";
+  const heroBadge = ((loc(content, "hero_badge") as string) || "").trim();
 
   const stats = (statsRows ?? []).map((s: any) => ({
     label: (loc(s, "label") as string) || s.label,
@@ -271,7 +271,7 @@ function Home() {
               className="animate-fade-in-up text-sm font-medium tracking-wide text-muted-foreground"
               style={{ animationDelay: "20ms" }}
             >
-              {profileName}.
+              {profileName}
             </p>
             {heroBadge && (
             <span
@@ -314,7 +314,7 @@ function Home() {
                 to="/learn"
                 className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--primary)_60%,transparent)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 sm:w-auto sm:min-w-[11.5rem]"
               >
-                {pc("hero.cta1", "Explore Courses")} <ArrowRight className="size-4 shrink-0" />
+                {pc("hero.cta1", "Explore Courses")}
               </Link>
               <Link
                 to="/transform"
@@ -362,8 +362,7 @@ function Home() {
           </RevealOnScroll>
           <RevealOnScroll className="lg:col-span-2" delay={120}>
             <div className="premium-card glass p-8 sm:p-9">
-              <p className="section-eyebrow">{pc("about.brief.eyebrow", "In brief")}</p>
-              <ul className="mt-5 space-y-4 text-sm text-foreground">
+              <ul className="space-y-4 text-sm text-foreground">
                 <li className="flex items-start gap-3">
                   <span className="icon-badge mt-0.5 size-8 shrink-0"><GraduationCap className="size-4" /></span>
                   {pc("about.highlight.0", "PhD in Computer Engineering")}
