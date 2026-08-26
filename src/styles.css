@@ -52,7 +52,7 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.25rem;
   /* Premium AI light theme
      Deep Blue #0F172A · AI Purple #6D28D9 · Cyan #06B6D4 */
   --background: oklch(1 0 0);
@@ -280,6 +280,9 @@
 @utility animate-marquee {
   animation: marquee 30s linear infinite;
 }
+@utility animate-marquee-reverse {
+  animation: marquee 30s linear infinite reverse;
+}
 
 /* --- Scroll reveal -------------------------------------------------------- */
 
@@ -323,7 +326,7 @@
 
 @utility premium-card {
   max-width: 100%;
-  border-radius: 1rem;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface-elevated);
   box-shadow: var(--shadow-card);
@@ -342,7 +345,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.625rem;
+  border-radius: var(--radius-sm);
   background: color-mix(in oklab, var(--primary) 10%, transparent);
   color: var(--primary);
   transition:

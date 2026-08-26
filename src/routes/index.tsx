@@ -140,6 +140,47 @@ function StatBlock({ value, label }: { value: string; label: string }) {
   );
 }
 
+function PartnerMarqueeLogo({ partner }: { partner: { id: string; name?: string; logo_url?: string; website_url?: string } }) {
+  return (
+    <a
+      href={partner.website_url || undefined}
+      target={partner.website_url ? "_blank" : undefined}
+      rel={partner.website_url ? "noopener noreferrer" : undefined}
+      className="flex min-w-[220px] shrink-0 items-center justify-center px-6 sm:min-w-[240px] lg:min-w-[280px]"
+    >
+      {partner.logo_url ? (
+        <img src={partner.logo_url} alt="" className="max-h-12 w-auto object-contain sm:max-h-14" />
+      ) : (
+        <div className="icon-badge size-10 text-base font-bold">{partner.name?.slice(0, 1)}</div>
+      )}
+    </a>
+  );
+}
+
+function PartnerMarqueeRow({
+  partners,
+  reverse = false,
+  rowKey,
+}: {
+  partners: { id: string; name?: string; logo_url?: string; website_url?: string }[];
+  reverse?: boolean;
+  rowKey: string;
+}) {
+  const track = [...partners, ...partners];
+
+  return (
+    <div className="overflow-hidden">
+      <div
+        className={`flex w-max items-center gap-10 lg:gap-12 ${reverse ? "animate-marquee-reverse" : "animate-marquee"}`}
+      >
+        {track.map((p, i) => (
+          <PartnerMarqueeLogo key={`${rowKey}-${p.id}-${i}`} partner={p} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Home() {
   const { pc } = usePageContent(HOME_PAGE);
 
@@ -603,29 +644,9 @@ function Home() {
                     )}
                   </p>
                 </div>
-                <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {visiblePartners.map((p: any, i: number) => (
-                    <RevealOnScroll key={p.id} delay={i * 60} className="h-full min-w-0">
-                      <a
-                        href={p.website_url || undefined}
-                        target={p.website_url ? "_blank" : undefined}
-                        rel={p.website_url ? "noopener noreferrer" : undefined}
-                        className="flex h-full min-h-[7rem] items-center justify-center rounded-2xl bg-muted p-10"
-                      >
-                        {p.logo_url ? (
-                          <img
-                            src={p.logo_url}
-                            alt=""
-                            className="max-h-16 w-auto object-contain sm:max-h-20"
-                          />
-                        ) : (
-                          <div className="icon-badge size-12 text-lg font-bold">
-                            {p.name?.slice(0, 1)}
-                          </div>
-                        )}
-                      </a>
-                    </RevealOnScroll>
-                  ))}
+                <div className="-mx-4 mt-14 space-y-6 overflow-hidden sm:-mx-6 lg:-mx-8">
+                  <PartnerMarqueeRow partners={visiblePartners} rowKey="trusted-row-1" />
+                  <PartnerMarqueeRow partners={visiblePartners} reverse rowKey="trusted-row-2" />
                 </div>
               </div>
             </RevealOnScroll>
