@@ -376,7 +376,7 @@ function Home() {
 
 
       {/* ================ SECTION 2 · TRUST & CREDIBILITY ================ */}
-      <section className="relative overflow-hidden bg-background py-24 sm:py-28">
+      <section className="section-divider section-surface relative overflow-hidden py-24 sm:py-28">
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           <div
             className="ambient-orb left-0 bottom-0 size-[360px] -translate-x-1/4 bg-accent/10"
@@ -401,7 +401,7 @@ function Home() {
       </section>
 
       {/* ================ SECTION 3 · MEET DR. VARAZDAT ================ */}
-      <section className="section-divider section-surface py-24 sm:py-28">
+      <section className="section-divider bg-background py-24 sm:py-28">
         <div className="mx-auto grid max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-5 lg:items-center lg:gap-16">
           <RevealOnScroll className="lg:col-span-3">
             <p className="section-eyebrow">{pc("about.eyebrow", "Meet Dr. Varazdat")}</p>
@@ -478,7 +478,7 @@ function Home() {
       />
 
       {/* ================ SECTION 5 · AREAS OF EXPERTISE ================ */}
-      <section className="section-divider section-surface py-24 sm:py-28">
+      <section className="section-divider bg-background py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <RevealOnScroll className="mx-auto max-w-2xl text-center">
             <p className="section-eyebrow">{pc("expertise.eyebrow", "Areas of expertise")}</p>
@@ -506,7 +506,7 @@ function Home() {
 
       {/* ================ SECTION 6 · FEATURED COURSES ================ */}
       {featuredCourses.length > 0 && (
-        <section className="section-divider bg-background pb-24">
+        <section className="section-divider section-surface pb-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <RevealOnScroll className="mb-10 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
               <div>
@@ -556,7 +556,7 @@ function Home() {
       )}
 
       {/* ================ SECTION 7 · CHOOSE YOUR JOURNEY ================ */}
-      <section className="relative overflow-hidden bg-background py-28 sm:py-32">
+      <section className="section-divider bg-background relative overflow-hidden py-28 sm:py-32">
         <div
           aria-hidden
           className="absolute inset-0 opacity-50"
@@ -604,11 +604,10 @@ function Home() {
 
       {/* ================ SECTION 8 · TRUSTED BY ================ */}
       {visiblePartners.length > 0 && (
-        <section className="section-divider bg-background py-24 sm:py-28 lg:py-32">
+        <section className="section-divider section-surface py-24 sm:py-28 lg:py-32">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <RevealOnScroll>
-              <div className="rounded-3xl border border-border/60 bg-[var(--surface-muted)] p-8 shadow-[var(--shadow-card)] sm:p-12 lg:p-16">
-                <div className="grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
+              <div className="grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
                   <div>
                     <p className="section-eyebrow">{pc("partners.eyebrow", "Trusted by")}</p>
                     <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
@@ -627,7 +626,6 @@ function Home() {
                     ))}
                   </div>
                 </div>
-              </div>
             </RevealOnScroll>
           </div>
         </section>
@@ -635,7 +633,7 @@ function Home() {
 
       {/* ================ SECTION 9 · TESTIMONIALS ================ */}
       {(testimonials?.length ?? 0) > 0 && (
-        <section className="section-surface pb-24 pt-4">
+        <section className="section-divider bg-background pb-24 pt-4">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {(testimonials ?? []).slice(0, 3).map((tm: any, i: number) => (

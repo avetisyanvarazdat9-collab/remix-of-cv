@@ -198,7 +198,7 @@ export function FourDimensionsSection({
   if (pillars.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden bg-background py-24 sm:py-28">
+    <section className="section-divider section-surface relative overflow-hidden py-24 sm:py-28">
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
         <div
           className="ambient-orb right-0 top-0 size-[420px] translate-x-1/4 bg-primary/8"
