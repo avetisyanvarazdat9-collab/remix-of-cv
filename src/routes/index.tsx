@@ -146,7 +146,7 @@ function PartnerMarqueeLogo({ partner }: { partner: { id: string; name?: string;
       href={partner.website_url || undefined}
       target={partner.website_url ? "_blank" : undefined}
       rel={partner.website_url ? "noopener noreferrer" : undefined}
-      className="flex min-w-[220px] shrink-0 items-center justify-center px-6 sm:min-w-[240px] lg:min-w-[280px]"
+      className="flex w-full items-center justify-center px-4 py-2"
     >
       {partner.logo_url ? (
         <img src={partner.logo_url} alt="" className="max-h-12 w-auto object-contain sm:max-h-14" />
@@ -154,30 +154,6 @@ function PartnerMarqueeLogo({ partner }: { partner: { id: string; name?: string;
         <div className="icon-badge size-10 text-base font-bold">{partner.name?.slice(0, 1)}</div>
       )}
     </a>
-  );
-}
-
-function PartnerMarqueeRow({
-  partners,
-  reverse = false,
-  rowKey,
-}: {
-  partners: { id: string; name?: string; logo_url?: string; website_url?: string }[];
-  reverse?: boolean;
-  rowKey: string;
-}) {
-  const track = [...partners, ...partners];
-
-  return (
-    <div className="overflow-hidden">
-      <div
-        className={`flex w-max items-center gap-10 lg:gap-12 ${reverse ? "animate-marquee-reverse" : "animate-marquee"}`}
-      >
-        {track.map((p, i) => (
-          <PartnerMarqueeLogo key={`${rowKey}-${p.id}-${i}`} partner={p} />
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -644,9 +620,10 @@ function Home() {
                     )}
                   </p>
                 </div>
-                <div className="-mx-4 mt-14 space-y-6 overflow-hidden sm:-mx-6 lg:-mx-8">
-                  <PartnerMarqueeRow partners={visiblePartners} rowKey="trusted-row-1" />
-                  <PartnerMarqueeRow partners={visiblePartners} reverse rowKey="trusted-row-2" />
+                <div className="mt-14 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-4 lg:gap-10">
+                  {visiblePartners.map((p: any) => (
+                    <PartnerMarqueeLogo key={p.id} partner={p} />
+                  ))}
                 </div>
               </div>
             </RevealOnScroll>
