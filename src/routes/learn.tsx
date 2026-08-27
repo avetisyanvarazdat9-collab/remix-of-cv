@@ -116,11 +116,10 @@ function LearnHub() {
       >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {featuredVideos.map((v: any) => (
-            <a
+            <Link
               key={v.id}
-              href={v.video_url || "#"}
-              target="_blank"
-              rel="noreferrer"
+              to="/video-courses/$slug"
+              params={{ slug: v.slug }}
               className="group overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40"
             >
               <VideoThumbnail
@@ -135,7 +134,7 @@ function LearnHub() {
                   <p className="mt-1 text-xs text-muted-foreground">{loc(v, "platform")}</p>
                 )}
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </HubSection>
