@@ -100,7 +100,7 @@ function LearnHub() {
               <div className="flex flex-1 flex-col p-5">
                 <h3 className="font-display text-base font-semibold text-foreground">{loc(c, "title")}</h3>
                 <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{loc(c, "description")}</p>
-                <Link to="/courses" className="mt-auto pt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
+                <Link to="/courses/$slug" params={{ slug: c.slug }} className="mt-auto pt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
                   {pc("courses.card_cta", "Learn more")} <ArrowRight className="size-4" />
                 </Link>
               </div>
