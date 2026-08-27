@@ -790,6 +790,7 @@ export type Database = {
           logo_url: string | null
           primary_color: string
           text_color: string
+          theme_mode: string
           updated_at: string
         }
         Insert: {
@@ -799,6 +800,7 @@ export type Database = {
           logo_url?: string | null
           primary_color?: string
           text_color?: string
+          theme_mode?: string
           updated_at?: string
         }
         Update: {
@@ -808,6 +810,7 @@ export type Database = {
           logo_url?: string | null
           primary_color?: string
           text_color?: string
+          theme_mode?: string
           updated_at?: string
         }
         Relationships: []

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
-import { clearTheme } from "@/lib/theme-derive";
+import { THEME_MODE_CHANGE_EVENT } from "@/lib/theme-derive";
 
 const STORAGE_KEY = "lovable.darkMode.v1";
 
@@ -13,11 +13,7 @@ function apply(mode: "light" | "dark") {
   const root = document.documentElement;
   root.classList.toggle("dark", mode === "dark");
   root.style.colorScheme = mode;
-  if (mode === "dark") {
-    clearTheme(root);
-  } else {
-    window.dispatchEvent(new CustomEvent("lovable:theme-light"));
-  }
+  window.dispatchEvent(new CustomEvent(THEME_MODE_CHANGE_EVENT));
 }
 
 export function ThemeToggle({ className = "" }: { className?: string }) {

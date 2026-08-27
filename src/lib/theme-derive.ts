@@ -8,6 +8,17 @@ export type ThemeInput = {
   text: string;
 };
 
+export type ThemeMode = "light" | "dark";
+
+export const THEME_MODE_CHANGE_EVENT = "lovable:theme-mode-change";
+
+export type SiteThemeSettings = {
+  primary_color: string;
+  background_color: string;
+  text_color: string;
+  theme_mode: ThemeMode;
+};
+
 type RGB = { r: number; g: number; b: number };
 
 function hexToRgb(hex: string): RGB {
@@ -37,6 +48,32 @@ function luminance({ r, g, b }: RGB): number {
 function rgba(hex: string, alpha: number): string {
   const { r, g, b } = hexToRgb(hex);
   return `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${alpha})`;
+}
+
+export function inferThemeModeFromBackground(background: string): ThemeMode {
+  return luminance(hexToRgb(background)) > 0.5 ? "light" : "dark";
+}
+
+export function getVisitorThemeMode(root: HTMLElement): ThemeMode {
+  return root.classList.contains("dark") ? "dark" : "light";
+}
+
+export function clearThemeOverrides(root: HTMLElement) {
+  const vars = deriveTheme({ primary: "#000000", background: "#ffffff", text: "#000000" });
+  for (const k of Object.keys(vars)) {
+    root.style.removeProperty(k);
+  }
+}
+
+export function syncSiteTheme(root: HTMLElement, settings: SiteThemeSettings | null) {
+  clearThemeOverrides(root);
+  if (!settings) return;
+  if (getVisitorThemeMode(root) !== settings.theme_mode) return;
+  applyTheme(root, {
+    primary: settings.primary_color,
+    background: settings.background_color,
+    text: settings.text_color,
+  }, { preserveColorScheme: true });
 }
 
 export function deriveTheme(theme: ThemeInput): Record<string, string> {
@@ -92,20 +129,18 @@ export function deriveTheme(theme: ThemeInput): Record<string, string> {
   };
 }
 
-export function applyTheme(root: HTMLElement, theme: ThemeInput) {
+export function applyTheme(root: HTMLElement, theme: ThemeInput, opts?: { preserveColorScheme?: boolean }) {
   const vars = deriveTheme(theme);
   for (const [k, v] of Object.entries(vars)) {
     root.style.setProperty(k, v);
   }
-  // Help built-in form controls and scrollbars match.
-  const isLight = luminance(hexToRgb(theme.background)) > 0.5;
-  root.style.colorScheme = isLight ? "light" : "dark";
+  if (!opts?.preserveColorScheme) {
+    const isLight = luminance(hexToRgb(theme.background)) > 0.5;
+    root.style.colorScheme = isLight ? "light" : "dark";
+  }
 }
 
 export function clearTheme(root: HTMLElement) {
-  const vars = deriveTheme({ primary: "#000000", background: "#ffffff", text: "#000000" });
-  for (const k of Object.keys(vars)) {
-    root.style.removeProperty(k);
-  }
+  clearThemeOverrides(root);
   root.style.removeProperty("colorScheme");
 }
