@@ -146,10 +146,10 @@ function PartnerMarqueeLogo({ partner }: { partner: { id: string; name?: string;
       href={partner.website_url || undefined}
       target={partner.website_url ? "_blank" : undefined}
       rel={partner.website_url ? "noopener noreferrer" : undefined}
-      className="flex w-full items-center justify-center px-4 py-2"
+      className="flex items-center justify-center rounded-xl bg-muted p-5 sm:rounded-2xl sm:p-6"
     >
       {partner.logo_url ? (
-        <img src={partner.logo_url} alt="" className="max-h-12 w-auto object-contain sm:max-h-14" />
+        <img src={partner.logo_url} alt="" className="max-h-10 w-auto object-contain sm:max-h-12" />
       ) : (
         <div className="icon-badge size-10 text-base font-bold">{partner.name?.slice(0, 1)}</div>
       )}
@@ -608,22 +608,24 @@ function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <RevealOnScroll>
               <div className="rounded-3xl border border-border/60 bg-[var(--surface-muted)] p-8 shadow-[var(--shadow-card)] sm:p-12 lg:p-16">
-                <div className="mx-auto max-w-2xl text-center">
-                  <p className="section-eyebrow">{pc("partners.eyebrow", "Trusted by")}</p>
-                  <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
-                    {pc("partners.heading", "Universities, Companies & Training Centers")}
-                  </h2>
-                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                    {pc(
-                      "partners.lead",
-                      "Organizations that I have worked with, taught at, collaborated with, or conducted research for.",
-                    )}
-                  </p>
-                </div>
-                <div className="mt-14 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-4 lg:gap-10">
-                  {visiblePartners.map((p: any) => (
-                    <PartnerMarqueeLogo key={p.id} partner={p} />
-                  ))}
+                <div className="grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
+                  <div>
+                    <p className="section-eyebrow">{pc("partners.eyebrow", "Trusted by")}</p>
+                    <h2 className="section-heading mt-3 text-3xl sm:text-4xl">
+                      {pc("partners.heading", "Universities, Companies & Training Centers")}
+                    </h2>
+                    <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                      {pc(
+                        "partners.lead",
+                        "Organizations that I have worked with, taught at, collaborated with, or conducted research for.",
+                      )}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
+                    {visiblePartners.map((p: any) => (
+                      <PartnerMarqueeLogo key={p.id} partner={p} />
+                    ))}
+                  </div>
                 </div>
               </div>
             </RevealOnScroll>
