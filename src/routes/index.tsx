@@ -542,7 +542,7 @@ function Home() {
                     <div className="flex flex-1 flex-col p-6">
                       <h3 className="font-display text-base font-semibold tracking-tight text-foreground">{loc(c, "title")}</h3>
                       <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-muted-foreground">{loc(c, "description")}</p>
-                      <Link to="/learn" className="group/link mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-primary transition-colors hover:text-primary/80">
+                      <Link to="/courses/$slug" params={{ slug: c.slug }} className="group/link mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-primary transition-colors hover:text-primary/80">
                         {pc("featured_courses.card_cta", "Learn more")}
                         <ArrowRight className="size-4 transition-transform duration-200 group-hover/link:translate-x-0.5" />
                       </Link>
