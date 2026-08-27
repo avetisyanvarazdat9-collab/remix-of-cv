@@ -16,11 +16,16 @@ function normalizeThemeMode(value: string | null | undefined): ThemeMode {
 
 async function load() {
   const root = document.documentElement;
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("site_settings")
     .select("primary_color, background_color, text_color, theme_mode")
     .eq("id", true)
     .maybeSingle();
+
+  if (error) {
+    console.error("[ThemeApplier] Failed to load site_settings:", error);
+    return;
+  }
 
   const settings: SiteThemeSettings | null = data
     ? {
@@ -67,9 +72,14 @@ export function ThemeApplier() {
       .subscribe();
     const onModeChange = () => load();
     window.addEventListener(THEME_MODE_CHANGE_EVENT, onModeChange);
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === STORAGE_KEY) load();
+    };
+    window.addEventListener("storage", onStorage);
     return () => {
       supabase.removeChannel(channel);
       window.removeEventListener(THEME_MODE_CHANGE_EVENT, onModeChange);
+      window.removeEventListener("storage", onStorage);
     };
   }, []);
   return null;

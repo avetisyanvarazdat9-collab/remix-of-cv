@@ -4,9 +4,12 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
   applyTheme,
+  deriveTheme,
   inferThemeModeFromBackground,
   type ThemeMode,
 } from "@/lib/theme-derive";
+
+const THEME_STORAGE_KEY = "lovable.theme.v1";
 
 export const Route = createFileRoute("/_authenticated/admin/theme")({
   head: () => ({ meta: [{ title: "Theme Admin" }] }),
@@ -103,7 +106,22 @@ function ThemeEditor() {
       .upsert({ id: true, ...colors }, { onConflict: "id" });
     setSaving(false);
     if (error) return toast.error(error.message);
-    toast.success("Theme saved and applied site-wide");
+    try {
+      localStorage.setItem(
+        THEME_STORAGE_KEY,
+        JSON.stringify({
+          vars: deriveTheme({
+            primary: colors.primary_color,
+            background: colors.background_color,
+            text: colors.text_color,
+          }),
+          themeMode: colors.theme_mode,
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+    toast.success("Theme saved. Visitors will see it on their next page load or refresh.");
   }
 
   function reset() {
