@@ -111,7 +111,7 @@ function TimelineFooter({
   const buttonUrl = pillar.timelineButtonUrl?.trim() || "/timeline";
 
   return (
-    <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-border/60 pt-4">
+    <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-border/60 pt-4 sm:mt-auto">
       <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-xs font-medium text-primary">
         <Globe2 className="size-3.5" />
         {formatBadgeText(pillar.badgeText, countryCount)}
@@ -121,7 +121,7 @@ function TimelineFooter({
       </span>
       <Link
         to={buttonUrl as never}
-        className="hover-lift-sm ml-auto inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground"
+        className="hover-lift-sm inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground sm:ml-auto"
       >
         {buttonText} <ArrowRight className="size-4" />
       </Link>
@@ -145,23 +145,23 @@ function DimensionCard({
   timelineCtaFallback: string;
 }) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-[var(--surface-elevated)] shadow-[var(--shadow-card)] transition-shadow duration-300 hover:shadow-[var(--shadow-card-hover)]">
-      <div className="relative aspect-[16/10] shrink-0 overflow-hidden">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-[var(--surface-elevated)] shadow-[var(--shadow-card)] transition-shadow duration-300 hover:shadow-[var(--shadow-card-hover)] sm:flex-row sm:items-stretch">
+      <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden sm:aspect-auto sm:w-2/5">
         <img
           src={pillar.image}
           alt={pillar.imageAlt}
           loading="lazy"
           decoding="async"
-          className={`h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] ${imageObjectPosition(pillar.dimensionNumber)}`}
+          className={`h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] sm:absolute sm:inset-0 ${imageObjectPosition(pillar.dimensionNumber)}`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/25 to-transparent sm:bg-gradient-to-r sm:from-background/20 sm:to-transparent" />
       </div>
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
+      <div className="flex min-w-0 flex-1 flex-col p-5 sm:justify-center sm:p-5 sm:py-4">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">{pillar.dimensionLabel}</p>
-        <h3 className="mt-2 font-display text-xl font-semibold tracking-tight text-foreground sm:text-[1.35rem]">
+        <h3 className="mt-2 font-display text-xl font-semibold tracking-tight text-foreground sm:text-[1.25rem]">
           {pillar.title}
         </h3>
-        {pillar.lead && <p className="mt-2 text-sm leading-relaxed text-foreground/85">{pillar.lead}</p>}
+        {pillar.lead && <p className="mt-1.5 text-sm leading-relaxed text-foreground/85">{pillar.lead}</p>}
         <PillarBullets bullets={pillar.bullets} />
         {pillar.isTimeline ? (
           <TimelineFooter
