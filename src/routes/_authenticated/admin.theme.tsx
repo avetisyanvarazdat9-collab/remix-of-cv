@@ -111,6 +111,10 @@ function formToDbPayload(form: ThemeFormState) {
   };
 }
 
+function customPaletteState(colors: ThemePalette): ModePaletteState {
+  return { useDefault: false, colors };
+}
+
 function PreviewCard({
   label,
   palette,
@@ -167,18 +171,18 @@ function ModeSection({
   presets: Preset[];
   onChange: (next: ModePaletteState) => void;
 }) {
+  function activateCustomColors() {
+    if (state.useDefault) {
+      onChange({ useDefault: false, colors: state.colors });
+    }
+  }
+
   function patchColor(key: keyof ThemePalette, value: string) {
-    onChange({
-      useDefault: false,
-      colors: { ...state.colors, [key]: value },
-    });
+    onChange(customPaletteState({ ...state.colors, [key]: value }));
   }
 
   function applyPreset(colors: PresetColors) {
-    onChange({
-      useDefault: false,
-      colors: presetToPalette(colors),
-    });
+    onChange(customPaletteState(presetToPalette(colors)));
   }
 
   return (
@@ -196,7 +200,7 @@ function ModeSection({
         Use site default
       </label>
 
-      <div className={`mt-4 grid gap-4 sm:grid-cols-3 ${state.useDefault ? "pointer-events-none opacity-50" : ""}`}>
+      <div className={`mt-4 grid gap-4 sm:grid-cols-3 ${state.useDefault ? "opacity-50" : ""}`}>
         {COLOR_FIELDS.map((field) => (
           <label key={field.key} className="block">
             <span className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">
@@ -206,15 +210,16 @@ function ModeSection({
               <input
                 type="color"
                 value={state.colors[field.key]}
+                onFocus={activateCustomColors}
                 onChange={(e) => patchColor(field.key, e.target.value)}
-                disabled={state.useDefault}
                 className="size-10 cursor-pointer rounded border-0 bg-transparent p-0"
               />
               <input
                 type="text"
                 value={state.colors[field.key]}
+                onFocus={activateCustomColors}
                 onChange={(e) => patchColor(field.key, e.target.value)}
-                disabled={state.useDefault}
+                readOnly={state.useDefault}
                 className="flex-1 bg-transparent text-sm outline-none"
                 spellCheck={false}
               />
