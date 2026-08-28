@@ -12,12 +12,51 @@ export type ThemeMode = "light" | "dark";
 
 export const THEME_MODE_CHANGE_EVENT = "lovable:theme-mode-change";
 
-export type SiteThemeSettings = {
-  primary_color: string;
-  background_color: string;
-  text_color: string;
-  theme_mode: ThemeMode;
+export type ThemePalette = {
+  primary: string;
+  background: string;
+  text: string;
 };
+
+export type SiteThemeSettings = {
+  light_primary_color: string | null;
+  light_background_color: string | null;
+  light_text_color: string | null;
+  dark_primary_color: string | null;
+  dark_background_color: string | null;
+  dark_text_color: string | null;
+};
+
+function paletteForMode(settings: SiteThemeSettings, mode: ThemeMode): ThemePalette | null {
+  if (mode === "dark") {
+    const { dark_primary_color, dark_background_color, dark_text_color } = settings;
+    if (dark_primary_color && dark_background_color && dark_text_color) {
+      return {
+        primary: dark_primary_color,
+        background: dark_background_color,
+        text: dark_text_color,
+      };
+    }
+    return null;
+  }
+
+  const { light_primary_color, light_background_color, light_text_color } = settings;
+  if (light_primary_color && light_background_color && light_text_color) {
+    return {
+      primary: light_primary_color,
+      background: light_background_color,
+      text: light_text_color,
+    };
+  }
+  return null;
+}
+
+export function getActivePaletteForMode(
+  settings: SiteThemeSettings,
+  mode: ThemeMode,
+): ThemePalette | null {
+  return paletteForMode(settings, mode);
+}
 
 type RGB = { r: number; g: number; b: number };
 
@@ -68,12 +107,11 @@ export function clearThemeOverrides(root: HTMLElement) {
 export function syncSiteTheme(root: HTMLElement, settings: SiteThemeSettings | null) {
   clearThemeOverrides(root);
   if (!settings) return;
-  if (getVisitorThemeMode(root) !== settings.theme_mode) return;
-  applyTheme(root, {
-    primary: settings.primary_color,
-    background: settings.background_color,
-    text: settings.text_color,
-  }, { preserveColorScheme: true });
+
+  const palette = paletteForMode(settings, getVisitorThemeMode(root));
+  if (!palette) return;
+
+  applyTheme(root, palette, { preserveColorScheme: true });
 }
 
 export function deriveTheme(theme: ThemeInput): Record<string, string> {

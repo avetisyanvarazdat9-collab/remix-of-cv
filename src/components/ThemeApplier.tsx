@@ -2,23 +2,22 @@ import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   deriveTheme,
+  getActivePaletteForMode,
+  getVisitorThemeMode,
   syncSiteTheme,
   THEME_MODE_CHANGE_EVENT,
   type SiteThemeSettings,
-  type ThemeMode,
 } from "@/lib/theme-derive";
 
 const STORAGE_KEY = "lovable.theme.v1";
-
-function normalizeThemeMode(value: string | null | undefined): ThemeMode {
-  return value === "light" ? "light" : "dark";
-}
 
 async function load() {
   const root = document.documentElement;
   const { data, error } = await supabase
     .from("site_settings")
-    .select("primary_color, background_color, text_color, theme_mode")
+    .select(
+      "light_primary_color, light_background_color, light_text_color, dark_primary_color, dark_background_color, dark_text_color",
+    )
     .eq("id", true)
     .maybeSingle();
 
@@ -29,26 +28,26 @@ async function load() {
 
   const settings: SiteThemeSettings | null = data
     ? {
-        primary_color: data.primary_color,
-        background_color: data.background_color,
-        text_color: data.text_color,
-        theme_mode: normalizeThemeMode(data.theme_mode),
+        light_primary_color: data.light_primary_color,
+        light_background_color: data.light_background_color,
+        light_text_color: data.light_text_color,
+        dark_primary_color: data.dark_primary_color,
+        dark_background_color: data.dark_background_color,
+        dark_text_color: data.dark_text_color,
       }
     : null;
 
   syncSiteTheme(root, settings);
 
   try {
-    if (settings) {
+    const visitorMode = getVisitorThemeMode(root);
+    const palette = settings ? getActivePaletteForMode(settings, visitorMode) : null;
+    if (palette) {
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify({
-          vars: deriveTheme({
-            primary: settings.primary_color,
-            background: settings.background_color,
-            text: settings.text_color,
-          }),
-          themeMode: settings.theme_mode,
+          vars: deriveTheme(palette),
+          themeMode: visitorMode,
         }),
       );
     } else {
