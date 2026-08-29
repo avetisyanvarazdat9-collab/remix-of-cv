@@ -6,16 +6,41 @@ import { talksQuery } from "@/lib/queries";
 import { formatDate } from "@/lib/format-date";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
+
+const TALKS_PAGE = "talks";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
 
 export const Route = createFileRoute("/talks")({
-  head: () =>
-    buildPageHead({
-      title: "Talks & Events — Dr. Varazdat Avetisyan",
-      description:
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(talksQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(TALKS_PAGE)),
+    ]);
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(TALKS_PAGE));
+    return { pageContent };
+  },
+  head: ({ loaderData }) => {
+    const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
+    return buildPageHead({
+      title: pageContentLookup(pageContent, "seo.title", "Talks & Events Dr. Varazdat Avetisyan"),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
         "Speaking engagements, conferences, workshops, and public events featuring Dr. Varazdat Avetisyan.",
+      ),
       path: "/talks",
-    }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(talksQuery),
+    });
+  },
   component: TalksPage,
 });
 

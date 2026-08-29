@@ -4,16 +4,41 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { projectsQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
+
+const PROJECTS_PAGE = "projects";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
 
 export const Route = createFileRoute("/projects")({
-  head: () =>
-    buildPageHead({
-      title: "Projects — Dr. Varazdat Avetisyan",
-      description:
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(projectsQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(PROJECTS_PAGE)),
+    ]);
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(PROJECTS_PAGE));
+    return { pageContent };
+  },
+  head: ({ loaderData }) => {
+    const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
+    return buildPageHead({
+      title: pageContentLookup(pageContent, "seo.title", "Projects Dr. Varazdat Avetisyan"),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
         "Research and engineering projects in artificial intelligence, machine learning, and data science by Dr. Varazdat Avetisyan.",
+      ),
       path: "/projects",
-    }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(projectsQuery),
+    });
+  },
   component: ProjectsLayout,
 });
 

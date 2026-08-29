@@ -5,16 +5,41 @@ import { blogQuery } from "@/lib/queries";
 import { formatDate } from "@/lib/format-date";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
+
+const BLOG_PAGE = "blog";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
 
 export const Route = createFileRoute("/blog")({
-  head: () =>
-    buildPageHead({
-      title: "Blog — Dr. Varazdat Avetisyan",
-      description:
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(blogQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(BLOG_PAGE)),
+    ]);
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(BLOG_PAGE));
+    return { pageContent };
+  },
+  head: ({ loaderData }) => {
+    const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
+    return buildPageHead({
+      title: pageContentLookup(pageContent, "seo.title", "Blog Dr. Varazdat Avetisyan"),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
         "Articles and insights on artificial intelligence, machine learning, generative AI, and data science by Dr. Varazdat Avetisyan.",
+      ),
       path: "/blog",
-    }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(blogQuery),
+    });
+  },
   component: BlogLayout,
 });
 

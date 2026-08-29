@@ -5,17 +5,42 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { coursesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
 import type { Tables } from "@/integrations/supabase/types";
 
+const COURSES_PAGE = "courses";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
+
 export const Route = createFileRoute("/courses")({
-  head: () =>
-    buildPageHead({
-      title: "Courses — Dr. Varazdat Avetisyan",
-      description:
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(coursesQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(COURSES_PAGE)),
+    ]);
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(COURSES_PAGE));
+    return { pageContent };
+  },
+  head: ({ loaderData }) => {
+    const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
+    return buildPageHead({
+      title: pageContentLookup(pageContent, "seo.title", "Courses Dr. Varazdat Avetisyan"),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
         "Structured in-person courses on AI, generative AI, machine learning, and data science taught by Dr. Varazdat Avetisyan.",
+      ),
       path: "/courses",
-    }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(coursesQuery),
+    });
+  },
   component: CoursesLayout,
 });
 
