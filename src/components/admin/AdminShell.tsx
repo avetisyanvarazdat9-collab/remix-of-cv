@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History, Layers, Share2, Languages, Rocket, TrendingUp, Handshake, ScrollText, Landmark } from "lucide-react";
+import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History, Layers, Share2, Languages, Rocket, TrendingUp, Handshake, ScrollText, Landmark, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
@@ -37,6 +37,7 @@ const items: NavItem[] = [
   { to: "/admin/site-text", label: "Site Text", icon: Languages },
   { to: "/admin/theme", label: "Theme", icon: Palette },
   { to: "/admin/settings", label: "Settings", icon: Settings },
+  { to: "/admin/privacy", label: "Privacy", icon: ShieldCheck },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
