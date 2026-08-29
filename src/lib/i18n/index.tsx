@@ -164,22 +164,6 @@ export const DICT: Dict = {
   "blog.backList": { hy: "Վերադառնալ բլոգին", en: "Back to blog", ru: "К блогу" },
   "blog.loadError": { hy: "Չհաջողվեց բեռնել գրառումը", en: "Couldn't load post", ru: "Не удалось загрузить запись" },
 
-  "contact.heading": { hy: "Կապ", en: "Get in touch", ru: "Связаться" },
-  "contact.lead": {
-    hy: "Համագործակցության, ելույթների, մենթորության կամ պարզապես բարևելու համար։",
-    en: "For collaborations, talks, mentorship requests, or to say hello.",
-    ru: "Для сотрудничества, докладов, менторства или просто чтобы поздороваться.",
-  },
-  "contact.name": { hy: "Անուն", en: "Name", ru: "Имя" },
-  "contact.email": { hy: "Էլ. փոստ", en: "Email", ru: "Email" },
-  "contact.subject": { hy: "Թեմա", en: "Subject", ru: "Тема" },
-  "contact.message": { hy: "Հաղորդագրություն", en: "Message", ru: "Сообщение" },
-  "contact.send": { hy: "Ուղարկել", en: "Send message", ru: "Отправить" },
-  "contact.sending": { hy: "Ուղարկվում է…", en: "Sending…", ru: "Отправка…" },
-  "contact.invalid": { hy: "Խնդրում ենք ստուգել դաշտերը։", en: "Please check the form fields.", ru: "Проверьте поля формы." },
-  "contact.success": { hy: "Հաղորդագրությունն ուղարկված է։ Շնորհակալություն!", en: "Message sent. Thank you!", ru: "Сообщение отправлено. Спасибо!" },
-  "contact.failed": { hy: "Չհաջողվեց ուղարկել։", en: "Couldn't send.", ru: "Не удалось отправить." },
-
   "video.heading": { hy: "Տեսադասընթացներ", en: "Video Courses", ru: "Видеокурсы" },
   "video.lead": { hy: "Դիտեք ամբողջական դասախոսություններ և սեմինարներ։", en: "Watch full lectures and workshop sessions.", ru: "Полные лекции и записи воркшопов." },
   "video.empty": { hy: "Տեսանյութեր դեռ չկան։", en: "No videos yet.", ru: "Видео пока нет." },

@@ -8,20 +8,44 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { SocialLinksContactList } from "@/components/social/SocialLinks";
 import { profileQuery, socialLinksQuery } from "@/lib/queries";
 import { supabase } from "@/integrations/supabase/client";
-import { useLocalized, useT } from "@/lib/i18n";
+import { useLocalized } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  usePageContent,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
+
+const CONTACT_PAGE = "contact";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
 
 export const Route = createFileRoute("/contact")({
-  head: () =>
-    buildPageHead({
-      title: "Contact — Dr. Varazdat Avetisyan",
-      description:
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(profileQuery),
+      context.queryClient.ensureQueryData(socialLinksQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(CONTACT_PAGE)),
+    ]);
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(CONTACT_PAGE));
+    return { pageContent };
+  },
+  head: ({ loaderData }) => {
+    const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
+    return buildPageHead({
+      title: pageContentLookup(pageContent, "seo.title", "Contact — Dr. Varazdat Avetisyan"),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
         "Get in touch with Dr. Varazdat Avetisyan for speaking, consulting, courses, research collaboration, and partnership inquiries.",
+      ),
       path: "/contact",
-    }),
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(profileQuery);
-    context.queryClient.ensureQueryData(socialLinksQuery);
+    });
   },
   component: ContactPage,
 });
@@ -37,8 +61,8 @@ function ContactPage() {
   const { data: profile } = useSuspenseQuery(profileQuery);
   const { data: socialLinks } = useSuspenseQuery(socialLinksQuery);
   const [submitting, setSubmitting] = useState(false);
-  const t = useT();
   const loc = useLocalized();
+  const { pc } = usePageContent(CONTACT_PAGE);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -50,17 +74,17 @@ function ContactPage() {
       body: fd.get("body"),
     });
     if (!parsed.success) {
-      toast.error(t("contact.invalid"));
+      toast.error(pc("invalid", "Please check the form fields."));
       return;
     }
     setSubmitting(true);
     const { error } = await supabase.from("messages").insert(parsed.data);
     setSubmitting(false);
     if (error) {
-      toast.error(`${t("contact.failed")} ${error.message}`);
+      toast.error(`${pc("failed", "Couldn't send.")} ${error.message}`);
       return;
     }
-    toast.success(t("contact.success"));
+    toast.success(pc("success", "Message sent. Thank you!"));
     (e.target as HTMLFormElement).reset();
   }
 
@@ -70,8 +94,8 @@ function ContactPage() {
     <PublicLayout>
       <section className="mx-auto grid max-w-5xl gap-12 px-4 py-20 sm:px-6 md:grid-cols-2">
         <div>
-          <h1 className="font-display text-4xl font-bold sm:text-5xl">{t("contact.heading")}</h1>
-          <p className="mt-3 text-muted-foreground">{t("contact.lead")}</p>
+          <h1 className="font-display text-4xl font-bold sm:text-5xl">{pc("heading", "Get in touch")}</h1>
+          <p className="mt-3 text-muted-foreground">{pc("lead", "For collaborations, talks, mentorship requests, or to say hello.")}</p>
           <ul className="mt-8 space-y-3 text-sm">
             {profile?.email && (
               <li className="flex items-center gap-3">
@@ -103,15 +127,15 @@ function ContactPage() {
           </ul>
         </div>
         <form onSubmit={onSubmit} className="glass space-y-4 rounded-2xl p-6">
-          <Field label={t("contact.name")} name="name" required />
-          <Field label={t("contact.email")} name="email" type="email" required />
-          <Field label={t("contact.subject")} name="subject" />
+          <Field label={pc("name", "Name")} name="name" required />
+          <Field label={pc("email", "Email")} name="email" type="email" required />
+          <Field label={pc("subject", "Subject")} name="subject" />
           <div>
-            <label className="mb-1 block text-sm">{t("contact.message")}</label>
+            <label className="mb-1 block text-sm">{pc("message", "Message")}</label>
             <textarea name="body" required rows={5} className="w-full rounded-md border border-input bg-card/40 px-3 py-2 text-sm outline-none focus:border-primary" />
           </div>
           <button disabled={submitting} className="w-full rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-60">
-            {submitting ? t("contact.sending") : t("contact.send")}
+            {submitting ? pc("sending", "Sending…") : pc("send", "Send message")}
           </button>
         </form>
       </section>

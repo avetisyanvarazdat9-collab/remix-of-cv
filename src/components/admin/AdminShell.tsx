@@ -28,6 +28,7 @@ const items: NavItem[] = [
   { to: "/admin/timeline", label: "Timeline", icon: Clock },
   { to: "/admin/cv", label: "CV", icon: FileText },
   { to: "/admin/global", label: "Global Shell", icon: LayoutDashboard },
+  { to: "/admin/contact", label: "Contact", icon: Inbox },
 
   { to: "/admin/partners", label: "Partners", icon: Building2 },
   { to: "/admin/skills", label: "Skills", icon: Wrench },
