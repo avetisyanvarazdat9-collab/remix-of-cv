@@ -43,6 +43,7 @@ const IMPACT_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     keys: [
       { key: "talks.eyebrow", label: "Section eyebrow" },
       { key: "talks.heading", label: "Section heading" },
+      { key: "talks.view_all", label: "View all link" },
     ],
   },
   {
@@ -50,6 +51,7 @@ const IMPACT_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     keys: [
       { key: "partners.eyebrow", label: "Section eyebrow" },
       { key: "partners.heading", label: "Section heading" },
+      { key: "partners.view_all", label: "View all link" },
     ],
   },
   {

@@ -30,6 +30,7 @@ const COLLABORATE_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     keys: [
       { key: "projects.eyebrow", label: "Section eyebrow" },
       { key: "projects.heading", label: "Section heading" },
+      { key: "projects.view_all", label: "View all link" },
     ],
   },
   {
@@ -37,6 +38,7 @@ const COLLABORATE_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     keys: [
       { key: "speaking.eyebrow", label: "Section eyebrow" },
       { key: "speaking.heading", label: "Section heading" },
+      { key: "speaking.view_all", label: "View all link" },
     ],
   },
   {
@@ -44,6 +46,7 @@ const COLLABORATE_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     keys: [
       { key: "partners.eyebrow", label: "Section eyebrow" },
       { key: "partners.heading", label: "Section heading" },
+      { key: "partners.view_all", label: "View all link" },
     ],
   },
   {

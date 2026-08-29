@@ -137,6 +137,7 @@ function ImpactHub() {
           eyebrow={pc("talks.eyebrow", "Recognition")}
           heading={pc("talks.heading", "Talks, keynotes & media")}
           viewAllTo="/talks"
+          viewAllLabel={pc("talks.view_all", "View all →")}
         >
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {featuredTalks.map((t: any) => (
@@ -157,6 +158,7 @@ function ImpactHub() {
           eyebrow={pc("partners.eyebrow", "Partners")}
           heading={pc("partners.heading", "Trusted by universities and organizations")}
           viewAllTo="/companies"
+          viewAllLabel={pc("partners.view_all", "View all →")}
         >
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {partners.map((p: any) => (

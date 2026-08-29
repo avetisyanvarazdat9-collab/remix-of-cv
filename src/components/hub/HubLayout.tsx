@@ -28,7 +28,7 @@ export function HubHero({ eyebrow, heading, subheading, primaryTo, primaryLabel,
   );
 }
 
-export function HubSection({ eyebrow, heading, viewAllTo, children }: { eyebrow: string; heading: string; viewAllTo?: string; children: ReactNode }) {
+export function HubSection({ eyebrow, heading, viewAllTo, viewAllLabel, children }: { eyebrow: string; heading: string; viewAllTo?: string; viewAllLabel?: string; children: ReactNode }) {
   return (
     <section className="bg-background py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -38,7 +38,7 @@ export function HubSection({ eyebrow, heading, viewAllTo, children }: { eyebrow:
             <h2 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">{heading}</h2>
           </div>
           {viewAllTo && (
-            <Link to={viewAllTo as any} className="text-sm text-primary hover:underline">View all →</Link>
+            <Link to={viewAllTo as any} className="text-sm text-primary hover:underline">{viewAllLabel ?? "View all →"}</Link>
           )}
         </div>
         {children}

@@ -31,6 +31,7 @@ const LEARN_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
       { key: "courses.eyebrow", label: "Section eyebrow" },
       { key: "courses.heading", label: "Section heading" },
       { key: "courses.card_cta", label: "Course card CTA" },
+      { key: "courses.view_all", label: "View all link" },
     ],
   },
   {
@@ -38,6 +39,7 @@ const LEARN_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     keys: [
       { key: "videos.eyebrow", label: "Section eyebrow" },
       { key: "videos.heading", label: "Section heading" },
+      { key: "videos.view_all", label: "View all link" },
     ],
   },
   {
@@ -45,6 +47,7 @@ const LEARN_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     keys: [
       { key: "articles.eyebrow", label: "Section eyebrow" },
       { key: "articles.heading", label: "Section heading" },
+      { key: "articles.view_all", label: "View all link" },
     ],
   },
   {

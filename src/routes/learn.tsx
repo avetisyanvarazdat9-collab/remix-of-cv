@@ -88,6 +88,7 @@ function LearnHub() {
         eyebrow={pc("courses.eyebrow", "Courses")}
         heading={pc("courses.heading", "Instructor-led programs")}
         viewAllTo="/courses"
+        viewAllLabel={pc("courses.view_all", "View all →")}
       >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {featuredCourses.map((c: any) => (
@@ -113,6 +114,7 @@ function LearnHub() {
         eyebrow={pc("videos.eyebrow", "Video Library")}
         heading={pc("videos.heading", "Watch and learn at your pace")}
         viewAllTo="/video-courses"
+        viewAllLabel={pc("videos.view_all", "View all →")}
       >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {featuredVideos.map((v: any) => (
@@ -143,6 +145,7 @@ function LearnHub() {
         eyebrow={pc("articles.eyebrow", "Articles")}
         heading={pc("articles.heading", "Insights from the frontier of AI")}
         viewAllTo="/blog"
+        viewAllLabel={pc("articles.view_all", "View all →")}
       >
         <div className="grid gap-6 md:grid-cols-3">
           {featuredPosts.map((p: any) => (

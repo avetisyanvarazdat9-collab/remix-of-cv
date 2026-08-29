@@ -86,6 +86,7 @@ function CollaborateHub() {
         eyebrow={pc("projects.eyebrow", "Projects")}
         heading={pc("projects.heading", "Selected research & applied work")}
         viewAllTo="/projects"
+        viewAllLabel={pc("projects.view_all", "View all →")}
       >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {featuredProjects.map((p: any) => (
@@ -109,6 +110,7 @@ function CollaborateHub() {
         eyebrow={pc("speaking.eyebrow", "Speaking")}
         heading={pc("speaking.heading", "Recent talks & events")}
         viewAllTo="/talks"
+        viewAllLabel={pc("speaking.view_all", "View all →")}
       >
         <div className="grid gap-6 md:grid-cols-2">
           {featuredTalks.map((t: any) => (
@@ -131,6 +133,7 @@ function CollaborateHub() {
         eyebrow={pc("partners.eyebrow", "Partners")}
         heading={pc("partners.heading", "Institutions I collaborate with")}
         viewAllTo="/companies"
+        viewAllLabel={pc("partners.view_all", "View all →")}
       >
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {partners.map((p: any) => (
