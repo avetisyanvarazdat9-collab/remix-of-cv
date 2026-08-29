@@ -5,17 +5,45 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { internationalExperienceQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  usePageContent,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
+
+const TIMELINE_PAGE = "timeline";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
 
 export const Route = createFileRoute("/timeline")({
-  head: () =>
-    buildPageHead({
-      title: "International Experience Timeline — Dr. Varazdat Avetisyan",
-      description:
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(internationalExperienceQuery()),
+      context.queryClient.ensureQueryData(pageContentQuery(TIMELINE_PAGE)),
+    ]);
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(TIMELINE_PAGE));
+    return { pageContent };
+  },
+  head: ({ loaderData }) => {
+    const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
+    return buildPageHead({
+      title: pageContentLookup(
+        pageContent,
+        "seo.title",
+        "International Experience Timeline — Dr. Varazdat Avetisyan",
+      ),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
         "Trainings, workshops, conferences, and academic exchanges across the globe — a chronological timeline of international engagements.",
+      ),
       path: "/timeline",
-    }),
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(internationalExperienceQuery());
+    });
   },
   component: TimelinePage,
 });
@@ -23,6 +51,7 @@ export const Route = createFileRoute("/timeline")({
 function TimelinePage() {
   const { data: intlRows } = useSuspenseQuery(internationalExperienceQuery());
   const loc = useLocalized();
+  const { pc } = usePageContent(TIMELINE_PAGE);
 
   const timelineEntries = [...(intlRows ?? [])].sort((a: any, b: any) => {
     const ad = a.event_date ? new Date(a.event_date).getTime() : 0;
@@ -41,26 +70,32 @@ function TimelinePage() {
           className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
         >
           <ArrowLeft className="size-4" />
-          Back to Home
+          {pc("back_to_home", "Back to Home")}
         </Link>
 
         <header className="mt-8 border-b border-border pb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            International Experience
+            {pc("hero.eyebrow", "International Experience")}
           </p>
           <h1 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-4xl">
-            Trainings, talks & workshops
+            {pc("hero.heading", "Trainings, talks & workshops")}
           </h1>
           <p className="mt-3 text-base text-muted-foreground">
-            A chronological record of international engagements — most recent first.
+            {pc(
+              "hero.subheading",
+              "A chronological record of international engagements — most recent first.",
+            )}
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
               <Globe2 className="size-3.5" />
-              {countryCount > 0 ? `${countryCount} countries` : "Global reach"}
+              {countryCount > 0
+                ? `${countryCount}${pc("badge.countries_suffix", " countries")}`
+                : pc("badge.global_reach", "Global reach")}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-              {timelineEntries.length}+ engagements
+              {timelineEntries.length}
+              {pc("badge.engagements_suffix", "+ engagements")}
             </span>
           </div>
         </header>
@@ -68,7 +103,7 @@ function TimelinePage() {
         <div className="mt-10">
           {timelineEntries.length === 0 ? (
             <p className="py-16 text-center text-sm text-muted-foreground">
-              No entries yet.
+              {pc("empty.no_entries", "No entries yet.")}
             </p>
           ) : (
             <ol className="relative space-y-8 border-l border-border pl-6 sm:pl-8">

@@ -17,27 +17,51 @@ import {
 import { useLocalized } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
 import { socialLinkUrls } from "@/components/social/SocialLinks";
+import {
+  pageContentQuery,
+  resolvePageContentString,
+  usePageContent,
+  type PageContentI18n,
+  type PageContentRow,
+} from "@/lib/page-content";
+
+const CV_PAGE = "cv";
+
+function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
+  const row = (rows ?? []).find((entry) => entry.key === key);
+  return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
+}
 
 export const Route = createFileRoute("/cv")({
-  head: () =>
-    buildPageHead({
-      title: "CV — Dr. Varazdat Avetisyan",
-      description:
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(profileQuery),
+      context.queryClient.ensureQueryData(skillsQuery),
+      context.queryClient.ensureQueryData(educationQuery),
+      context.queryClient.ensureQueryData(certificationsQuery),
+      context.queryClient.ensureQueryData(professionalExperienceQuery),
+      context.queryClient.ensureQueryData(coursesQuery),
+      context.queryClient.ensureQueryData(videoCoursesQuery),
+      context.queryClient.ensureQueryData(talksQuery),
+      context.queryClient.ensureQueryData(statisticsQuery),
+      context.queryClient.ensureQueryData(internationalExperienceQuery({})),
+      context.queryClient.ensureQueryData(socialLinksQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(CV_PAGE)),
+    ]);
+    const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(CV_PAGE));
+    return { pageContent };
+  },
+  head: ({ loaderData }) => {
+    const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
+    return buildPageHead({
+      title: pageContentLookup(pageContent, "seo.title", "CV — Dr. Varazdat Avetisyan"),
+      description: pageContentLookup(
+        pageContent,
+        "seo.description",
         "Curriculum vitae of Dr. Varazdat Avetisyan — professional experience, education, skills, certifications, and publications.",
+      ),
       path: "/cv",
-    }),
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(profileQuery);
-    context.queryClient.ensureQueryData(skillsQuery);
-    context.queryClient.ensureQueryData(educationQuery);
-    context.queryClient.ensureQueryData(certificationsQuery);
-    context.queryClient.ensureQueryData(professionalExperienceQuery);
-    context.queryClient.ensureQueryData(coursesQuery);
-    context.queryClient.ensureQueryData(videoCoursesQuery);
-    context.queryClient.ensureQueryData(talksQuery);
-    context.queryClient.ensureQueryData(statisticsQuery);
-    context.queryClient.ensureQueryData(internationalExperienceQuery({}));
-    context.queryClient.ensureQueryData(socialLinksQuery);
+    });
   },
   component: CVPage,
 });
@@ -66,6 +90,7 @@ function CVPage() {
   const { data: intl } = useSuspenseQuery(internationalExperienceQuery({}));
   const { data: socialLinks } = useSuspenseQuery(socialLinksQuery);
   const loc = useLocalized();
+  const { pc } = usePageContent(CV_PAGE);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -80,6 +105,7 @@ function CVPage() {
   const title = loc(profile, "title") || profile?.title || "";
   const bio = loc(profile, "bio") || profile?.bio || "";
   const location = loc(profile, "location") || profile?.location || "";
+  const presentLabel = pc("dates.present", "Present");
 
   const contactBits = [
     location,
@@ -99,20 +125,20 @@ function CVPage() {
       <div className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur print:hidden">
         <div className="mx-auto flex max-w-[8.5in] items-center justify-between px-6 py-3">
           <p className="text-sm text-slate-600">
-            Printable CV — use your browser's dialog to save as PDF.
+            {pc("toolbar.hint", "Printable CV — use your browser's dialog to save as PDF.")}
           </p>
           <div className="flex gap-2">
             <button
               onClick={() => window.history.back()}
               className="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50"
             >
-              Back
+              {pc("toolbar.back", "Back")}
             </button>
             <button
               onClick={() => window.print()}
               className="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-800"
             >
-              Print / Save as PDF
+              {pc("toolbar.print", "Print / Save as PDF")}
             </button>
           </div>
         </div>
@@ -129,13 +155,13 @@ function CVPage() {
         </header>
 
         {bio && (
-          <Section title="Profile">
+          <Section title={pc("sections.profile", "Profile")}>
             <p className="whitespace-pre-line">{bio}</p>
           </Section>
         )}
 
         {statistics && statistics.length > 0 && (
-          <Section title="Key Metrics">
+          <Section title={pc("sections.key_metrics", "Key Metrics")}>
             <div className="grid grid-cols-4 gap-3">
               {statistics.map((s: any) => (
                 <div key={s.id} className="rounded border border-slate-300 p-2 text-center">
@@ -151,7 +177,7 @@ function CVPage() {
 
         {professionalExperience &&
           professionalExperience.filter((e: any) => e.is_visible !== false).length > 0 && (
-          <Section title="Professional Experience">
+          <Section title={pc("sections.professional_experience", "Professional Experience")}>
             <ul className="space-y-3">
               {professionalExperience
                 .filter((e: any) => e.is_visible !== false)
@@ -161,7 +187,7 @@ function CVPage() {
                       <p className="font-semibold">{loc(e, "job_title") || e.job_title}</p>
                       <p className="text-[9.5pt] text-slate-600">
                         {e.start_year}
-                        {e.is_current ? " — Present" : e.end_year ? `–${e.end_year}` : ""}
+                        {e.is_current ? ` — ${presentLabel}` : e.end_year ? `–${e.end_year}` : ""}
                       </p>
                     </div>
                     {(loc(e, "organization") || e.organization) && (
@@ -186,7 +212,7 @@ function CVPage() {
         )}
 
         {education && education.length > 0 && (
-          <Section title="Education">
+          <Section title={pc("sections.education", "Education")}>
             <ul className="space-y-2">
               {education.map((e: any) => (
                 <li key={e.id} className="break-inside-avoid">
@@ -197,7 +223,7 @@ function CVPage() {
                     </p>
                     <p className="text-[9.5pt] text-slate-600">
                       {e.start_year}
-                      {e.end_year ? `–${e.end_year}` : " — Present"}
+                      {e.end_year ? `–${e.end_year}` : ` — ${presentLabel}`}
                     </p>
                   </div>
                   <p className="text-slate-700">{loc(e, "institution") || e.institution}</p>
@@ -208,7 +234,7 @@ function CVPage() {
         )}
 
         {Object.keys(skillsByCat).length > 0 && (
-          <Section title="Skills & Expertise">
+          <Section title={pc("sections.skills_expertise", "Skills & Expertise")}>
             <div className="space-y-1.5">
               {Object.entries(skillsByCat).map(([cat, items]) => (
                 <div key={cat}>
@@ -223,7 +249,7 @@ function CVPage() {
         )}
 
         {certifications && certifications.filter((c: any) => c.is_visible).length > 0 && (
-          <Section title="Certifications">
+          <Section title={pc("sections.certifications", "Certifications")}>
             <ul className="space-y-1.5">
               {certifications
                 .filter((c: any) => c.is_visible)
@@ -246,7 +272,7 @@ function CVPage() {
         )}
 
         {courses && courses.length > 0 && (
-          <Section title="Courses Taught">
+          <Section title={pc("sections.courses_taught", "Courses Taught")}>
             <ul className="list-disc space-y-0.5 pl-5">
               {courses.map((c: any) => (
                 <li key={c.id}>
@@ -261,7 +287,7 @@ function CVPage() {
         )}
 
         {videoCourses && videoCourses.length > 0 && (
-          <Section title="Video Courses">
+          <Section title={pc("sections.video_courses", "Video Courses")}>
             <ul className="list-disc space-y-0.5 pl-5">
               {videoCourses.map((c: any) => (
                 <li key={c.id}>{loc(c, "title") || c.title}</li>
@@ -271,7 +297,7 @@ function CVPage() {
         )}
 
         {talks && talks.length > 0 && (
-          <Section title="Talks & Events">
+          <Section title={pc("sections.talks_events", "Talks & Events")}>
             <ul className="space-y-1.5">
               {talks.map((t: any) => (
                 <li key={t.id} className="break-inside-avoid">
@@ -293,7 +319,7 @@ function CVPage() {
         )}
 
         {intl && intl.length > 0 && (
-          <Section title="International Experience">
+          <Section title={pc("sections.international_experience", "International Experience")}>
             <ul className="space-y-1.5">
               {intl.map((e) => (
                 <li key={e.id} className="break-inside-avoid">
