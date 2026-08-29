@@ -27,6 +27,7 @@ const items: NavItem[] = [
   { to: "/admin/international-experience", label: "International", icon: Globe2 },
   { to: "/admin/timeline", label: "Timeline", icon: Clock },
   { to: "/admin/cv", label: "CV", icon: FileText },
+  { to: "/admin/global", label: "Global Shell", icon: LayoutDashboard },
 
   { to: "/admin/partners", label: "Partners", icon: Building2 },
   { to: "/admin/skills", label: "Skills", icon: Wrench },
