@@ -4,7 +4,7 @@ import { ArrowRight, BookOpen, FileText, Quote } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { VideoThumbnail } from "@/components/video/VideoThumbnail";
-import { coursesQuery, videoCoursesQuery, blogQuery, learningResourcesQuery, testimonialsQuery, statisticsQuery } from "@/lib/queries";
+import { coursesQuery, videoCoursesQuery, blogQuery, learningResourcesQuery, testimonialsQuery, statisticsQuery, successStoriesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
 import {
@@ -87,6 +87,7 @@ export const Route = createFileRoute("/learn")({
       context.queryClient.ensureQueryData(learningResourcesQuery),
       context.queryClient.ensureQueryData(testimonialsQuery),
       context.queryClient.ensureQueryData(statisticsQuery),
+      context.queryClient.ensureQueryData(successStoriesQuery),
       context.queryClient.ensureQueryData(pageContentQuery(LEARN_PAGE)),
     ]);
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(LEARN_PAGE));
@@ -123,6 +124,7 @@ function LearnHub() {
   const { data: resources } = useSuspenseQuery(learningResourcesQuery);
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const { data: statistics } = useSuspenseQuery(statisticsQuery);
+  const { data: successStories } = useSuspenseQuery(successStoriesQuery);
   const loc = useLocalized();
   const t = useT();
   const { pc } = usePageContent(LEARN_PAGE);
@@ -133,6 +135,7 @@ function LearnHub() {
   const featuredPosts = (posts ?? []).filter((p: any) => p.is_published !== false).slice(0, 3);
   const studentTestimonials = (testimonials ?? []).filter((tm: any) => tm.category === "Student").slice(0, 3);
   const learnStats = (statistics ?? []).filter((s: any) => s.is_visible && s.show_on_learn);
+  const featuredStories = (successStories ?? []).filter((s: any) => s.is_visible).slice(0, 3);
 
   return (
     <PublicLayout>
@@ -324,6 +327,66 @@ function LearnHub() {
                 </figcaption>
               </figure>
             ))}
+          </div>
+        </HubSection>
+      )}
+
+      {featuredStories.length > 0 && (
+        <HubSection
+          eyebrow={pc("stories.eyebrow", "Success Stories")}
+          heading={pc("stories.heading", "Where our learners are now")}
+        >
+          <div className="grid gap-6 md:grid-cols-3">
+            {featuredStories.map((s: any) => {
+              const headline = loc(s, "headline");
+              const outcome = loc(s, "outcome");
+              const story = loc(s, "story");
+              const cardClass =
+                "group flex flex-col rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40";
+              const cardContent = (
+                <>
+                  <div className="flex items-center gap-3">
+                    {s.photo_url ? (
+                      <img src={s.photo_url} alt="" className="size-14 rounded-full object-cover" />
+                    ) : (
+                      <div className="icon-badge size-14 text-lg font-semibold">
+                        {s.name?.slice(0, 1)}
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <p className="font-semibold text-foreground">{s.name}</p>
+                      {headline && (
+                        <p className="text-sm text-muted-foreground">{headline}</p>
+                      )}
+                    </div>
+                  </div>
+                  {outcome && (
+                    <span className="mt-4 inline-flex w-fit rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                      {outcome}
+                    </span>
+                  )}
+                  {story && (
+                    <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{story}</p>
+                  )}
+                </>
+              );
+
+              return s.link_url ? (
+                <a
+                  key={s.id}
+                  href={s.link_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={cardClass}
+                >
+                  {cardContent}
+                </a>
+              ) : (
+                <div key={s.id} className={cardClass}>
+                  {cardContent}
+                </div>
+              );
+            })}
           </div>
         </HubSection>
       )}

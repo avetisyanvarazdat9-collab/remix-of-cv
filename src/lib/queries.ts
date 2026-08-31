@@ -84,6 +84,11 @@ export const learningResourcesQuery = queryOptions({
   queryFn: () => run(supabase.from("learning_resources").select("*").order("display_order")),
 });
 
+export const successStoriesQuery = queryOptions({
+  queryKey: ["success_stories"],
+  queryFn: () => run(supabase.from("success_stories").select("*").order("display_order")),
+});
+
 export const talksQuery = queryOptions({
   queryKey: ["talks"],
   queryFn: () =>
