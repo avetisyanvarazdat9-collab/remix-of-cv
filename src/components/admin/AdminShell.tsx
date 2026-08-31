@@ -21,6 +21,7 @@ const items: NavItem[] = [
   { to: "/admin/quick-stats", label: "Quick stats", icon: BarChart3 },
   { to: "/admin/projects", label: "Projects", icon: Briefcase },
   { to: "/admin/blog", label: "Blog posts", icon: FileText },
+  { to: "/admin/learning-resources", label: "Learning Resources", icon: BookText },
   { to: "/admin/courses", label: "Courses", icon: BookOpen },
   { to: "/admin/video-courses", label: "Video courses", icon: Video },
   { to: "/admin/talks-events", label: "Talks & events", icon: Mic2 },

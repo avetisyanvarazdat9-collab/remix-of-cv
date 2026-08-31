@@ -4,7 +4,7 @@ import { ArrowRight, BookOpen, FileText } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { VideoThumbnail } from "@/components/video/VideoThumbnail";
-import { coursesQuery, videoCoursesQuery, blogQuery } from "@/lib/queries";
+import { coursesQuery, videoCoursesQuery, blogQuery, learningResourcesQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
 import {
@@ -60,6 +60,19 @@ function CourseStatusBadge({ course, label }: { course: Course; label: string })
   );
 }
 
+function resourceTypeLabelKey(type: string) {
+  switch (type) {
+    case "paper":
+      return "resources.type.paper";
+    case "dataset":
+      return "resources.type.dataset";
+    case "tool":
+      return "resources.type.tool";
+    default:
+      return "resources.type.book";
+  }
+}
+
 function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
   const row = (rows ?? []).find((entry) => entry.key === key);
   return resolvePageContentString((row?.i18n ?? {}) as PageContentI18n, "en", fallback);
@@ -71,6 +84,7 @@ export const Route = createFileRoute("/learn")({
       context.queryClient.ensureQueryData(coursesQuery),
       context.queryClient.ensureQueryData(videoCoursesQuery),
       context.queryClient.ensureQueryData(blogQuery),
+      context.queryClient.ensureQueryData(learningResourcesQuery),
       context.queryClient.ensureQueryData(pageContentQuery(LEARN_PAGE)),
     ]);
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(LEARN_PAGE));
@@ -104,12 +118,14 @@ function LearnHub() {
   const { data: courses } = useSuspenseQuery(coursesQuery);
   const { data: videos } = useSuspenseQuery(videoCoursesQuery);
   const { data: posts } = useSuspenseQuery(blogQuery);
+  const { data: resources } = useSuspenseQuery(learningResourcesQuery);
   const loc = useLocalized();
   const t = useT();
   const { pc } = usePageContent(LEARN_PAGE);
 
   const featuredCourses = (courses ?? []).filter((c: any) => c.is_visible).slice(0, 6);
   const featuredVideos = (videos ?? []).filter((v: any) => v.is_visible).slice(0, 4);
+  const featuredResources = (resources ?? []).filter((r: any) => r.is_visible).slice(0, 6);
   const featuredPosts = (posts ?? []).filter((p: any) => p.is_published !== false).slice(0, 3);
 
   return (
@@ -187,6 +203,52 @@ function LearnHub() {
               </div>
             </Link>
           ))}
+        </div>
+      </HubSection>
+
+      <HubSection
+        eyebrow={pc("resources.eyebrow", "Learning Resources")}
+        heading={pc("resources.heading", "Recommended reading & tools")}
+      >
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {featuredResources.map((r: any) => {
+            const title = loc(r, "title");
+            const description = loc(r, "description");
+            const cardClass =
+              "group flex flex-col rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40";
+            const cardContent = (
+              <>
+                <span className="inline-flex w-fit rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                  {t(resourceTypeLabelKey(r.resource_type))}
+                </span>
+                <h3 className="mt-4 font-display text-base font-semibold text-foreground group-hover:text-primary">
+                  {title}
+                </h3>
+                {r.author_or_source && (
+                  <p className="mt-1 text-sm text-muted-foreground">{r.author_or_source}</p>
+                )}
+                {description && (
+                  <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{description}</p>
+                )}
+              </>
+            );
+
+            return r.url ? (
+              <a
+                key={r.id}
+                href={r.url}
+                target="_blank"
+                rel="noreferrer"
+                className={cardClass}
+              >
+                {cardContent}
+              </a>
+            ) : (
+              <div key={r.id} className={cardClass}>
+                {cardContent}
+              </div>
+            );
+          })}
         </div>
       </HubSection>
 

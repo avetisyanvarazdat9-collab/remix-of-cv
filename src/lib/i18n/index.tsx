@@ -181,6 +181,11 @@ export const DICT: Dict = {
   "video.videoCount": { hy: "տեսանյութ", en: "videos", ru: "видео" },
   "video.thumbnailLabel": { hy: "Տեսանյութ", en: "Video", ru: "Видео" },
 
+  "resources.type.book": { hy: "Գիրք", en: "Book", ru: "Книга" },
+  "resources.type.paper": { hy: "Հոդված", en: "Paper", ru: "Статья" },
+  "resources.type.dataset": { hy: "Տվյալների հավաքածու", en: "Dataset", ru: "Набор данных" },
+  "resources.type.tool": { hy: "Գործիք", en: "Tool", ru: "Инструмент" },
+
   "talks.heading": { hy: "Ելույթներ և միջոցառումներ", en: "Talks & Events", ru: "Доклады и мероприятия" },
   "talks.empty": { hy: "Ելույթներ դեռ չկան։", en: "No talks listed yet.", ru: "Докладов пока нет." },
   "talks.slides": { hy: "Սլայդեր", en: "Slides", ru: "Слайды" },

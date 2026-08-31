@@ -79,6 +79,11 @@ export const videoCoursesQuery = queryOptions({
   queryFn: () => run(supabase.from("video_courses").select("*").order("display_order")),
 });
 
+export const learningResourcesQuery = queryOptions({
+  queryKey: ["learning_resources"],
+  queryFn: () => run(supabase.from("learning_resources").select("*").order("display_order")),
+});
+
 export const talksQuery = queryOptions({
   queryKey: ["talks"],
   queryFn: () =>
