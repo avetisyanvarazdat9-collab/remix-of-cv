@@ -419,15 +419,15 @@ function Home() {
             </Link>
           </RevealOnScroll>
           <RevealOnScroll className="lg:col-span-2" delay={120}>
-            <div className="premium-card glass p-8 sm:p-9">
-              <ul className="space-y-4 text-sm text-foreground">
+            <div className="premium-card glass p-6 sm:p-7">
+              <ul className="space-y-3 text-sm text-foreground">
                 {(aboutHighlights ?? []).map((highlight) => {
                   const institutions = parseHighlightInstitutions(highlight.institutions).filter(
                     (inst) => inst.name.trim(),
                   );
                   if (institutions.length === 0) return null;
                   return (
-                    <li key={highlight.id} className="space-y-1">
+                    <li key={highlight.id} className="space-y-0.5">
                       <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 font-semibold leading-snug text-foreground">
                         {institutions.map((inst, index) => (
                           <Fragment key={`${highlight.id}-${index}`}>
