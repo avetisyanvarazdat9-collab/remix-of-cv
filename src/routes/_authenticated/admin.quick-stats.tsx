@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CrudPage } from "@/components/admin/CrudPage";
 
 export const Route = createFileRoute("/_authenticated/admin/quick-stats")({
-  head: () => ({ meta: [{ title: "Quick stats — Admin" }] }),
+  head: () => ({ meta: [{ title: "Quick stats Admin" }] }),
   component: QuickStatsEditor,
 });
 
@@ -13,12 +13,13 @@ function QuickStatsEditor() {
       description="Metric badges shown across the public site. Translatable labels show HY / EN / RU tabs."
       table="statistics"
       orderBy={{ column: "display_order" }}
-      displayColumns={["label", "value", "display_order", "is_visible"]}
+      displayColumns={["label", "value", "display_order", "is_visible", "show_on_learn"]}
       fields={[
         { name: "label", label: "Label", type: "i18n", required: true },
         { name: "value", label: "Value", type: "text", required: true },
         { name: "display_order", label: "Display order", type: "number" },
         { name: "is_visible", label: "Visible", type: "boolean" },
+        { name: "show_on_learn", label: "Show on Learn page", type: "boolean" },
       ]}
     />
   );

@@ -50,6 +50,13 @@ const LEARN_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     ],
   },
   {
+    heading: "Impact",
+    keys: [
+      { key: "impact.eyebrow", label: "Eyebrow" },
+      { key: "impact.heading", label: "Heading" },
+    ],
+  },
+  {
     heading: "Articles",
     keys: [
       { key: "articles.eyebrow", label: "Section eyebrow" },

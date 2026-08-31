@@ -4,7 +4,7 @@ import { ArrowRight, BookOpen, FileText, Quote } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { VideoThumbnail } from "@/components/video/VideoThumbnail";
-import { coursesQuery, videoCoursesQuery, blogQuery, learningResourcesQuery, testimonialsQuery } from "@/lib/queries";
+import { coursesQuery, videoCoursesQuery, blogQuery, learningResourcesQuery, testimonialsQuery, statisticsQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
 import {
@@ -86,6 +86,7 @@ export const Route = createFileRoute("/learn")({
       context.queryClient.ensureQueryData(blogQuery),
       context.queryClient.ensureQueryData(learningResourcesQuery),
       context.queryClient.ensureQueryData(testimonialsQuery),
+      context.queryClient.ensureQueryData(statisticsQuery),
       context.queryClient.ensureQueryData(pageContentQuery(LEARN_PAGE)),
     ]);
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(LEARN_PAGE));
@@ -121,6 +122,7 @@ function LearnHub() {
   const { data: posts } = useSuspenseQuery(blogQuery);
   const { data: resources } = useSuspenseQuery(learningResourcesQuery);
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
+  const { data: statistics } = useSuspenseQuery(statisticsQuery);
   const loc = useLocalized();
   const t = useT();
   const { pc } = usePageContent(LEARN_PAGE);
@@ -130,6 +132,7 @@ function LearnHub() {
   const featuredResources = (resources ?? []).filter((r: any) => r.is_visible).slice(0, 6);
   const featuredPosts = (posts ?? []).filter((p: any) => p.is_published !== false).slice(0, 3);
   const studentTestimonials = (testimonials ?? []).filter((tm: any) => tm.category === "Student").slice(0, 3);
+  const learnStats = (statistics ?? []).filter((s: any) => s.is_visible && s.show_on_learn);
 
   return (
     <PublicLayout>
@@ -254,6 +257,26 @@ function LearnHub() {
           })}
         </div>
       </HubSection>
+
+      {learnStats.length > 0 && (
+        <HubSection
+          eyebrow={pc("impact.eyebrow", "Impact")}
+          heading={pc("impact.heading", "Learning outcomes at a glance")}
+        >
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {learnStats.map((s: any) => (
+              <div key={s.id} className="text-center">
+                <p className="text-2xl font-bold text-foreground md:text-3xl">
+                  {(loc(s, "value") as string) || s.value}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {(loc(s, "label") as string) || s.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </HubSection>
+      )}
 
       <HubSection
         eyebrow={pc("articles.eyebrow", "Articles")}
