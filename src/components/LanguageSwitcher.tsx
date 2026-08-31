@@ -4,7 +4,7 @@ import { LANGS, useLang, type Lang } from "@/lib/i18n";
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLang();
   return (
-    <label className={`inline-flex items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 py-1 text-xs text-muted-foreground hover:text-foreground ${className}`}>
+    <label className={`inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-background/60 px-2.5 text-xs text-muted-foreground hover:text-foreground ${className}`}>
       <Globe className="size-3.5" aria-hidden />
       <span className="sr-only">Language</span>
       <select
