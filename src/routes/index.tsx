@@ -506,7 +506,7 @@ function Home() {
 
       {/* ================ SECTION 6 · FEATURED COURSES ================ */}
       {featuredCourses.length > 0 && (
-        <section className="section-divider section-surface pb-24">
+        <section className="section-divider section-surface py-24 sm:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <RevealOnScroll className="mb-10 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
               <div>

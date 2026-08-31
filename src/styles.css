@@ -364,7 +364,7 @@
 }
 
 @utility section-divider {
-  border-top: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  border-top: 1px solid color-mix(in oklab, var(--border) 35%, transparent);
 }
 
 @keyframes ambient-drift {
