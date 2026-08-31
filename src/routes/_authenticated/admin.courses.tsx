@@ -29,6 +29,7 @@ export const Route = createFileRoute("/_authenticated/admin/courses")({
           label: "Course status",
           type: "select",
           options: [
+            { value: "upcoming", label: "Upcoming" },
             { value: "ongoing", label: "Ongoing" },
             { value: "completed", label: "Completed" },
           ],

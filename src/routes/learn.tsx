@@ -14,8 +14,51 @@ import {
   type PageContentI18n,
   type PageContentRow,
 } from "@/lib/page-content";
+import type { Tables } from "@/integrations/supabase/types";
 
 const LEARN_PAGE = "learn";
+
+type Course = Tables<"courses">;
+type CourseStatus = "upcoming" | "ongoing" | "completed";
+
+function courseStatus(course: Course): CourseStatus {
+  if (course.status === "completed") return "completed";
+  if (course.status === "upcoming") return "upcoming";
+  return "ongoing";
+}
+
+function courseStatusBadgeClass(status: CourseStatus) {
+  switch (status) {
+    case "upcoming":
+      return "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400";
+    case "ongoing":
+      return "border-primary/30 bg-primary/10 text-primary";
+    case "completed":
+      return "border-border bg-muted text-muted-foreground";
+  }
+}
+
+function courseStatusLabelKey(status: CourseStatus) {
+  switch (status) {
+    case "upcoming":
+      return "courses.status.upcoming";
+    case "ongoing":
+      return "courses.status.ongoing";
+    case "completed":
+      return "courses.status.completed";
+  }
+}
+
+function CourseStatusBadge({ course, label }: { course: Course; label: string }) {
+  const status = courseStatus(course);
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${courseStatusBadgeClass(status)}`}
+    >
+      {label}
+    </span>
+  );
+}
 
 function pageContentLookup(rows: PageContentRow[] | undefined, key: string, fallback: string) {
   const row = (rows ?? []).find((entry) => entry.key === key);
@@ -99,6 +142,12 @@ function LearnHub() {
                 <div className="h-40 w-full" style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--primary) 30%, transparent), color-mix(in oklab, var(--accent) 30%, transparent))" }} />
               )}
               <div className="flex flex-1 flex-col p-5">
+                <div className="mb-2">
+                  <CourseStatusBadge
+                    course={c}
+                    label={t(courseStatusLabelKey(courseStatus(c)))}
+                  />
+                </div>
                 <h3 className="font-display text-base font-semibold text-foreground">{loc(c, "title")}</h3>
                 <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{loc(c, "description")}</p>
                 <Link to="/courses/$slug" params={{ slug: c.slug }} className="mt-auto pt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">

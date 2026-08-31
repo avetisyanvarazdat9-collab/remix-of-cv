@@ -45,11 +45,13 @@ export const Route = createFileRoute("/courses")({
 });
 
 type Course = Tables<"courses">;
-type CourseFilter = "all" | "online" | "ongoing" | "completed";
+type CourseStatus = "upcoming" | "ongoing" | "completed";
+type CourseFilter = "all" | "online" | "upcoming" | "ongoing" | "completed";
 
 const FILTER_OPTIONS: { id: CourseFilter; labelKey: string }[] = [
   { id: "all", labelKey: "courses.filter.all" },
   { id: "online", labelKey: "courses.filter.online" },
+  { id: "upcoming", labelKey: "courses.filter.upcoming" },
   { id: "ongoing", labelKey: "courses.filter.ongoing" },
   { id: "completed", labelKey: "courses.filter.completed" },
 ];
@@ -58,15 +60,67 @@ function courseDeliveryType(course: Course) {
   return course.delivery_type === "online" ? "online" : "offline";
 }
 
-function courseStatus(course: Course) {
-  return course.status === "completed" ? "completed" : "ongoing";
+function courseStatus(course: Course): CourseStatus {
+  if (course.status === "completed") return "completed";
+  if (course.status === "upcoming") return "upcoming";
+  return "ongoing";
+}
+
+function courseStatusBadgeClass(status: CourseStatus) {
+  switch (status) {
+    case "upcoming":
+      return "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400";
+    case "ongoing":
+      return "border-primary/30 bg-primary/10 text-primary";
+    case "completed":
+      return "border-border bg-muted text-muted-foreground";
+  }
+}
+
+function courseStatusLabelKey(status: CourseStatus) {
+  switch (status) {
+    case "upcoming":
+      return "courses.status.upcoming";
+    case "ongoing":
+      return "courses.status.ongoing";
+    case "completed":
+      return "courses.status.completed";
+  }
+}
+
+function CourseStatusBadge({ course, label }: { course: Course; label: string }) {
+  const status = courseStatus(course);
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${courseStatusBadgeClass(status)}`}
+    >
+      {label}
+    </span>
+  );
 }
 
 function matchesCourseFilter(course: Course, filter: CourseFilter) {
   if (filter === "all") return true;
   if (filter === "online") return courseDeliveryType(course) === "online";
-  if (filter === "ongoing") return courseStatus(course) === "ongoing";
-  return courseStatus(course) === "completed";
+  return courseStatus(course) === filter;
+}
+
+function matchesTopicFilter(course: Course, topicFilter: string) {
+  if (topicFilter === "all") return true;
+  return (course.topics ?? []).includes(topicFilter);
+}
+
+function matchesSearch(
+  course: Course,
+  query: string,
+  loc: (row: Course, field: keyof Course) => string | null | undefined,
+) {
+  const trimmed = query.trim();
+  if (!trimmed) return true;
+  const needle = trimmed.toLowerCase();
+  const title = String(loc(course, "title") ?? course.title ?? "").toLowerCase();
+  const description = String(loc(course, "description") ?? course.description ?? "").toLowerCase();
+  return title.includes(needle) || description.includes(needle);
 }
 
 function CoursesLayout() {
@@ -80,11 +134,30 @@ function CoursesIndex() {
   const { data: courses } = useSuspenseQuery(coursesQuery);
   const loc = useLocalized();
   const t = useT();
+  const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<CourseFilter>("all");
+  const [topicFilter, setTopicFilter] = useState("all");
+
+  const allTopics = useMemo(() => {
+    const topics = new Set<string>();
+    for (const course of courses ?? []) {
+      for (const topic of course.topics ?? []) {
+        const trimmed = topic.trim();
+        if (trimmed) topics.add(trimmed);
+      }
+    }
+    return [...topics].sort((a, b) => a.localeCompare(b));
+  }, [courses]);
 
   const filteredCourses = useMemo(
-    () => (courses ?? []).filter((c) => matchesCourseFilter(c, filter)),
-    [courses, filter],
+    () =>
+      (courses ?? []).filter(
+        (course) =>
+          matchesCourseFilter(course, filter) &&
+          matchesTopicFilter(course, topicFilter) &&
+          matchesSearch(course, search, loc),
+      ),
+    [courses, filter, topicFilter, search, loc],
   );
 
   return (
@@ -93,7 +166,18 @@ function CoursesIndex() {
         <h1 className="font-display text-4xl font-bold sm:text-5xl">{t("courses.heading")}</h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">{t("courses.lead")}</p>
 
-        <div className="mt-8 -mx-1 flex flex-wrap gap-2 overflow-x-auto px-1 pb-1">
+        <div className="mt-8">
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder={t("courses.search.placeholder")}
+            aria-label={t("courses.search.placeholder")}
+            className="w-full rounded-lg border border-border bg-background/60 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+        </div>
+
+        <div className="mt-4 -mx-1 flex flex-wrap gap-2 overflow-x-auto px-1 pb-1">
           {FILTER_OPTIONS.map((option) => {
             const active = filter === option.id;
             return (
@@ -114,22 +198,59 @@ function CoursesIndex() {
           })}
         </div>
 
+        {allTopics.length > 0 && (
+          <div className="mt-4 -mx-1 flex flex-wrap gap-2 overflow-x-auto px-1 pb-1">
+            <button
+              type="button"
+              onClick={() => setTopicFilter("all")}
+              aria-pressed={topicFilter === "all"}
+              className={`shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-colors duration-200 ${
+                topicFilter === "all"
+                  ? "border-primary/40 bg-primary/10 text-primary"
+                  : "border-border bg-background/60 text-muted-foreground hover:bg-accent hover:text-foreground"
+              }`}
+            >
+              {t("courses.filter.topic.all")}
+            </button>
+            {allTopics.map((topic) => {
+              const active = topicFilter === topic;
+              return (
+                <button
+                  key={topic}
+                  type="button"
+                  onClick={() => setTopicFilter(topic)}
+                  aria-pressed={active}
+                  className={`shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-colors duration-200 ${
+                    active
+                      ? "border-primary/40 bg-primary/10 text-primary"
+                      : "border-border bg-background/60 text-muted-foreground hover:bg-accent hover:text-foreground"
+                  }`}
+                >
+                  {topic}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {filteredCourses.map((c) => {
             const title = loc(c, "title");
             const level = loc(c, "level");
             const duration = loc(c, "duration");
+            const status = courseStatus(c);
             return (
               <div key={c.id} className="glass flex flex-col rounded-2xl p-6 hover:border-primary/40">
                 {c.image_url && (
                   <img src={c.image_url} alt={title} className="mb-4 aspect-video w-full rounded-lg object-cover" />
                 )}
-                <div className="flex items-center gap-2 text-xs text-primary">
-                  {level && <span>{level}</span>}
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <CourseStatusBadge course={c} label={t(courseStatusLabelKey(status))} />
+                  {level && <span className="text-primary">{level}</span>}
                   {duration && (
                     <>
-                      <span>·</span>
-                      <span>{duration}</span>
+                      {level && <span className="text-muted-foreground">·</span>}
+                      <span className="text-primary">{duration}</span>
                     </>
                   )}
                 </div>
