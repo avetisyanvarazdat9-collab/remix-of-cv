@@ -419,7 +419,7 @@ function Home() {
             </Link>
           </RevealOnScroll>
           <RevealOnScroll className="lg:col-span-2" delay={120}>
-            <div className="premium-card glass p-6 sm:p-7">
+            <div className="premium-card glass max-w-sm p-6 sm:p-7">
               <ul className="space-y-3 text-sm text-foreground">
                 {(aboutHighlights ?? []).map((highlight) => {
                   const institutions = parseHighlightInstitutions(highlight.institutions).filter(
