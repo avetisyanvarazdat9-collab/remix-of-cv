@@ -58,6 +58,13 @@ const LEARN_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     ],
   },
   {
+    heading: "Testimonials",
+    keys: [
+      { key: "testimonials.eyebrow", label: "Eyebrow" },
+      { key: "testimonials.heading", label: "Heading" },
+    ],
+  },
+  {
     heading: "Bottom CTA",
     keys: [
       { key: "cta.heading", label: "Heading" },

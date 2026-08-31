@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, BookOpen, FileText } from "lucide-react";
+import { ArrowRight, BookOpen, FileText, Quote } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { VideoThumbnail } from "@/components/video/VideoThumbnail";
-import { coursesQuery, videoCoursesQuery, blogQuery, learningResourcesQuery } from "@/lib/queries";
+import { coursesQuery, videoCoursesQuery, blogQuery, learningResourcesQuery, testimonialsQuery } from "@/lib/queries";
 import { useLocalized, useT } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
 import {
@@ -85,6 +85,7 @@ export const Route = createFileRoute("/learn")({
       context.queryClient.ensureQueryData(videoCoursesQuery),
       context.queryClient.ensureQueryData(blogQuery),
       context.queryClient.ensureQueryData(learningResourcesQuery),
+      context.queryClient.ensureQueryData(testimonialsQuery),
       context.queryClient.ensureQueryData(pageContentQuery(LEARN_PAGE)),
     ]);
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(LEARN_PAGE));
@@ -119,6 +120,7 @@ function LearnHub() {
   const { data: videos } = useSuspenseQuery(videoCoursesQuery);
   const { data: posts } = useSuspenseQuery(blogQuery);
   const { data: resources } = useSuspenseQuery(learningResourcesQuery);
+  const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const loc = useLocalized();
   const t = useT();
   const { pc } = usePageContent(LEARN_PAGE);
@@ -127,6 +129,7 @@ function LearnHub() {
   const featuredVideos = (videos ?? []).filter((v: any) => v.is_visible).slice(0, 4);
   const featuredResources = (resources ?? []).filter((r: any) => r.is_visible).slice(0, 6);
   const featuredPosts = (posts ?? []).filter((p: any) => p.is_published !== false).slice(0, 3);
+  const studentTestimonials = (testimonials ?? []).filter((tm: any) => tm.category === "Student").slice(0, 3);
 
   return (
     <PublicLayout>
@@ -268,6 +271,39 @@ function LearnHub() {
           ))}
         </div>
       </HubSection>
+
+      {studentTestimonials.length > 0 && (
+        <HubSection
+          eyebrow={pc("testimonials.eyebrow", "Testimonials")}
+          heading={pc("testimonials.heading", "What learners say")}
+        >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {studentTestimonials.map((tm: any) => (
+              <figure key={tm.id} className="premium-card flex h-full flex-col p-7">
+                <Quote className="size-5 text-primary/50" />
+                <blockquote className="mt-4 flex-1 text-sm leading-[1.75] text-foreground">
+                  {(loc(tm, "quote") as string) || tm.quote}
+                </blockquote>
+                <figcaption className="mt-6 flex items-center gap-3 border-t border-border/60 pt-5">
+                  {tm.avatar_url ? (
+                    <img src={tm.avatar_url} alt="" className="size-10 rounded-full object-cover ring-2 ring-primary/10" />
+                  ) : (
+                    <div className="icon-badge size-10 text-sm font-semibold">
+                      {tm.author_name?.slice(0, 1)}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">{tm.author_name}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {[tm.role, tm.organization].filter(Boolean).join(" · ")}
+                    </p>
+                  </div>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </HubSection>
+      )}
 
       <HubCTA
         heading={pc("cta.heading", "Ready to enroll in a course?")}
