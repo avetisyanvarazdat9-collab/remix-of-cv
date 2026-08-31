@@ -28,12 +28,12 @@ export const Route = createFileRoute("/privacy")({
       title: pageContentLookup(
         pageContent,
         "seo.title",
-        "Privacy Policy — Dr. Varazdat Avetisyan",
+        "Privacy Policy Dr. Varazdat Avetisyan",
       ),
       description: pageContentLookup(
         pageContent,
         "seo.description",
-        "Privacy policy for avetisyan.vercel.app — what data we collect and how we use it.",
+        "Privacy policy for avetisyan.vercel.app: what data we collect and how we use it.",
       ),
       path: "/privacy",
     });

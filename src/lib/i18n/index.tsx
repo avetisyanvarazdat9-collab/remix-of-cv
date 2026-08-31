@@ -195,7 +195,7 @@ export const DICT: Dict = {
   "companies.lead": { hy: "Կազմակերպություններ, որտեղ եղել եմ հիմնադիր, ղեկավար կամ համագործակցել եմ։", en: "Organizations I've founded, led, or worked with.", ru: "Организации, которые я основал, возглавлял или с которыми сотрудничал." },
   "companies.empty": { hy: "Ընկերություններ դեռ չկան։", en: "No companies yet.", ru: "Компаний пока нет." },
   "companies.visit": { hy: "Բացել կայքը →", en: "Visit website →", ru: "Открыть сайт →" },
-  "companies.present": { hy: " — ներկա", en: " — present", ru: " — наст. время" },
+  "companies.present": { hy: "–Ներկա", en: "–Present", ru: "–Наст. время" },
 
   "auth.title": { hy: "Ադմինիստրատորի մուտք", en: "Admin sign in", ru: "Вход администратора" },
   "auth.restricted": { hy: "Սահմանափակ տարածք", en: "Restricted area", ru: "Закрытая зона" },

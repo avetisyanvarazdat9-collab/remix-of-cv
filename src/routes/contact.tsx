@@ -38,7 +38,7 @@ export const Route = createFileRoute("/contact")({
   head: ({ loaderData }) => {
     const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
     return buildPageHead({
-      title: pageContentLookup(pageContent, "seo.title", "Contact — Dr. Varazdat Avetisyan"),
+      title: pageContentLookup(pageContent, "seo.title", "Contact Dr. Varazdat Avetisyan"),
       description: pageContentLookup(
         pageContent,
         "seo.description",

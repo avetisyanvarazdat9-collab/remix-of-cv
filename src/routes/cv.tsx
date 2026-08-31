@@ -54,11 +54,11 @@ export const Route = createFileRoute("/cv")({
   head: ({ loaderData }) => {
     const pageContent = (loaderData as { pageContent?: PageContentRow[] } | undefined)?.pageContent;
     return buildPageHead({
-      title: pageContentLookup(pageContent, "seo.title", "CV — Dr. Varazdat Avetisyan"),
+      title: pageContentLookup(pageContent, "seo.title", "CV Dr. Varazdat Avetisyan"),
       description: pageContentLookup(
         pageContent,
         "seo.description",
-        "Curriculum vitae of Dr. Varazdat Avetisyan — professional experience, education, skills, certifications, and publications.",
+        "Curriculum vitae of Dr. Varazdat Avetisyan: professional experience, education, skills, certifications, and publications.",
       ),
       path: "/cv",
     });
@@ -125,7 +125,7 @@ function CVPage() {
       <div className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur print:hidden">
         <div className="mx-auto flex max-w-[8.5in] items-center justify-between px-6 py-3">
           <p className="text-sm text-slate-600">
-            {pc("toolbar.hint", "Printable CV — use your browser's dialog to save as PDF.")}
+            {pc("toolbar.hint", "Printable CV. Use your browser's dialog to save as PDF.")}
           </p>
           <div className="flex gap-2">
             <button
@@ -187,7 +187,7 @@ function CVPage() {
                       <p className="font-semibold">{loc(e, "job_title") || e.job_title}</p>
                       <p className="text-[9.5pt] text-slate-600">
                         {e.start_year}
-                        {e.is_current ? ` — ${presentLabel}` : e.end_year ? `–${e.end_year}` : ""}
+                        {e.is_current ? ` ${presentLabel}` : e.end_year ? `–${e.end_year}` : ""}
                       </p>
                     </div>
                     {(loc(e, "organization") || e.organization) && (
@@ -223,7 +223,7 @@ function CVPage() {
                     </p>
                     <p className="text-[9.5pt] text-slate-600">
                       {e.start_year}
-                      {e.end_year ? `–${e.end_year}` : ` — ${presentLabel}`}
+                      {e.end_year ? `–${e.end_year}` : ` ${presentLabel}`}
                     </p>
                   </div>
                   <p className="text-slate-700">{loc(e, "institution") || e.institution}</p>
@@ -259,7 +259,7 @@ function CVPage() {
                       <p className="font-semibold">{loc(c, "name") || c.name}</p>
                       <p className="text-[9.5pt] text-slate-600">
                         {c.issue_date ?? ""}
-                        {c.expiry_date ? ` — ${c.expiry_date}` : ""}
+                        {c.expiry_date ? ` – ${c.expiry_date}` : ""}
                       </p>
                     </div>
                     {(loc(c, "issuer") || c.issuer) && (
@@ -278,7 +278,7 @@ function CVPage() {
                 <li key={c.id}>
                   <span className="font-medium">{loc(c, "title") || c.title}</span>
                   {(loc(c, "summary") || c.summary) && (
-                    <span className="text-slate-700"> — {loc(c, "summary") || c.summary}</span>
+                    <span className="text-slate-700"> · {loc(c, "summary") || c.summary}</span>
                   )}
                 </li>
               ))}

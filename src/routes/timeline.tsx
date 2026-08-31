@@ -35,12 +35,12 @@ export const Route = createFileRoute("/timeline")({
       title: pageContentLookup(
         pageContent,
         "seo.title",
-        "International Experience Timeline — Dr. Varazdat Avetisyan",
+        "International Experience Timeline Dr. Varazdat Avetisyan",
       ),
       description: pageContentLookup(
         pageContent,
         "seo.description",
-        "Trainings, workshops, conferences, and academic exchanges across the globe — a chronological timeline of international engagements.",
+        "Trainings, workshops, conferences, and academic exchanges across the globe: a chronological timeline of international engagements.",
       ),
       path: "/timeline",
     });
@@ -83,7 +83,7 @@ function TimelinePage() {
           <p className="mt-3 text-base text-muted-foreground">
             {pc(
               "hero.subheading",
-              "A chronological record of international engagements — most recent first.",
+              "A chronological record of international engagements, most recent first.",
             )}
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
