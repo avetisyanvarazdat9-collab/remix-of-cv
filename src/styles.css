@@ -358,8 +358,8 @@
 @utility section-surface {
   background: linear-gradient(
     180deg,
-    var(--background) 0%,
-    color-mix(in oklab, var(--surface-muted) 65%, var(--background)) 100%
+    color-mix(in oklab, var(--surface-muted) 40%, var(--background)) 0%,
+    var(--surface-muted) 100%
   );
 }
 
