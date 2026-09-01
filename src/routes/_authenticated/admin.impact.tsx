@@ -54,6 +54,13 @@ const IMPACT_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     ],
   },
   {
+    heading: "Awards",
+    keys: [
+      { key: "awards.eyebrow", label: "Eyebrow" },
+      { key: "awards.heading", label: "Heading" },
+    ],
+  },
+  {
     heading: "Partners",
     keys: [
       { key: "partners.eyebrow", label: "Section eyebrow" },

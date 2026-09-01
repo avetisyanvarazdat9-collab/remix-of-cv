@@ -4,7 +4,7 @@ import { Quote, Award, TrendingUp } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { CareerTimeline } from "@/components/about/CareerTimeline";
-import { statisticsQuery, testimonialsQuery, companiesQuery, talksQuery, professionalExperienceQuery } from "@/lib/queries";
+import { statisticsQuery, testimonialsQuery, companiesQuery, talksQuery, professionalExperienceQuery, awardsQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
 import {
@@ -30,6 +30,7 @@ export const Route = createFileRoute("/impact")({
       context.queryClient.ensureQueryData(companiesQuery),
       context.queryClient.ensureQueryData(talksQuery),
       context.queryClient.ensureQueryData(professionalExperienceQuery),
+      context.queryClient.ensureQueryData(awardsQuery),
       context.queryClient.ensureQueryData(pageContentQuery(IMPACT_PAGE)),
     ]);
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(IMPACT_PAGE));
@@ -65,12 +66,14 @@ function ImpactHub() {
   const { data: companies } = useSuspenseQuery(companiesQuery);
   const { data: talks } = useSuspenseQuery(talksQuery);
   const { data: professionalExperience } = useSuspenseQuery(professionalExperienceQuery);
+  const { data: awards } = useSuspenseQuery(awardsQuery);
   const loc = useLocalized();
   const { pc } = usePageContent(IMPACT_PAGE);
 
   const partners = (companies ?? []).filter((c: any) => c.is_visible);
   const featuredTalks = (talks ?? []).slice(0, 6);
   const timelineEntries = (professionalExperience ?? []).filter((e: any) => e.is_visible !== false);
+  const visibleAwards = (awards ?? []).filter((a: any) => a.is_visible);
 
   return (
     <PublicLayout>
@@ -160,6 +163,38 @@ function ImpactHub() {
                 <p className="mt-1 text-xs text-muted-foreground">
                   {[t.event_name, t.location].filter(Boolean).join(" · ")}
                 </p>
+              </div>
+            ))}
+          </div>
+        </HubSection>
+      )}
+
+      {visibleAwards.length > 0 && (
+        <HubSection
+          eyebrow={pc("awards.eyebrow", "Awards")}
+          heading={pc("awards.heading", "Recognized achievements")}
+        >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {visibleAwards.map((a: any) => (
+              <div key={a.id} className="rounded-2xl border border-border bg-card p-6">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="font-display text-base font-semibold text-foreground">
+                    {(loc(a, "title") as string) || a.title}
+                  </h3>
+                  {a.year ? (
+                    <span className="inline-flex shrink-0 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                      {a.year}
+                    </span>
+                  ) : null}
+                </div>
+                {a.organization ? (
+                  <p className="mt-1 text-sm text-muted-foreground">{a.organization}</p>
+                ) : null}
+                {((loc(a, "description") as string) || a.description) ? (
+                  <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
+                    {(loc(a, "description") as string) || a.description}
+                  </p>
+                ) : null}
               </div>
             ))}
           </div>

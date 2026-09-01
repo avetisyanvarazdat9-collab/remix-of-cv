@@ -23,6 +23,7 @@ const items: NavItem[] = [
   { to: "/admin/blog", label: "Blog posts", icon: FileText },
   { to: "/admin/learning-resources", label: "Learning Resources", icon: BookText },
   { to: "/admin/success-stories", label: "Success Stories", icon: Award },
+  { to: "/admin/awards", label: "Awards", icon: Award },
   { to: "/admin/testimonials", label: "Testimonials", icon: Quote },
   { to: "/admin/courses", label: "Courses", icon: BookOpen },
   { to: "/admin/video-courses", label: "Video courses", icon: Video },
