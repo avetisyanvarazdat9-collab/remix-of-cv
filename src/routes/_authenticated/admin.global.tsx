@@ -27,6 +27,7 @@ const GLOBAL_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
   {
     heading: "Footer",
     keys: [
+      { key: "footer.tagline", label: "Tagline (shown under site name)" },
       { key: "footer.rights_reserved", label: "Rights reserved text" },
       { key: "footer.privacy_link", label: "Privacy Policy link label" },
     ],
