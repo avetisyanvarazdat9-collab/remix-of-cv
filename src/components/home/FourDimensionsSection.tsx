@@ -59,7 +59,7 @@ function toPillar(row: FourDimension, ctaFallback: string): Pillar {
 function PillarBullets({ bullets }: { bullets: string[] }) {
   if (bullets.length === 0) return null;
   return (
-    <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-muted-foreground">
+    <ul className="mt-2 space-y-1 text-[13px] leading-snug text-muted-foreground">
       {bullets.map((b) => (
         <li key={b} className="flex items-start gap-2">
           <span className="mt-2 size-1 shrink-0 rounded-full bg-primary/60" />
@@ -74,7 +74,7 @@ function PillarLink({ to, label }: { to: string; label: string }) {
   return (
     <Link
       to={to as never}
-      className="group/link mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+      className="group/link mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-medium text-primary transition-colors hover:text-primary/80"
     >
       {label}
       <ArrowRight className="size-4 transition-transform duration-200 group-hover/link:translate-x-0.5" />
@@ -146,7 +146,7 @@ function DimensionCard({
 }) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-[var(--surface-elevated)] shadow-[var(--shadow-card)] transition-shadow duration-300 hover:shadow-[var(--shadow-card-hover)] sm:flex-row sm:items-stretch">
-      <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden sm:aspect-auto sm:w-2/5">
+      <div className="relative aspect-[16/11] w-full shrink-0 overflow-hidden sm:aspect-auto sm:w-[38%]">
         <img
           src={pillar.image}
           alt={pillar.imageAlt}
@@ -156,12 +156,12 @@ function DimensionCard({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background/25 to-transparent sm:bg-gradient-to-r sm:from-background/20 sm:to-transparent" />
       </div>
-      <div className="flex min-w-0 flex-1 flex-col p-5 sm:justify-center sm:p-5 sm:py-4">
+      <div className="flex min-w-0 flex-1 flex-col p-4 sm:justify-center sm:p-4 sm:py-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">{pillar.dimensionLabel}</p>
-        <h3 className="mt-2 font-display text-xl font-semibold tracking-tight text-foreground sm:text-[1.25rem]">
+        <h3 className="mt-1.5 font-display text-lg font-semibold tracking-tight text-foreground sm:text-[1.1rem]">
           {pillar.title}
         </h3>
-        {pillar.lead && <p className="mt-1.5 text-sm leading-relaxed text-foreground/85">{pillar.lead}</p>}
+        {pillar.lead && <p className="mt-1 text-sm leading-snug text-foreground/85 line-clamp-2">{pillar.lead}</p>}
         <PillarBullets bullets={pillar.bullets} />
         {pillar.isTimeline ? (
           <TimelineFooter
@@ -219,7 +219,7 @@ export function FourDimensionsSection({
           </p>
         </RevealOnScroll>
 
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:gap-7">
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-5">
           {pillars.map((pillar, index) => (
             <RevealOnScroll key={pillar.dimensionLabel + pillar.title} delay={index * 80} className="min-w-0">
               <DimensionCard
