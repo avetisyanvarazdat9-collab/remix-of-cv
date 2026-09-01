@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CrudPage } from "@/components/admin/CrudPage";
 
 export const Route = createFileRoute("/_authenticated/admin/partners")({
-  head: () => ({ meta: [{ title: "Partners — Admin" }] }),
+  head: () => ({ meta: [{ title: "Partners Admin" }] }),
   component: PartnersPage,
 });
 
@@ -16,6 +16,7 @@ const TABS = [
 const fields = [
   { name: "name", label: "Name (brand)", type: "text" as const, required: true },
   { name: "role", label: "Role / partnership", type: "i18n" as const },
+  { name: "category", label: "Category", type: "select" as const, options: [{ value: "University", label: "University" }, { value: "Company", label: "Company" }, { value: "Training Center", label: "Training Center" }] },
   { name: "description", label: "Description", type: "i18n-textarea" as const },
   { name: "logo_url", label: "Logo URL", type: "url" as const },
   { name: "website_url", label: "Website URL", type: "url" as const },
@@ -55,7 +56,7 @@ function PartnersPage() {
           title="Partners"
           table="companies"
           orderBy={{ column: "display_order" }}
-          displayColumns={["name", "role", "start_year", "end_year", "is_current"]}
+          displayColumns={["name", "role", "category", "start_year", "end_year", "is_current"]}
           fields={fields}
           filter={active.filter}
           defaults={active.defaults}

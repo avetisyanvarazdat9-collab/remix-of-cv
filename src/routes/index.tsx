@@ -236,6 +236,14 @@ function Home() {
   const shownStats = stats.length > 0 ? stats : fallbackStats;
 
   const visiblePartners = (companies ?? []).filter((c: any) => c.is_visible);
+  const PARTNER_CATEGORIES = ["University", "Company", "Training Center"] as const;
+  const partnerGroups = PARTNER_CATEGORIES.map((cat) => ({
+    category: cat,
+    items: visiblePartners.filter((p: any) => p.category === cat),
+  })).filter((g) => g.items.length > 0);
+  const uncategorizedPartners = visiblePartners.filter(
+    (p: any) => !(PARTNER_CATEGORIES as readonly string[]).includes(p.category),
+  );
   const featuredCourses = (courses ?? []).filter((c: any) => c.is_visible).slice(0, 6);
 
   const timelineEntries = [...(intlRows ?? [])].sort((a: any, b: any) => {
@@ -620,10 +628,42 @@ function Home() {
                       )}
                     </p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
-                    {visiblePartners.map((p: any) => (
-                      <PartnerMarqueeLogo key={p.id} partner={p} />
+                  <div className="space-y-6">
+                    {partnerGroups.map((g) => (
+                      <div key={g.category}>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                          {pc(
+                            g.category === "University"
+                              ? "partners.category.university"
+                              : g.category === "Company"
+                                ? "partners.category.company"
+                                : "partners.category.training_center",
+                            g.category === "University"
+                              ? "Universities"
+                              : g.category === "Company"
+                                ? "Companies"
+                                : "Training Centers",
+                          )}
+                        </p>
+                        <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
+                          {g.items.map((p: any) => (
+                            <PartnerMarqueeLogo key={p.id} partner={p} />
+                          ))}
+                        </div>
+                      </div>
                     ))}
+                    {uncategorizedPartners.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                          {pc("partners.category.other", "Other")}
+                        </p>
+                        <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
+                          {uncategorizedPartners.map((p: any) => (
+                            <PartnerMarqueeLogo key={p.id} partner={p} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
             </RevealOnScroll>
