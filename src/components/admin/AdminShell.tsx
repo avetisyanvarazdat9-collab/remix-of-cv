@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History, Layers, Share2, Languages, Rocket, TrendingUp, Handshake, ScrollText, Landmark, ShieldCheck, Clock } from "lucide-react";
+import { LayoutDashboard, User, Briefcase, FileText, BookOpen, Video, Mic2, Building2, Wrench, GraduationCap, Inbox, LogOut, BarChart3, Settings, BookText, AlertTriangle, Palette, Home, Menu as MenuIcon, Award, Globe2, Activity, History, Layers, Share2, Languages, Rocket, TrendingUp, Handshake, ScrollText, Landmark, ShieldCheck, Clock, Quote } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
@@ -23,6 +23,7 @@ const items: NavItem[] = [
   { to: "/admin/blog", label: "Blog posts", icon: FileText },
   { to: "/admin/learning-resources", label: "Learning Resources", icon: BookText },
   { to: "/admin/success-stories", label: "Success Stories", icon: Award },
+  { to: "/admin/testimonials", label: "Testimonials", icon: Quote },
   { to: "/admin/courses", label: "Courses", icon: BookOpen },
   { to: "/admin/video-courses", label: "Video courses", icon: Video },
   { to: "/admin/talks-events", label: "Talks & events", icon: Mic2 },
