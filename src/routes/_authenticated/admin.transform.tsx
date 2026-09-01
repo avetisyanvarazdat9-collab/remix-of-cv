@@ -60,6 +60,21 @@ const TRANSFORM_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     ],
   },
   {
+    heading: "Training Programs",
+    keys: [
+      { key: "programs.eyebrow", label: "Section eyebrow" },
+      { key: "programs.heading", label: "Section heading" },
+      { key: "programs.0.title", label: "Program 1 — Title" },
+      { key: "programs.0.body", label: "Program 1 — Body" },
+      { key: "programs.1.title", label: "Program 2 — Title" },
+      { key: "programs.1.body", label: "Program 2 — Body" },
+      { key: "programs.2.title", label: "Program 3 — Title" },
+      { key: "programs.2.body", label: "Program 3 — Body" },
+      { key: "programs.3.title", label: "Program 4 — Title" },
+      { key: "programs.3.body", label: "Program 4 — Body" },
+    ],
+  },
+  {
     heading: "Bottom CTA",
     keys: [
       { key: "cta.heading", label: "Heading" },

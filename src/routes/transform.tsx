@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BrainCircuit, Building2, Users, Rocket, Sparkles, MessageSquare } from "lucide-react";
+import { BrainCircuit, Building2, Users, Rocket, Sparkles, MessageSquare, GraduationCap, Layers, Target, Presentation } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { buildPageHead } from "@/lib/seo";
@@ -54,6 +54,27 @@ const STEP_FALLBACKS = [
   { title: "Handoff", body: "Documentation, training, and ongoing support so your team can run with it." },
 ] as const;
 
+const PROGRAM_ICONS = [GraduationCap, Layers, Target, Presentation] as const;
+
+const PROGRAM_FALLBACKS = [
+  {
+    title: "Generative AI Fundamentals",
+    text: "A foundational program for teams new to AI — core concepts, prompt engineering, and safe adoption practices.",
+  },
+  {
+    title: "AI Leadership Bootcamp",
+    text: "A focused program for executives and decision-makers on AI strategy, ROI, and organizational readiness.",
+  },
+  {
+    title: "Technical Deep-Dive Workshops",
+    text: "Hands-on sessions for engineering teams covering RAG systems, fine-tuning, and production AI architecture.",
+  },
+  {
+    title: "Custom Enterprise Program",
+    text: "A tailored multi-week curriculum designed around your organization's specific tools, data, and goals.",
+  },
+] as const;
+
 export const Route = createFileRoute("/transform")({
   loader: async ({ context }) => {
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(TRANSFORM_PAGE));
@@ -96,6 +117,12 @@ function TransformHub() {
     n: String(index + 1).padStart(2, "0"),
     title: pc(`engagement.steps.${index}.title`, step.title),
     body: pc(`engagement.steps.${index}.body`, step.body),
+  }));
+
+  const PROGRAMS = PROGRAM_FALLBACKS.map((program, index) => ({
+    icon: PROGRAM_ICONS[index],
+    title: pc(`programs.${index}.title`, program.title),
+    text: pc(`programs.${index}.body`, program.text),
   }));
 
   return (
@@ -149,6 +176,21 @@ function TransformHub() {
           </div>
         </div>
       </section>
+
+      <HubSection
+        eyebrow={pc("programs.eyebrow", "Training Programs")}
+        heading={pc("programs.heading", "Structured learning paths for your team")}
+      >
+        <div className="grid gap-6 md:grid-cols-2">
+          {PROGRAMS.map((p) => (
+            <div key={p.title} className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
+              <p.icon className="size-8 text-primary" />
+              <h3 className="mt-4 font-display text-lg font-semibold text-foreground">{p.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{p.text}</p>
+            </div>
+          ))}
+        </div>
+      </HubSection>
 
       <HubCTA
         heading={pc("cta.heading", "Let's talk about your AI roadmap")}
