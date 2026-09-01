@@ -75,6 +75,22 @@ const TRANSFORM_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     ],
   },
   {
+    heading: "Digital Transformation",
+    keys: [
+      { key: "digital_transformation.eyebrow", label: "Section eyebrow" },
+      { key: "digital_transformation.heading", label: "Section heading" },
+      { key: "digital_transformation.intro", label: "Intro text" },
+      { key: "digital_transformation.pillars.0.title", label: "Pillar 1 — Title" },
+      { key: "digital_transformation.pillars.0.body", label: "Pillar 1 — Body" },
+      { key: "digital_transformation.pillars.1.title", label: "Pillar 2 — Title" },
+      { key: "digital_transformation.pillars.1.body", label: "Pillar 2 — Body" },
+      { key: "digital_transformation.pillars.2.title", label: "Pillar 3 — Title" },
+      { key: "digital_transformation.pillars.2.body", label: "Pillar 3 — Body" },
+      { key: "digital_transformation.pillars.3.title", label: "Pillar 4 — Title" },
+      { key: "digital_transformation.pillars.3.body", label: "Pillar 4 — Body" },
+    ],
+  },
+  {
     heading: "Bottom CTA",
     keys: [
       { key: "cta.heading", label: "Heading" },

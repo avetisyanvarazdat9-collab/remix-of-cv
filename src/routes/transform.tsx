@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BrainCircuit, Building2, Users, Rocket, Sparkles, MessageSquare, GraduationCap, Layers, Target, Presentation } from "lucide-react";
+import { BrainCircuit, Building2, Users, Rocket, Sparkles, MessageSquare, GraduationCap, Layers, Target, Presentation, Network, Database, UsersRound, Workflow } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { buildPageHead } from "@/lib/seo";
@@ -75,6 +75,27 @@ const PROGRAM_FALLBACKS = [
   },
 ] as const;
 
+const DT_PILLAR_ICONS = [Network, Database, UsersRound, Workflow] as const;
+
+const DT_PILLAR_FALLBACKS = [
+  {
+    title: "Organizational Design",
+    text: "Restructure teams and roles around AI-augmented workflows, with clear ownership and decision rights.",
+  },
+  {
+    title: "Data Infrastructure",
+    text: "Build the pipelines, storage, and governance foundations that make reliable AI adoption possible.",
+  },
+  {
+    title: "Change Management",
+    text: "Guide stakeholders through the cultural and process shifts that come with AI-first operations.",
+  },
+  {
+    title: "Hiring & Upskilling",
+    text: "Identify skill gaps, design upskilling paths, and hire for the capabilities your AI strategy needs.",
+  },
+] as const;
+
 export const Route = createFileRoute("/transform")({
   loader: async ({ context }) => {
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(TRANSFORM_PAGE));
@@ -123,6 +144,12 @@ function TransformHub() {
     icon: PROGRAM_ICONS[index],
     title: pc(`programs.${index}.title`, program.title),
     text: pc(`programs.${index}.body`, program.text),
+  }));
+
+  const DT_PILLARS = DT_PILLAR_FALLBACKS.map((pillar, index) => ({
+    icon: DT_PILLAR_ICONS[index],
+    title: pc(`digital_transformation.pillars.${index}.title`, pillar.title),
+    text: pc(`digital_transformation.pillars.${index}.body`, pillar.text),
   }));
 
   return (
@@ -191,6 +218,34 @@ function TransformHub() {
           ))}
         </div>
       </HubSection>
+
+      <section className="bg-background py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="rounded-2xl border border-border bg-card p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              {pc("digital_transformation.eyebrow", "Digital Transformation")}
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-bold text-foreground">
+              {pc("digital_transformation.heading", "Beyond the pilot: organization-wide change")}
+            </h2>
+            <p className="mt-3 max-w-2xl text-muted-foreground">
+              {pc(
+                "digital_transformation.intro",
+                "AI adoption succeeds or fails based on the structures around it, not just the technology itself. Here's what that work covers.",
+              )}
+            </p>
+            <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {DT_PILLARS.map((pillar) => (
+                <div key={pillar.title}>
+                  <pillar.icon className="size-7 text-primary" />
+                  <p className="mt-3 font-display text-base font-semibold text-foreground">{pillar.title}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{pillar.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <HubCTA
         heading={pc("cta.heading", "Let's talk about your AI roadmap")}
