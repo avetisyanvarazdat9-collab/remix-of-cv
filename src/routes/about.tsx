@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Download } from "lucide-react";
+import { Download, Award } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { CareerTimeline } from "@/components/about/CareerTimeline";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
@@ -184,7 +184,7 @@ function AboutPage() {
             <h2 className="font-display text-xl font-semibold">
               {pc("sections.certifications.heading", "Certifications")}
             </h2>
-            <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {(certifications ?? [])
                 .filter((c) => c.is_visible)
                 .map((c) => {
@@ -192,33 +192,31 @@ function AboutPage() {
                   const issuer = loc(c, "issuer") || c.issuer;
                   const description = loc(c, "description") || c.description;
                   return (
-                    <li key={c.id} className="border-l-2 border-primary/40 pl-4">
-                      {c.credential_url ? (
-                        <a
-                          href={c.credential_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="font-medium hover:text-primary"
-                        >
-                          {name}
-                        </a>
-                      ) : (
-                        <p className="font-medium">{name}</p>
-                      )}
-                      {issuer && <p className="text-sm text-muted-foreground">{issuer}</p>}
-                      {(c.issue_date || c.expiry_date) && (
-                        <p className="text-xs text-muted-foreground">
-                          {c.issue_date ?? ""}
-                          {c.expiry_date ? ` ${c.expiry_date}` : ""}
-                        </p>
-                      )}
-                      {description && (
-                        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-                      )}
-                    </li>
+                    <div key={c.id} className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/40">
+                      <div className="icon-badge size-9">
+                        <Award className="size-4" />
+                      </div>
+                      <div className="mt-3">
+                        {c.credential_url ? (
+                          <a href={c.credential_url} target="_blank" rel="noreferrer" className="font-medium hover:text-primary">
+                            {name}
+                          </a>
+                        ) : (
+                          <p className="font-medium">{name}</p>
+                        )}
+                        {issuer && <p className="mt-0.5 text-sm text-muted-foreground">{issuer}</p>}
+                        {(c.issue_date || c.expiry_date) && (
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {c.issue_date ?? ""}
+                            {c.expiry_date ? ` ${c.expiry_date}` : ""}
+                          </p>
+                        )}
+                        {description && <p className="mt-2 text-sm text-muted-foreground">{description}</p>}
+                      </div>
+                    </div>
                   );
                 })}
-            </ul>
+            </div>
           </div>
         )}
 
