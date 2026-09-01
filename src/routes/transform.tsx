@@ -1,7 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BrainCircuit, Building2, Users, Rocket, Sparkles, MessageSquare, GraduationCap, Layers, Target, Presentation, Network, Database, UsersRound, Workflow, Landmark, Cpu, ShoppingBag, HeartPulse, Factory, School } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { BrainCircuit, Building2, Users, Rocket, Sparkles, MessageSquare, GraduationCap, Layers, Target, Presentation, Network, Database, UsersRound, Workflow, Landmark, Cpu, ShoppingBag, HeartPulse, Factory, School, Quote } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
+import { testimonialsQuery } from "@/lib/queries";
+import { useLocalized } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
 import {
   pageContentQuery,
@@ -109,6 +112,10 @@ const INDUSTRY_FALLBACKS = [
 
 export const Route = createFileRoute("/transform")({
   loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(testimonialsQuery),
+      context.queryClient.ensureQueryData(pageContentQuery(TRANSFORM_PAGE)),
+    ]);
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(TRANSFORM_PAGE));
     return { pageContent };
   },
@@ -137,7 +144,11 @@ export const Route = createFileRoute("/transform")({
 });
 
 function TransformHub() {
+  const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
+  const loc = useLocalized();
   const { pc } = usePageContent(TRANSFORM_PAGE);
+
+  const corporateTestimonials = (testimonials ?? []).filter((tm: any) => tm.category === "Corporate").slice(0, 3);
 
   const SERVICES = SERVICE_FALLBACKS.map((service, index) => ({
     icon: SERVICE_ICONS[index],
@@ -278,6 +289,39 @@ function TransformHub() {
           ))}
         </div>
       </HubSection>
+
+      {corporateTestimonials.length > 0 && (
+        <HubSection
+          eyebrow={pc("results.eyebrow", "Client Results")}
+          heading={pc("results.heading", "What clients say")}
+        >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {corporateTestimonials.map((tm: any) => (
+              <figure key={tm.id} className="premium-card flex h-full flex-col p-7">
+                <Quote className="size-5 text-primary/50" />
+                <blockquote className="mt-4 flex-1 text-sm leading-[1.75] text-foreground">
+                  {(loc(tm, "quote") as string) || tm.quote}
+                </blockquote>
+                <figcaption className="mt-6 flex items-center gap-3 border-t border-border/60 pt-5">
+                  {tm.avatar_url ? (
+                    <img src={tm.avatar_url} alt="" className="size-10 rounded-full object-cover ring-2 ring-primary/10" />
+                  ) : (
+                    <div className="icon-badge size-10 text-sm font-semibold">
+                      {tm.author_name?.slice(0, 1)}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">{tm.author_name}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {[tm.role, tm.organization].filter(Boolean).join(" · ")}
+                    </p>
+                  </div>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </HubSection>
+      )}
 
       <HubCTA
         heading={pc("cta.heading", "Let's talk about your AI roadmap")}

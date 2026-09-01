@@ -110,6 +110,13 @@ const TRANSFORM_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     ],
   },
   {
+    heading: "Client Results",
+    keys: [
+      { key: "results.eyebrow", label: "Eyebrow" },
+      { key: "results.heading", label: "Heading" },
+    ],
+  },
+  {
     heading: "Bottom CTA",
     keys: [
       { key: "cta.heading", label: "Heading" },
