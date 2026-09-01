@@ -91,6 +91,25 @@ const TRANSFORM_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     ],
   },
   {
+    heading: "Industries Served",
+    keys: [
+      { key: "industries.eyebrow", label: "Section eyebrow" },
+      { key: "industries.heading", label: "Section heading" },
+      { key: "industries.0.title", label: "Industry 1 — Title" },
+      { key: "industries.0.body", label: "Industry 1 — Body" },
+      { key: "industries.1.title", label: "Industry 2 — Title" },
+      { key: "industries.1.body", label: "Industry 2 — Body" },
+      { key: "industries.2.title", label: "Industry 3 — Title" },
+      { key: "industries.2.body", label: "Industry 3 — Body" },
+      { key: "industries.3.title", label: "Industry 4 — Title" },
+      { key: "industries.3.body", label: "Industry 4 — Body" },
+      { key: "industries.4.title", label: "Industry 5 — Title" },
+      { key: "industries.4.body", label: "Industry 5 — Body" },
+      { key: "industries.5.title", label: "Industry 6 — Title" },
+      { key: "industries.5.body", label: "Industry 6 — Body" },
+    ],
+  },
+  {
     heading: "Bottom CTA",
     keys: [
       { key: "cta.heading", label: "Heading" },

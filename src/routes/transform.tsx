@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BrainCircuit, Building2, Users, Rocket, Sparkles, MessageSquare, GraduationCap, Layers, Target, Presentation, Network, Database, UsersRound, Workflow } from "lucide-react";
+import { BrainCircuit, Building2, Users, Rocket, Sparkles, MessageSquare, GraduationCap, Layers, Target, Presentation, Network, Database, UsersRound, Workflow, Landmark, Cpu, ShoppingBag, HeartPulse, Factory, School } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
 import { buildPageHead } from "@/lib/seo";
@@ -96,6 +96,17 @@ const DT_PILLAR_FALLBACKS = [
   },
 ] as const;
 
+const INDUSTRY_ICONS = [Landmark, Cpu, ShoppingBag, HeartPulse, Factory, School] as const;
+
+const INDUSTRY_FALLBACKS = [
+  { title: "Finance & Banking", text: "Risk modeling, fraud detection, and AI-assisted decision support." },
+  { title: "Technology & Software", text: "AI feature integration, developer tooling, and platform intelligence." },
+  { title: "Retail & E-commerce", text: "Personalization, demand forecasting, and conversational commerce." },
+  { title: "Healthcare", text: "Clinical decision support, documentation automation, and patient triage tools." },
+  { title: "Manufacturing", text: "Predictive maintenance, quality inspection, and supply chain optimization." },
+  { title: "Education", text: "Adaptive learning tools, curriculum design, and institutional AI strategy." },
+] as const;
+
 export const Route = createFileRoute("/transform")({
   loader: async ({ context }) => {
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(TRANSFORM_PAGE));
@@ -150,6 +161,12 @@ function TransformHub() {
     icon: DT_PILLAR_ICONS[index],
     title: pc(`digital_transformation.pillars.${index}.title`, pillar.title),
     text: pc(`digital_transformation.pillars.${index}.body`, pillar.text),
+  }));
+
+  const INDUSTRIES = INDUSTRY_FALLBACKS.map((industry, index) => ({
+    icon: INDUSTRY_ICONS[index],
+    title: pc(`industries.${index}.title`, industry.title),
+    text: pc(`industries.${index}.body`, industry.text),
   }));
 
   return (
@@ -246,6 +263,21 @@ function TransformHub() {
           </div>
         </div>
       </section>
+
+      <HubSection
+        eyebrow={pc("industries.eyebrow", "Industries Served")}
+        heading={pc("industries.heading", "Experience across sectors")}
+      >
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {INDUSTRIES.map((industry) => (
+            <div key={industry.title} className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
+              <industry.icon className="size-8 text-primary" />
+              <h3 className="mt-4 font-display text-lg font-semibold text-foreground">{industry.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{industry.text}</p>
+            </div>
+          ))}
+        </div>
+      </HubSection>
 
       <HubCTA
         heading={pc("cta.heading", "Let's talk about your AI roadmap")}
