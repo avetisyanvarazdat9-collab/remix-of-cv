@@ -14,10 +14,11 @@ import {
   BookOpen,
   Wand2,
   Quote,
-  BookOpenCheck,
   Rocket,
   Handshake,
-  Award,
+  GraduationCap,
+  Building2,
+  Newspaper,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
@@ -175,35 +176,55 @@ function Home() {
 
   const JOURNEYS = [
     {
-      icon: BookOpenCheck,
-      eyebrow: pc("journeys.learn.eyebrow", "Learn"),
-      title: pc("journeys.learn.title", "Develop AI & Technology Skills"),
-      text: pc("journeys.learn.body", "Courses, videos, and articles for AI beginners through practitioners."),
-      cta: pc("journeys.learn.cta", "Explore Learning"),
+      icon: GraduationCap,
+      eyebrow: pc("journeys.students.eyebrow", "Students & Professionals"),
+      title: pc("journeys.students.title", "Build Real AI Skills"),
+      text: pc("journeys.students.body", "Hands-on courses, videos, and articles designed to take you from curious beginner to confident practitioner."),
+      offerings: [
+        pc("journeys.students.offering1", "Instructor-led & on-demand courses"),
+        pc("journeys.students.offering2", "Video library & learning resources"),
+        pc("journeys.students.offering3", "Practical, project-based learning"),
+      ],
+      cta: pc("journeys.students.cta", "Start Learning"),
       to: "/learn",
     },
     {
-      icon: Rocket,
-      eyebrow: pc("journeys.transform.eyebrow", "Transform"),
-      title: pc("journeys.transform.title", "Transform Your Organization"),
-      text: pc("journeys.transform.body", "Consulting, corporate training, AI adoption, and digital transformation."),
-      cta: pc("journeys.transform.cta", "Transform With Me"),
+      icon: Building2,
+      eyebrow: pc("journeys.companies.eyebrow", "Companies & Organizations"),
+      title: pc("journeys.companies.title", "Transform Your Business with AI"),
+      text: pc("journeys.companies.body", "Consulting, corporate training, and AI adoption programs for teams who want measurable results."),
+      offerings: [
+        pc("journeys.companies.offering1", "AI strategy consulting"),
+        pc("journeys.companies.offering2", "Corporate training programs"),
+        pc("journeys.companies.offering3", "Digital transformation guidance"),
+      ],
+      cta: pc("journeys.companies.cta", "Explore Solutions"),
       to: "/transform",
     },
     {
       icon: Handshake,
-      eyebrow: pc("journeys.collaborate.eyebrow", "Collaborate"),
-      title: pc("journeys.collaborate.title", "Research & Partnerships"),
-      text: pc("journeys.collaborate.body", "Publications, speaking engagements, academic and industry collaborations."),
-      cta: pc("journeys.collaborate.cta", "Let's Collaborate"),
+      eyebrow: pc("journeys.researchers.eyebrow", "Researchers & Universities"),
+      title: pc("journeys.researchers.title", "Partner on Research & Projects"),
+      text: pc("journeys.researchers.body", "Academic collaborations, publications, and joint projects with universities and research institutions."),
+      offerings: [
+        pc("journeys.researchers.offering1", "Academic & industry collaborations"),
+        pc("journeys.researchers.offering2", "Joint publications & projects"),
+        pc("journeys.researchers.offering3", "Speaking & guest lectures"),
+      ],
+      cta: pc("journeys.researchers.cta", "Start a Collaboration"),
       to: "/collaborate",
     },
     {
-      icon: Award,
-      eyebrow: pc("journeys.impact.eyebrow", "Impact"),
-      title: pc("journeys.impact.title", "See the Measurable Impact"),
-      text: pc("journeys.impact.body", "Awards, talks, media appearances, achievements, and partnerships."),
-      cta: pc("journeys.impact.cta", "See the Impact"),
+      icon: Newspaper,
+      eyebrow: pc("journeys.media.eyebrow", "Media & Public"),
+      title: pc("journeys.media.title", "See the Impact & Recognition"),
+      text: pc("journeys.media.body", "Talks, media features, awards, and measurable outcomes from a decade of teaching and building."),
+      offerings: [
+        pc("journeys.media.offering1", "Talks, keynotes & media features"),
+        pc("journeys.media.offering2", "Awards & recognition"),
+        pc("journeys.media.offering3", "Measurable outcomes & results"),
+      ],
+      cta: pc("journeys.media.cta", "See the Impact"),
       to: "/impact",
     },
   ];
@@ -599,6 +620,14 @@ function Home() {
                   <p className="section-eyebrow mt-6">{j.eyebrow}</p>
                   <h3 className="mt-1.5 font-display text-lg font-semibold tracking-tight text-foreground">{j.title}</h3>
                   <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted-foreground">{j.text}</p>
+                  <ul className="mt-4 space-y-1.5">
+                    {j.offerings.map((o) => (
+                      <li key={o} className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <span className="mt-1.5 size-1 shrink-0 rounded-full bg-primary/50" />
+                        <span>{o}</span>
+                      </li>
+                    ))}
+                  </ul>
                   <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors group-hover:text-primary/80">
                     {j.cta}
                     <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
