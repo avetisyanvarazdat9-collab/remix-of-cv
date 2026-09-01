@@ -3,7 +3,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Quote, Award, TrendingUp } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { HubHero, HubSection, HubCTA } from "@/components/hub/HubLayout";
-import { statisticsQuery, testimonialsQuery, companiesQuery, talksQuery } from "@/lib/queries";
+import { CareerTimeline } from "@/components/about/CareerTimeline";
+import { statisticsQuery, testimonialsQuery, companiesQuery, talksQuery, professionalExperienceQuery } from "@/lib/queries";
 import { useLocalized } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/seo";
 import {
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/impact")({
       context.queryClient.ensureQueryData(testimonialsQuery),
       context.queryClient.ensureQueryData(companiesQuery),
       context.queryClient.ensureQueryData(talksQuery),
+      context.queryClient.ensureQueryData(professionalExperienceQuery),
       context.queryClient.ensureQueryData(pageContentQuery(IMPACT_PAGE)),
     ]);
     const pageContent = await context.queryClient.ensureQueryData(pageContentQuery(IMPACT_PAGE));
@@ -62,11 +64,13 @@ function ImpactHub() {
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const { data: companies } = useSuspenseQuery(companiesQuery);
   const { data: talks } = useSuspenseQuery(talksQuery);
+  const { data: professionalExperience } = useSuspenseQuery(professionalExperienceQuery);
   const loc = useLocalized();
   const { pc } = usePageContent(IMPACT_PAGE);
 
   const partners = (companies ?? []).filter((c: any) => c.is_visible);
   const featuredTalks = (talks ?? []).slice(0, 6);
+  const timelineEntries = (professionalExperience ?? []).filter((e: any) => e.is_visible !== false);
 
   return (
     <PublicLayout>
@@ -98,6 +102,15 @@ function ImpactHub() {
           ))}
         </div>
       </HubSection>
+
+      {timelineEntries.length > 0 && (
+        <HubSection
+          eyebrow={pc("career.eyebrow", "Career Timeline")}
+          heading={pc("career.heading", "How the journey unfolded")}
+        >
+          <CareerTimeline items={timelineEntries} loc={loc} />
+        </HubSection>
+      )}
 
       {(testimonials?.length ?? 0) > 0 && (
         <HubSection

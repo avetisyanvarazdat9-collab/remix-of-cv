@@ -32,6 +32,13 @@ const IMPACT_PAGE_CONTENT_SECTIONS: PageContentEditorSection[] = [
     ],
   },
   {
+    heading: "Career Timeline",
+    keys: [
+      { key: "career.eyebrow", label: "Eyebrow" },
+      { key: "career.heading", label: "Heading" },
+    ],
+  },
+  {
     heading: "Testimonials",
     keys: [
       { key: "testimonials.eyebrow", label: "Section eyebrow" },
