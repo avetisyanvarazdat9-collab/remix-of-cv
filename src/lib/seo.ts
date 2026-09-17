@@ -8,8 +8,7 @@ export const DEFAULT_DESCRIPTION =
   "AI education, research, consulting, digital transformation, and professional collaboration by Dr. Varazdat Avetisyan.";
 
 /** Existing production OG image already referenced in the root route. */
-export const DEFAULT_OG_IMAGE =
-  "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d0e767d5-d112-4ce3-ae79-0843fa5e0615/id-preview-67305ffb--191e9f79-a96f-417b-b1b9-1aa3a4a37262.lovable.app-1784456274077.png";
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 export const STATIC_SITEMAP_PATHS = [
   "/",
@@ -112,16 +111,16 @@ export function buildGlobalHead() {
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${SITE_NAME} — AI Educator, Researcher & Technologist` },
+      { title: `${SITE_NAME} AI Educator, Researcher & Technologist` },
       { name: "description", content: DEFAULT_DESCRIPTION },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: `${SITE_NAME} — AI Educator, Researcher & Technologist` },
+      { property: "og:title", content: `${SITE_NAME} AI Educator, Researcher & Technologist` },
       { property: "og:description", content: DEFAULT_DESCRIPTION },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: SITE_NAME },
       { property: "og:image", content: DEFAULT_OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: `${SITE_NAME} — AI Educator, Researcher & Technologist` },
+      { name: "twitter:title", content: `${SITE_NAME} AI Educator, Researcher & Technologist` },
       { name: "twitter:description", content: DEFAULT_DESCRIPTION },
       { name: "twitter:image", content: DEFAULT_OG_IMAGE },
     ],
